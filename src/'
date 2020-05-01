@@ -1,0 +1,88 @@
+module VhdMath where
+import InfoTypes
+import qualified Data.Char as DC
+
+
+data Parentheses =      OpenParen Compare2Numbers
+                    |   CloseParen Compare2Numbers
+                        deriving (Eq, Show)
+
+
+data Assign =           Assign Information Information
+                    |   AndLaw Compare2Numbers
+                    |   OrLaw Compare2Numbers
+                    |   Nada
+                        deriving (Eq, Show)
+
+
+data Condition = 
+                        GreaterT Information Information 
+                    |   LesserT Information Information
+                    |   EqualTo Information Information
+                    |   GreaterTEq Information Information
+                    |   LessTEq Information Information
+                    |   Picky [Condition]
+                        deriving (Eq, Show)
+
+
+data Gate = And | Or | Xor | Nand | Nor | Xnor deriving (Eq, Show)
+
+
+data CombineConditions = CombineConditions [Compare2Numbers] Gate
+
+--compareNumsToStr :: Compare2Numbers -> String
+--compareNumsToStr GreaterThan s1 s2 
+
+--wrapConditions :: [Compare2Numbers] -> Gate -> String
+--wrapConditions [] _ = ""
+--wrapConditions (x:xs) gate
+--    | length xs == 0            = (nomen x) ++ " then"
+--    | otherwise                 = (nomen x) ++ " " ++ (show gate) ++ wrapConditions xs gate
+
+
+wrapOperator :: Information -> Information -> String -> String
+wrapOperator i1 i2 op = (nomen i1) ++ " " ++ op ++ " " ++ (nomen i2)
+
+
+cond2Str :: Condition -> String
+cond2Str (GreaterT i1 i2) = wrapOperator i1 i2 ">"
+cond2Str (LesserT i1 i2) = wrapOperator i1 i2 "<" 
+cond2Str (EqualTo i1 i2) = wrapOperator i1 i2 "=" 
+cond2Str (GreaterTEq i1 i2) = wrapOperator i1 i2 ">=" 
+cond2Str (LessTEq i1 i2) = wrapOperator i1 i2 "<=" 
+
+
+
+combineConditions :: [Condition] -> String -> String
+combineConditions [] _ = ""
+combineConditions cList gate
+    | length cList == 1     = cond2Str (head cList)
+    | otherwise             = cond2Str (head cList) ++ " " ++ gate ++ " " ++ combineConditions (tail cList) gate
+
+
+-- TODO: Write wrappers for combineConditions, w/ versions for and, or, xor, etc.
+andConditions :: [Condition] -> String
+andConditions cList = combineConditions cList "and"
+
+
+andConditions :: [Condition] -> String
+andConditions cList = combineConditions cList "and"
+
+
+andConditions :: [Condition] -> String
+andConditions cList = combineConditions cList "and"
+
+
+andConditions :: [Condition] -> String
+andConditions cList = combineConditions cList "and"
+
+
+andConditions :: [Condition] -> String
+andConditions cList = combineConditions cList "and"
+
+
+andConditions :: [Condition] -> String
+andConditions cList = combineConditions cList "and"
+
+
+

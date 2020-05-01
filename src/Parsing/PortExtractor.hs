@@ -1,0 +1,359 @@
+module Parsing.PortExtractor where
+import Parsing.GuaranteeWhitespace
+import Rendering.InfoTypes
+import Text.Printf
+import Tools.StringTools
+import Data.Maybe
+import Parsing.TokenMatchingTools
+
+
+thisLineContainsPort :: String -> Bool
+thisLineContainsPort someStr
+    | length someStr < 4                =   False
+    | take 4 someStr == "port"          =   True
+    | otherwise                         =   thisLineContainsPort (tail someStr)
+
+
+lineContainsName :: String -> String -> Bool
+lineContainsName name line
+    -- Note that if you pass in "port map" or "generic map" as the thing to search for, 
+    -- the top condition will take precedence. Some explicit false conditions are necessary
+    -- however because if you search for "port" or "generic", the search could be thrown
+    -- off by "port map" and "generic map"
+    | (take (length name)) line == name =   True                                                  
+    | (take 8 line) == "port map"       =   False
+    | (take 11 line) == "generic map"   =   False
+    | otherwise                         =   lineContainsName name (tail line)
+
+
+-- Send in an entire file as a list of strings (where each string is 1 token), 
+-- and this returns everything after the keyword. If there is no port 
+-- keyword, this returns an empty list.
+locateKeyword :: String -> [String] -> [String]
+locateKeyword keyword tokList
+    | length tokList == 0               =   []
+    -- Note: Insert any special cases here:
+    | keyword == "port map" && 
+      (tokList !! 1) == "port" && 
+      (tokList !! 2) == "map"           =   (tail $ tail tokList)
+    | keyword == "generic map" && 
+      (tokList !! 1) == "generic" && 
+      (tokList !! 2) == "map"           =   (tail $ tail tokList)
+    | (head tokList) == keyword         =   tail tokList
+    | otherwise                         =   locateKeyword keyword (tail tokList)
+
+
+-- Pass in a list of tokens, and this will return the same list up until a 
+-- closing parenthesis has been encountered.
+stopAtClosingParen :: [String] -> Int -> Int -> [String]
+stopAtClosingParen [] _ _ = []
+stopAtClosingParen (x:xs) numOpening numClosing = 
+    if (x == "(")
+        then [x] ++ stopAtClosingParen xs (numOpening + 1) numClosing
+        else if (x == ")")
+                then if ((numOpening-1) == numClosing)
+                        then [x] 
+                        else [x] ++ stopAtClosingParen xs numOpening (numClosing + 1)
+                else [x] ++ stopAtClosingParen xs numOpening numClosing
+
+
+testTokens :: [String]
+testTokens =   ["entity", "entity_name", "is", 
+                "generic", "(", "width", ":", "integer", ":=", "8", ";",
+                "depth", ":", "integer", ":=", "64", ";",
+                "rst_val", ":", "std_logic_vector", "(", "7", "downto", "0", ")", ";",
+                "other_val", ":", "std_logic", ")", ";",
+                "port", "(", "clk", ":", "in", "std_logic", ";",
+                "rst", ":", "in", "std_logic", ";",
+                "q", ":", "out", "std_logic_vector", "(", "width", "-", "1", "downto", "0", ")", ")", ";",
+                "end", "entity_name", ";",
+                "architecture", "behavioral", "of", "entity_name", "is",
+                "signal", "q0", ":", "std_logic", ";",
+                "signal", "q1", ":", "unsigned", "(", "7", "downto", "0", ")", ";",
+                "signal", "q2", ":", "signed", "(", "31", "downto", "0", ")", ";",
+                "begin",
+                "process", "(", "clk", ")",
+                "var", "x", "std_logic_vector", ":=", "\"0000001010101111\"", ";",
+                "begin",
+                "x", "<=", "y", ";",
+                "end", "process", ";",
+                "end", "behavioral", ";"]
+
+
+-- Use this function to search for "port" or "generic", then return everything
+-- after that until the closing parenthesis. Note that 1st and last tokens are 
+-- parentheses. 
+extractDeclaration :: String -> [String] -> [String]
+extractDeclaration keyword tokList = stopAtClosingParen (locateKeyword keyword tokList) 0 0
+
+
+-- Returns index of the first semicolon found in a list of strings.
+-- Returns -1 if no semicolon is found.
+firstSemicolon :: [String] -> Int -> Int
+firstSemicolon [] n = (-1)
+firstSemicolon (x:xs) n = if (x == ";") then n
+                                        else firstSemicolon xs (n+1)
+
+
+-- Returns index of first := operator found in a list of strings.
+-- Returns -1 if no such token is found.
+firstDefaultAssignment :: [String] -> Int -> Int
+firstDefaultAssignment [] n = (-1)
+firstDefaultAssignment (x:xs) n = if (x == ":=") then n
+                                                 else firstDefaultAssignment xs (n+1)
+
+
+-- Assume this function is fed by extractDeclaration, above, except outermost ('s & )'s
+-- have been removed:
+genericHasDefault :: [String] -> Bool
+genericHasDefault xs
+    | length xs <= 4                = False
+    | firstSemicolon xs 0 == (-1)   = (firstDefaultAssignment xs 0) > 0
+    | otherwise                     = (firstSemicolon xs 0) > (firstDefaultAssignment xs 0) 
+                            
+
+portHasDefault :: [String] -> Bool
+portHasDefault xs = genericHasDefault xs                           
+
+
+-- This function repeats the tail function n times.
+repTail :: Int -> [String] -> [String]
+repTail 0 xs = xs
+repTail n xs = tail (repTail (n-1) xs)
+
+
+-- This function assumes the head of the list is the name of a declaration,
+-- either generic or port. This function will locate the semicolon, and 
+-- remove everything up to and including the semicolon. If the semicolon is
+-- not found, this function returns an empty list.
+remove1Declaration :: [String] -> [String]
+remove1Declaration []               = []
+remove1Declaration xs
+    | (firstSemicolon xs 0) < 0     = []
+    | otherwise                     = repTail n xs where
+                                      n = (firstSemicolon xs 0) + 1
+
+
+extract1Declaration :: [String] -> [String]
+extract1Declaration []              = []
+extract1Declaration xs
+    | (firstSemicolon xs 0) < 0     = []
+    | otherwise                     = take n xs where
+                                      n = (firstSemicolon xs 0) + 1
+
+
+containsSubstr :: String -> String -> Bool
+containsSubstr "" _ = False
+containsSubstr _ "" = False
+containsSubstr someStr searchFor
+    | (take (length searchFor) someStr) == searchFor = True
+    | otherwise = containsSubstr (tail someStr) searchFor
+
+
+-- This function assumes that tokens early in the [String] describe
+-- an integer. This function's job is to help you figure out if you're
+-- dealing with a constrained integer or an unconstrained one. If 
+-- constrained, this function extracts the limits. 
+resolveConstrainedness :: [String] -> DataType
+resolveConstrainedness tokList
+    | elem "downto" (take 3 tokList)        = ConstrainedInt 0 0 -- todo: flesh this out
+    | elem "to" (take 3 tokList)            = ConstrainedInt 0 0 -- todo: flesh this out
+    | otherwise                             = UnconstrainedInt
+
+
+inferDatatype :: [String] -> DataType
+inferDatatype (oneTok:moreTokens)
+    | containsSubstr oneTok "std_logic"     = StdLogic
+    | containsSubstr oneTok "std_ulogic"    = StdULogic
+    | containsSubstr oneTok "signed"        = Signed
+    | containsSubstr oneTok "bit"           = Bit
+    | containsSubstr oneTok "integer"       = resolveConstrainedness moreTokens
+    | otherwise                             = error "Unrecognized datatype"
+
+
+is1Thru9 :: Char -> Bool
+is1Thru9 c = elem c ['0'..'9']
+
+
+tokenContainsInt :: String -> Bool
+tokenContainsInt ""                         = False
+tokenContainsInt s
+    | (length s) < 1                        = False
+    | (s !! 0) == '-' && is1Thru9 (s !! 1)  = True
+    | is1Thru9 (s !! 0)                     = True
+    | otherwise                             = False
+
+
+extractUpper :: [String] -> Integer
+extractUpper xs
+    | (xs !! 1) == "downto"                 = read (xs !! 0)
+    | (xs !! 1) == "to"                     = read (xs !! 2)
+    | otherwise                             = error "xs !! 1 MUST equal to or downto!!!"
+
+
+extractLower :: [String] -> Integer
+extractLower xs
+    | (xs !! 1) == "downto"                 = read (xs !! 2)
+    | (xs !! 1) == "to"                     = read (xs !! 0)
+    | otherwise                             = error "xs !! 1 MUST equal to or downto!!!"
+
+
+extractWidthVariable :: [String] -> String
+extractWidthVariable xs
+    | (xs !! 1) == "downto"                 = xs !! 0
+    | (xs !! 1) == "to"                     = xs !! 2
+    | otherwise                             = error "xs !! 1 MUST equal to or downto!!!"
+
+
+rangeToken :: String -> Bool
+rangeToken "downto"                         = True
+rangeToken "to"                             = True
+rangeToken _                                = False
+
+
+endOfDeclaration :: String -> Bool
+endOfDeclaration ";"                        = True
+endOfDeclaration _                          = False
+
+
+extractWidth :: [String] -> Width
+extractWidth xs
+    | (length xs) < 2                       = WidthNotSpecified
+    | (xs !! 1) == "downto"                 = if (tokenContainsInt (xs !! 0))
+                                                then Hard (extractUpper xs)
+                                                else Soft (extractWidthVariable xs)
+    | (xs !! 1) == "to"                     = if (tokenContainsInt (xs !! 2))
+                                                then Hard (extractUpper xs)
+                                                else Soft (extractWidthVariable xs)
+    | endOfDeclaration (xs !! 1)            = WidthNotSpecified
+    | otherwise                             = extractWidth (tail xs)
+
+
+hasDefault :: [String] -> Bool
+hasDefault xs
+    | (length xs) <= 3                      = False
+    | endOfDeclaration (xs !! 1)            = False
+    | (xs !! 1) == ":="                     = True
+    | otherwise                             = hasDefault (tail xs)
+
+
+extractDefault :: [String] -> DefaultValue
+extractDefault xs
+    | hasDefault xs                         = Specified (xs !! 2)
+    | otherwise                             = Unspecified
+
+
+
+-- Assume this function is fed by extractDeclaration "generic", above, and surrounding 
+-- parentheses have been removed.
+extractGenerics :: [String] -> [Information]
+extractGenerics x 
+    | (length x) < 2                    = []
+    | otherwise = [Generic {  nomen     =   x !! 0
+                           , dataType  =   inferDatatype (tail (tail x))
+                           , width     =   extractWidth x
+                           , sDefault  =   (extractDefault x)
+                           , comments  =   [""]}
+                           ] ++ extractGenerics (remove1Declaration x)
+
+
+extractPorts :: [String] -> [Information]
+extractPorts x
+    | (length x) < 2    = []
+    | otherwise         = [Port {   nomen = x !! 0
+                                ,   dataType = inferDatatype (tail (tail (tail x)))
+                                ,   width = extractWidth x
+                                ,   direction = if ((x !! 2) == "in")
+                                                    then In
+                                                    else Out
+                                ,   sDefault = (extractDefault x)
+                                ,   sReset = (makeResetVal (inferDatatype (tail (tail (tail x)))))
+                                ,   clocked = Nothing
+                                ,   comments = []
+                                ,   assertionLevel = Nothing
+                                }] ++ extractPorts (remove1Declaration x) 
+
+
+nameIsInList :: String -> [String] -> Bool
+nameIsInList _ []           = False
+nameIsInList name (x:xs)    = if (name == x) then True
+                              else nameIsInList name xs
+                           
+
+isPort :: String -> [String] -> Bool
+isPort name tokList = nameIsInList name $ extractDeclaration "port" tokList
+
+
+isGeneric :: String -> [String] -> Bool
+isGeneric name tokList = nameIsInList name $ extractDeclaration "generic" tokList
+
+
+isSignal :: String -> [String] -> Bool
+isSignal _ [] = False
+isSignal name tokList
+    | (head tokList) == "signal" = if (name == (tokList !! 1))
+                                        then True
+                                        else isSignal name (tail tokList)
+    | otherwise = isSignal name (tail tokList)
+
+
+nameOneSig :: String -> Integer -> String
+nameOneSig stub d = "s__" ++ stub ++ "__d" ++ (printf "%06d" d)
+
+
+nameOneVar :: String -> String
+nameOneVar stub = "v__" ++ stub 
+
+
+nameOneInput :: String -> Integer -> String
+nameOneInput stub d = "i__" ++ stub ++ "__d" ++ (printf "%06d" d)
+
+
+nameOneOutput :: String -> Integer -> String
+nameOneOutput stub d = "o__" ++ stub ++ "__d" ++ (printf "%06d" d)
+
+
+isSigName :: String -> Bool
+isSigName s = (take 3 s) == "s__"
+
+
+isVarName :: String -> Bool
+isVarName s = (take 3 s) == "v__"
+
+
+isInputName :: String -> Bool
+isInputName s = (take 3 s) == "i__"
+
+
+isOutputName :: String -> Bool
+isOutputName s = (take 3 s) == "o__"
+
+
+-- todo: Write a function that scans an entire entity and generates 
+-- a report, but the report should be a data structure.
+
+-- todo: You should be able to pass a port map or a generic map
+-- into an entity wrapper (which may also generate double buffering)
+-- and the wrapper routes whatever ports or generics in the way
+-- you specify. It then takes all other ports/generics and routes
+-- them through the wrapper.
+
+
+
+hasDelay :: String -> Bool
+hasDelay s = containsSubStr s "__d"
+
+
+findDelayIdx :: String -> Maybe Integer
+findDelayIdx s = findSubStrIdx s "__d" 0
+
+
+extractDelay :: String -> Maybe Integer
+extractDelay s
+    | findDelayIdx s == Nothing = Nothing
+    | otherwise = Just (read (skipNChars s (3 + (fromMaybe 0 (findDelayIdx s)))) :: Integer)
+
+
+
+
+
