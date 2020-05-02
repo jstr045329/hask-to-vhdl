@@ -641,6 +641,9 @@ extractStub s
         numIdx = findNumberIdx s
 
 
+----------------------------------------------------------------------------------------------------
+--                                     Convert Port to Signal
+----------------------------------------------------------------------------------------------------
 portToSig :: [Information] -> [(Information, Information)]
 portToSig [] = []
 portToSig (x:xs) = [(onePort, oneSignal)] ++ portToSig xs where
@@ -710,11 +713,11 @@ customResetVal x s = VhdSig {
 ----------------------------------------------------------------------------------------------------
 declareOneThing :: Information -> String
 declareOneThing (Port nm dt w pDir sDef _ _ _ _) = 
-    nm ++ " : " ++ (showDir pDir) ++ " " ++ (datatypeToStr dt w) ++ (default2Str sDef)
-declareOneThing (Generic nm dt w sDef _) = nm ++ " : " ++ (datatypeToStr dt w) ++ (default2Str sDef)
-declareOneThing (VhdSig nm dt w sDef _ _ _ _) = nm ++ " : " ++ (datatypeToStr dt w) ++ (default2Str sDef)
-declareOneThing (Variable nm dt w sDef _ _ _) = nm ++ " : " ++ (datatypeToStr dt w) ++ (default2Str sDef)
-declareOneThing (Constant nm dt w sDef _) = nm ++ " : " ++ (datatypeToStr dt w) ++ (default2Str sDef) 
+    nm ++ " : " ++ (showDir pDir) ++ " " ++ (datatypeToStr dt w) ++ (default2Str sDef) ++ ";"
+declareOneThing (Generic nm dt w sDef _) = nm ++ " : " ++ (datatypeToStr dt w) ++ (default2Str sDef) ++ ";"
+declareOneThing (VhdSig nm dt w sDef _ _ _ _) = nm ++ " : " ++ (datatypeToStr dt w) ++ (default2Str sDef) ++ ";"
+declareOneThing (Variable nm dt w sDef _ _ _) = nm ++ " : " ++ (datatypeToStr dt w) ++ (default2Str sDef) ++ ";"
+declareOneThing (Constant nm dt w sDef _) = nm ++ " : " ++ (datatypeToStr dt w) ++ (default2Str sDef) ++ ";"
 declareOneThing (Literal _ _ _ _) = error "You do not declare a literal"
 
 

@@ -96,11 +96,14 @@ generatePortMap instName los
             portMap = portDec2Map entChunk
             
 
-declareSignals :: [String] -> [String]
-declareSignals [] = []
-declareSignals los = declareBatch sigList where
-        portList = extractPorts los
-        sigList = map convertPort2Sig portList
+
+
+isClock :: String -> Bool
+isClock x
+    | length x < 3 = False
+    | (take 3 x) == "clk" = True
+    | (take 5 x) == "clock" = True
+    | otherwise = False
 
 
 isReset :: String -> Bool
@@ -117,24 +120,71 @@ isNegative s
     | otherwise = False
 
 
--- NOTE: This function assumes that the first clock is THE clock.
--- Not a problem right now, but we should probably make it more flexible later.
--- Also, if no reset is found, it defaults to easyRst.
-getReset :: [Information] -> Information
-getReset sigList
-    | sigList == [] = easyRst
-    | isReset (nomen (head sigList)) = head sigList
-    | otherwise = getReset (tail sigList)
+setResetDefault :: Information -> Information
+setResetDefault x =
+    if (isNegative (nomen x))
+        then VhdSig {
+                nomen = nomen x
+            ,   dataType = dataType x
+            ,   width = width x
+            ,   sDefault = Specified "'0'"
+            ,   sReset = sReset x
+            ,   clocked = clocked x
+            ,   comments = comments x
+            ,   assertionLevel = Just "'0'"
+            }
+
+        else VhdSig {
+                nomen = nomen x
+            ,   dataType = dataType x
+            ,   width = width x
+            ,   sDefault = Specified "'1'"
+            ,   sReset = sReset x
+            ,   clocked = clocked x
+            ,   comments = comments x
+            ,   assertionLevel = Just "'1'"
+            }
 
 
-getResetLevel :: [Information] -> String
-getResetLevel sigList
-    | sigList == [] = ""
-    | isReset (nomen (head sigList)) = if (isNegative (nomen (head sigList)))
-                                        then "'0'"
-                                        else "'1'"
-    | otherwise = getResetLevel (tail sigList)
- 
+extractResets :: [Information] -> [Information]
+extractResets x = [(setResetDefault i) | i <- x, isReset (nomen i)]
+
+
+removeResets :: [Information] -> [Information]
+removeResets x = [i | i <- x, not (isReset (nomen i))]
+
+
+setClockDefault :: Information -> Information
+setClockDefault x = VhdSig {
+        nomen = nomen x
+    ,   dataType = dataType x
+    ,   width = width x
+    ,   sDefault = Specified "'1'"
+    ,   sReset = sReset x
+    ,   clocked = clocked x
+    ,   comments = comments x
+    ,   assertionLevel = Just "'1'"
+    }
+
+
+extractClocks :: [Information] -> [Information]
+extractClocks x = [(setClockDefault i) | i <- x, isClock (nomen i)]
+
+
+removeClocks :: [Information] -> [Information]
+removeClocks x = [i | i <- x, not (isClock (nomen i))]
+
+
+declareSignals :: [String] -> [String]
+declareSignals [] = []
+declareSignals los = declareBatch sigList where
+        portList = extractPorts los
+        rawSignals = map convertPort2Sig portList
+        clockList = extractClocks rawSignals
+        resetList = extractResets rawSignals
+        otherSigs = removeClocks (removeResets rawSignals)
+        sigList = clockList ++ resetList ++ otherSigs
+
 
 generateTestbench :: [String] -> [String]
 generateTestbench los = 
@@ -151,7 +201,7 @@ generateTestbench los =
     ["",""] ++ 
     (declareSignals (tail (dropLast (extractDeclaration "port" los)))) ++
     [""] ++
-    [""] ++
+    ["constant clk_per : time := 10 ns;"] ++
     ["signal sim_done : std_logic := '0';"] ++
     [""] ++
     [""] ++
@@ -182,6 +232,6 @@ generateTestbench los =
     [""] ++
     ["end architecture behavioral_" ++ (getEntityName los) ++ ";"] ++ 
     [""] ++
-    [""]
+    [""] 
 
 
