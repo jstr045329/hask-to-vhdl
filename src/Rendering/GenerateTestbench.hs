@@ -6,6 +6,7 @@ import Parsing.PortExtractor
 import Rendering.InfoTypes
 import Rendering.RenderPorts
 import Rendering.GlueStatements
+import Tools.WhiteSpaceTools
 
 
 dropLastIfNotEnd :: [String] -> [String]
@@ -72,7 +73,7 @@ genDec2Map los = ["generic map ("] ++ mList' ++ [")"]
     where 
         gList = extractGenerics (stopAtPort (dropLastIfEnd los))
         mList = mapPorts2SimilarNames gList
-        mList' = removeLastCommaFromList mList
+        mList' = zipTab (removeLastCommaFromList mList)
 
 
 -- Port Declaration to Map:
@@ -81,7 +82,7 @@ portDec2Map los = ["port map ("] ++ pList' ++ [");"]
     where 
         portList = extractPorts (afterPort (dropLastIfEnd los))
         pList = mapPorts2SimilarNames portList
-        pList' = removeLastCommaFromList pList
+        pList' = zipTab (removeLastCommaFromList pList)
 
 
 generatePortMap :: String -> [String] -> [String]
@@ -95,13 +96,45 @@ generatePortMap instName los
             portMap = portDec2Map entChunk
             
 
-
 declareSignals :: [String] -> [String]
 declareSignals [] = []
 declareSignals los = declareBatch sigList where
         portList = extractPorts los
         sigList = map convertPort2Sig portList
-        
+
+
+isReset :: String -> Bool
+isReset x
+    | length x < 3 = False
+    | (take 3 x) == "rst" = True
+    | (take 5 x) == "reset" = True
+    | otherwise = False
+
+
+isNegative :: String -> Bool
+isNegative s
+    | lastN s 2 == "_n" = True
+    | otherwise = False
+
+
+-- NOTE: This function assumes that the first clock is THE clock.
+-- Not a problem right now, but we should probably make it more flexible later.
+-- Also, if no reset is found, it defaults to easyRst.
+getReset :: [Information] -> Information
+getReset sigList
+    | sigList == [] = easyRst
+    | isReset (nomen (head sigList)) = head sigList
+    | otherwise = getReset (tail sigList)
+
+
+getResetLevel :: [Information] -> String
+getResetLevel sigList
+    | sigList == [] = ""
+    | isReset (nomen (head sigList)) = if (isNegative (nomen (head sigList)))
+                                        then "'0'"
+                                        else "'1'"
+    | otherwise = getResetLevel (tail sigList)
+ 
 
 generateTestbench :: [String] -> [String]
 generateTestbench los = 
@@ -117,12 +150,38 @@ generateTestbench los =
     (glueStatements (generateComponentDec los)) ++ 
     ["",""] ++ 
     (declareSignals (tail (dropLast (extractDeclaration "port" los)))) ++
+    [""] ++
+    [""] ++
+    ["signal sim_done : std_logic := '0';"] ++
+    [""] ++
+    [""] ++
     ["begin"] ++
-    ["", ""] ++
+    [""] ++
+    [""] ++
+    ["process"] ++
+    ["begin"] ++
+    ["    if sim_done /= '1' then"] ++
+    ["        wait for clk_per/2;"] ++
+    ["        clk <= not clk;"] ++
+    ["    end if;"] ++
+    ["end process;"] ++
+    [""] ++
+    [""] ++
+    ["process"] ++
+    ["begin"] ++
+    ["    wait for clk_per*10;"] ++
+    ["    reset <= not reset;"] ++ -- TODO: Replace hard coded name with some kind of parsing
+    ["    wait;"] ++
+    ["end process;"] ++
+    [""] ++
+    [""] ++
+    [""] ++
+    [""] ++
     (generatePortMap "UUT" los) ++ 
-    ["", ""] ++
+    [""] ++
+    [""] ++
     ["end architecture behavioral_" ++ (getEntityName los) ++ ";"] ++ 
-    ["", ""]
-    
+    [""] ++
+    [""]
 
 

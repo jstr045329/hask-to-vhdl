@@ -14,7 +14,7 @@ glueStrings' los = do
 
 --processFile :: FilePath -> FilePath -> ([String] -> [String]) -> IO ()
 processFile fileNameIn fileNameOut businessLogic = do  
-                x <- liftM tokenize' (readFile fileNameIn)
+                x <- liftM tokenize'' (readFile fileNameIn)
                 y <- glueStrings' (businessLogic x)
                 writeFile fileNameOut y
 

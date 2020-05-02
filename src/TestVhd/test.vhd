@@ -1,3 +1,5 @@
+-- this file starts with a comment
+-- times two!
 library IEEE;
 use IEEE.std_logic_1164.ALL;
 
@@ -9,7 +11,7 @@ entity my_ent is
     port(
         clk : in std_logic;
         rst : in std_logic;
-        x:in std_logic_vector(w-1 downto 0);
+        x:in std_logic_vector(w-1 downto 0); -- descriptive whatever
         y:out std_logic_vector(w-1 downto 0)
     );
 end my_ent;
@@ -28,6 +30,7 @@ process(clk)
 begin
     if rising_edge(clk) then
         if rst = '1' then
+-- rando comment
             y <= (others => '0');
         else
             y <= x;
@@ -51,7 +54,7 @@ end process;
 ramp_generator: process(clk, rst)
 begin
     if rst = '1' then
-        u1 <= (others => '0');
+        u1 <= (others => '0'); -- you cooperated with your code review good job!
     elsif rising_edge(clk) then
         if u1 < x"fe" then
             u1 <= x"01" + u1;

@@ -7,6 +7,7 @@ twoCharTokens = [
     , "=>" 
     , ":=" 
     , "/="
+    , "--"
     ]
 
 
@@ -84,13 +85,33 @@ gWhitespace s
     | otherwise                     = [head s] ++ gWhitespace (tail s)
 
 
+removeComments :: [String] -> [String]
+removeComments [] = []
+removeComments los
+    | (head los) == "--" = []
+    | otherwise = [head los] ++ (removeComments (tail los))
+
+
+-- Each string is 1 line in this file:
 tokenize :: [String] -> [String]
 tokenize [] = []
-tokenize los = words (gWhitespace (head los)) ++ tokenize (tail los)
+tokenize los = (removeComments (words (gWhitespace (head los)))) ++ tokenize (tail los)
 
 
-tokenize' :: String -> [String]
-tokenize' s = tokenize (words s)
+--tokenize' :: String -> [String]
+--tokenize' s = tokenize (words s)
+
+
+tokenize' :: String -> String -> [String]
+tokenize' "" _ = []
+tokenize' inStr underConstruction
+    | ((head inStr) == '\n') = [underConstruction] ++ (tokenize' (tail inStr) "")
+    | otherwise = tokenize' (tail inStr) (underConstruction ++ [head inStr])
+
+
+tokenize'' :: String -> [String]
+tokenize'' "" = []
+tokenize'' s = tokenize (tokenize' s "")
 
 
 liftM :: (a -> b) -> (IO a -> IO b)
@@ -105,7 +126,7 @@ liftM f action = do x <- action
 
 tokenizeFile :: String -> IO [()]
 tokenizeFile fileName = do 
-                x <- liftM tokenize' (readFile fileName)
+                x <- liftM tokenize'' (readFile fileName) 
                 mapM putStrLn x
 
 

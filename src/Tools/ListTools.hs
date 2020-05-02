@@ -15,3 +15,11 @@ joinWithCommas tokList
     | otherwise = (head tokList) ++ ", " ++ (joinWithCommas (tail tokList))
 
 
+lastN :: [a] -> Int -> [a]
+lastN _ 0 = []
+lastN someList n
+    | length someList <= n = someList
+    | otherwise = lastN (tail someList) n
+
+    
+
