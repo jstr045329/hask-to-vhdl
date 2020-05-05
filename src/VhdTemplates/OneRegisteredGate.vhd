@@ -8,14 +8,14 @@ entity <entity_name_here> is
     );
     port (
         clk : in std_logic;
-        <reset_name_here>;
-        <input_0_here>;
-        <input_1_here>;
-        <input_2_here>;
-        <input_3_here>;
-        <input_4_here>;
-        <input_5_here>;
-        <input_6_here>;
+        <reset_name_here> : in std_logic;
+        <input_0_here>
+        <input_1_here>
+        <input_2_here>
+        <input_3_here>
+        <input_4_here>
+        <input_5_here>
+        <input_6_here>
         q : out std_logic
     );
 end <entity_name_here>;
@@ -24,7 +24,7 @@ end <entity_name_here>;
 architecture behavioral_<entity_name_here> of <entity_name_here> is
 
 USE_ASYNC_RESET_BLOCK: if use_async_reset = '1' generate 
-    process(clk, reset_n)
+    process(clk, <reset_name_here>)
     begin
         <test_reset_here>
             q <= '0';
@@ -35,7 +35,7 @@ USE_ASYNC_RESET_BLOCK: if use_async_reset = '1' generate
 end generate;
 
 USE_SYNC_RESET_BLOCK: if use_async_reset = '0' generate
-    process(clk, reset_n)
+    process(clk, <reset_name_here>)
     begin
         if rising_edge(clk) then
             <test_reset_here>

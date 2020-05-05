@@ -50,8 +50,8 @@ def use_input_3(**kwargs):
 
 def reset_name(**kwargs):
     if kwargs["posReset"]:
-        return "reset : in std_logic;"
-    return "reset_n : in std_logic;"
+        return "reset"
+    return "reset_n"
 
 
 def test_reset(**kwargs):

@@ -8,8 +8,8 @@ entity registeredAND1 is
     );
     port (
         clk : in std_logic;
-        reset_n : in std_logic;;
-        a0 : in std_logic;;
+        reset_n : in std_logic;
+        a0 : in std_logic;
         q : out std_logic
     );
 end registeredAND1;
@@ -54,9 +54,9 @@ entity registeredAND2 is
     );
     port (
         clk : in std_logic;
-        reset_n : in std_logic;;
-        a0 : in std_logic;;
-        a1 : in std_logic;;
+        reset_n : in std_logic;
+        a0 : in std_logic;
+        a1 : in std_logic;
         q : out std_logic
     );
 end registeredAND2;
@@ -101,10 +101,10 @@ entity registeredAND3 is
     );
     port (
         clk : in std_logic;
-        reset_n : in std_logic;;
-        a0 : in std_logic;;
-        a1 : in std_logic;;
-        a2 : in std_logic;;
+        reset_n : in std_logic;
+        a0 : in std_logic;
+        a1 : in std_logic;
+        a2 : in std_logic;
         q : out std_logic
     );
 end registeredAND3;
@@ -149,11 +149,11 @@ entity registeredAND4 is
     );
     port (
         clk : in std_logic;
-        reset_n : in std_logic;;
-        a0 : in std_logic;;
-        a1 : in std_logic;;
-        a2 : in std_logic;;
-        a3 : in std_logic;;
+        reset_n : in std_logic;
+        a0 : in std_logic;
+        a1 : in std_logic;
+        a2 : in std_logic;
+        a3 : in std_logic;
         q : out std_logic
     );
 end registeredAND4;
@@ -198,12 +198,12 @@ entity registeredAND5 is
     );
     port (
         clk : in std_logic;
-        reset_n : in std_logic;;
-        a0 : in std_logic;;
-        a1 : in std_logic;;
-        a2 : in std_logic;;
-        a3 : in std_logic;;
-        a4 : in std_logic;;
+        reset_n : in std_logic;
+        a0 : in std_logic;
+        a1 : in std_logic;
+        a2 : in std_logic;
+        a3 : in std_logic;
+        a4 : in std_logic;
         q : out std_logic
     );
 end registeredAND5;
@@ -248,13 +248,13 @@ entity registeredAND6 is
     );
     port (
         clk : in std_logic;
-        reset_n : in std_logic;;
-        a0 : in std_logic;;
-        a1 : in std_logic;;
-        a2 : in std_logic;;
-        a3 : in std_logic;;
-        a4 : in std_logic;;
-        a5 : in std_logic;;
+        reset_n : in std_logic;
+        a0 : in std_logic;
+        a1 : in std_logic;
+        a2 : in std_logic;
+        a3 : in std_logic;
+        a4 : in std_logic;
+        a5 : in std_logic;
         q : out std_logic
     );
 end registeredAND6;
@@ -299,14 +299,14 @@ entity registeredAND7 is
     );
     port (
         clk : in std_logic;
-        reset_n : in std_logic;;
-        a0 : in std_logic;;
-        a1 : in std_logic;;
-        a2 : in std_logic;;
-        a3 : in std_logic;;
-        a4 : in std_logic;;
-        a5 : in std_logic;;
-        a6 : in std_logic;;
+        reset_n : in std_logic;
+        a0 : in std_logic;
+        a1 : in std_logic;
+        a2 : in std_logic;
+        a3 : in std_logic;
+        a4 : in std_logic;
+        a5 : in std_logic;
+        a6 : in std_logic;
         q : out std_logic
     );
 end registeredAND7;
@@ -351,8 +351,8 @@ entity registeredOR1 is
     );
     port (
         clk : in std_logic;
-        reset_n : in std_logic;;
-        a0 : in std_logic;;
+        reset_n : in std_logic;
+        a0 : in std_logic;
         q : out std_logic
     );
 end registeredOR1;
@@ -397,9 +397,9 @@ entity registeredOR2 is
     );
     port (
         clk : in std_logic;
-        reset_n : in std_logic;;
-        a0 : in std_logic;;
-        a1 : in std_logic;;
+        reset_n : in std_logic;
+        a0 : in std_logic;
+        a1 : in std_logic;
         q : out std_logic
     );
 end registeredOR2;
@@ -444,10 +444,10 @@ entity registeredOR3 is
     );
     port (
         clk : in std_logic;
-        reset_n : in std_logic;;
-        a0 : in std_logic;;
-        a1 : in std_logic;;
-        a2 : in std_logic;;
+        reset_n : in std_logic;
+        a0 : in std_logic;
+        a1 : in std_logic;
+        a2 : in std_logic;
         q : out std_logic
     );
 end registeredOR3;
@@ -492,11 +492,11 @@ entity registeredOR4 is
     );
     port (
         clk : in std_logic;
-        reset_n : in std_logic;;
-        a0 : in std_logic;;
-        a1 : in std_logic;;
-        a2 : in std_logic;;
-        a3 : in std_logic;;
+        reset_n : in std_logic;
+        a0 : in std_logic;
+        a1 : in std_logic;
+        a2 : in std_logic;
+        a3 : in std_logic;
         q : out std_logic
     );
 end registeredOR4;
@@ -541,12 +541,12 @@ entity registeredOR5 is
     );
     port (
         clk : in std_logic;
-        reset_n : in std_logic;;
-        a0 : in std_logic;;
-        a1 : in std_logic;;
-        a2 : in std_logic;;
-        a3 : in std_logic;;
-        a4 : in std_logic;;
+        reset_n : in std_logic;
+        a0 : in std_logic;
+        a1 : in std_logic;
+        a2 : in std_logic;
+        a3 : in std_logic;
+        a4 : in std_logic;
         q : out std_logic
     );
 end registeredOR5;
@@ -591,13 +591,13 @@ entity registeredOR6 is
     );
     port (
         clk : in std_logic;
-        reset_n : in std_logic;;
-        a0 : in std_logic;;
-        a1 : in std_logic;;
-        a2 : in std_logic;;
-        a3 : in std_logic;;
-        a4 : in std_logic;;
-        a5 : in std_logic;;
+        reset_n : in std_logic;
+        a0 : in std_logic;
+        a1 : in std_logic;
+        a2 : in std_logic;
+        a3 : in std_logic;
+        a4 : in std_logic;
+        a5 : in std_logic;
         q : out std_logic
     );
 end registeredOR6;
@@ -642,14 +642,14 @@ entity registeredOR7 is
     );
     port (
         clk : in std_logic;
-        reset_n : in std_logic;;
-        a0 : in std_logic;;
-        a1 : in std_logic;;
-        a2 : in std_logic;;
-        a3 : in std_logic;;
-        a4 : in std_logic;;
-        a5 : in std_logic;;
-        a6 : in std_logic;;
+        reset_n : in std_logic;
+        a0 : in std_logic;
+        a1 : in std_logic;
+        a2 : in std_logic;
+        a3 : in std_logic;
+        a4 : in std_logic;
+        a5 : in std_logic;
+        a6 : in std_logic;
         q : out std_logic
     );
 end registeredOR7;
@@ -694,8 +694,8 @@ entity registeredNAND1 is
     );
     port (
         clk : in std_logic;
-        reset_n : in std_logic;;
-        a0 : in std_logic;;
+        reset_n : in std_logic;
+        a0 : in std_logic;
         q : out std_logic
     );
 end registeredNAND1;
@@ -740,9 +740,9 @@ entity registeredNAND2 is
     );
     port (
         clk : in std_logic;
-        reset_n : in std_logic;;
-        a0 : in std_logic;;
-        a1 : in std_logic;;
+        reset_n : in std_logic;
+        a0 : in std_logic;
+        a1 : in std_logic;
         q : out std_logic
     );
 end registeredNAND2;
@@ -787,10 +787,10 @@ entity registeredNAND3 is
     );
     port (
         clk : in std_logic;
-        reset_n : in std_logic;;
-        a0 : in std_logic;;
-        a1 : in std_logic;;
-        a2 : in std_logic;;
+        reset_n : in std_logic;
+        a0 : in std_logic;
+        a1 : in std_logic;
+        a2 : in std_logic;
         q : out std_logic
     );
 end registeredNAND3;
@@ -835,11 +835,11 @@ entity registeredNAND4 is
     );
     port (
         clk : in std_logic;
-        reset_n : in std_logic;;
-        a0 : in std_logic;;
-        a1 : in std_logic;;
-        a2 : in std_logic;;
-        a3 : in std_logic;;
+        reset_n : in std_logic;
+        a0 : in std_logic;
+        a1 : in std_logic;
+        a2 : in std_logic;
+        a3 : in std_logic;
         q : out std_logic
     );
 end registeredNAND4;
@@ -884,12 +884,12 @@ entity registeredNAND5 is
     );
     port (
         clk : in std_logic;
-        reset_n : in std_logic;;
-        a0 : in std_logic;;
-        a1 : in std_logic;;
-        a2 : in std_logic;;
-        a3 : in std_logic;;
-        a4 : in std_logic;;
+        reset_n : in std_logic;
+        a0 : in std_logic;
+        a1 : in std_logic;
+        a2 : in std_logic;
+        a3 : in std_logic;
+        a4 : in std_logic;
         q : out std_logic
     );
 end registeredNAND5;
@@ -934,13 +934,13 @@ entity registeredNAND6 is
     );
     port (
         clk : in std_logic;
-        reset_n : in std_logic;;
-        a0 : in std_logic;;
-        a1 : in std_logic;;
-        a2 : in std_logic;;
-        a3 : in std_logic;;
-        a4 : in std_logic;;
-        a5 : in std_logic;;
+        reset_n : in std_logic;
+        a0 : in std_logic;
+        a1 : in std_logic;
+        a2 : in std_logic;
+        a3 : in std_logic;
+        a4 : in std_logic;
+        a5 : in std_logic;
         q : out std_logic
     );
 end registeredNAND6;
@@ -985,14 +985,14 @@ entity registeredNAND7 is
     );
     port (
         clk : in std_logic;
-        reset_n : in std_logic;;
-        a0 : in std_logic;;
-        a1 : in std_logic;;
-        a2 : in std_logic;;
-        a3 : in std_logic;;
-        a4 : in std_logic;;
-        a5 : in std_logic;;
-        a6 : in std_logic;;
+        reset_n : in std_logic;
+        a0 : in std_logic;
+        a1 : in std_logic;
+        a2 : in std_logic;
+        a3 : in std_logic;
+        a4 : in std_logic;
+        a5 : in std_logic;
+        a6 : in std_logic;
         q : out std_logic
     );
 end registeredNAND7;
@@ -1037,8 +1037,8 @@ entity registeredNOR1 is
     );
     port (
         clk : in std_logic;
-        reset_n : in std_logic;;
-        a0 : in std_logic;;
+        reset_n : in std_logic;
+        a0 : in std_logic;
         q : out std_logic
     );
 end registeredNOR1;
@@ -1083,9 +1083,9 @@ entity registeredNOR2 is
     );
     port (
         clk : in std_logic;
-        reset_n : in std_logic;;
-        a0 : in std_logic;;
-        a1 : in std_logic;;
+        reset_n : in std_logic;
+        a0 : in std_logic;
+        a1 : in std_logic;
         q : out std_logic
     );
 end registeredNOR2;
@@ -1130,10 +1130,10 @@ entity registeredNOR3 is
     );
     port (
         clk : in std_logic;
-        reset_n : in std_logic;;
-        a0 : in std_logic;;
-        a1 : in std_logic;;
-        a2 : in std_logic;;
+        reset_n : in std_logic;
+        a0 : in std_logic;
+        a1 : in std_logic;
+        a2 : in std_logic;
         q : out std_logic
     );
 end registeredNOR3;
@@ -1178,11 +1178,11 @@ entity registeredNOR4 is
     );
     port (
         clk : in std_logic;
-        reset_n : in std_logic;;
-        a0 : in std_logic;;
-        a1 : in std_logic;;
-        a2 : in std_logic;;
-        a3 : in std_logic;;
+        reset_n : in std_logic;
+        a0 : in std_logic;
+        a1 : in std_logic;
+        a2 : in std_logic;
+        a3 : in std_logic;
         q : out std_logic
     );
 end registeredNOR4;
@@ -1227,12 +1227,12 @@ entity registeredNOR5 is
     );
     port (
         clk : in std_logic;
-        reset_n : in std_logic;;
-        a0 : in std_logic;;
-        a1 : in std_logic;;
-        a2 : in std_logic;;
-        a3 : in std_logic;;
-        a4 : in std_logic;;
+        reset_n : in std_logic;
+        a0 : in std_logic;
+        a1 : in std_logic;
+        a2 : in std_logic;
+        a3 : in std_logic;
+        a4 : in std_logic;
         q : out std_logic
     );
 end registeredNOR5;
@@ -1277,13 +1277,13 @@ entity registeredNOR6 is
     );
     port (
         clk : in std_logic;
-        reset_n : in std_logic;;
-        a0 : in std_logic;;
-        a1 : in std_logic;;
-        a2 : in std_logic;;
-        a3 : in std_logic;;
-        a4 : in std_logic;;
-        a5 : in std_logic;;
+        reset_n : in std_logic;
+        a0 : in std_logic;
+        a1 : in std_logic;
+        a2 : in std_logic;
+        a3 : in std_logic;
+        a4 : in std_logic;
+        a5 : in std_logic;
         q : out std_logic
     );
 end registeredNOR6;
@@ -1328,14 +1328,14 @@ entity registeredNOR7 is
     );
     port (
         clk : in std_logic;
-        reset_n : in std_logic;;
-        a0 : in std_logic;;
-        a1 : in std_logic;;
-        a2 : in std_logic;;
-        a3 : in std_logic;;
-        a4 : in std_logic;;
-        a5 : in std_logic;;
-        a6 : in std_logic;;
+        reset_n : in std_logic;
+        a0 : in std_logic;
+        a1 : in std_logic;
+        a2 : in std_logic;
+        a3 : in std_logic;
+        a4 : in std_logic;
+        a5 : in std_logic;
+        a6 : in std_logic;
         q : out std_logic
     );
 end registeredNOR7;
@@ -1380,8 +1380,8 @@ entity registeredXOR1 is
     );
     port (
         clk : in std_logic;
-        reset_n : in std_logic;;
-        a0 : in std_logic;;
+        reset_n : in std_logic;
+        a0 : in std_logic;
         q : out std_logic
     );
 end registeredXOR1;
@@ -1426,9 +1426,9 @@ entity registeredXOR2 is
     );
     port (
         clk : in std_logic;
-        reset_n : in std_logic;;
-        a0 : in std_logic;;
-        a1 : in std_logic;;
+        reset_n : in std_logic;
+        a0 : in std_logic;
+        a1 : in std_logic;
         q : out std_logic
     );
 end registeredXOR2;
@@ -1473,10 +1473,10 @@ entity registeredXOR3 is
     );
     port (
         clk : in std_logic;
-        reset_n : in std_logic;;
-        a0 : in std_logic;;
-        a1 : in std_logic;;
-        a2 : in std_logic;;
+        reset_n : in std_logic;
+        a0 : in std_logic;
+        a1 : in std_logic;
+        a2 : in std_logic;
         q : out std_logic
     );
 end registeredXOR3;
@@ -1521,11 +1521,11 @@ entity registeredXOR4 is
     );
     port (
         clk : in std_logic;
-        reset_n : in std_logic;;
-        a0 : in std_logic;;
-        a1 : in std_logic;;
-        a2 : in std_logic;;
-        a3 : in std_logic;;
+        reset_n : in std_logic;
+        a0 : in std_logic;
+        a1 : in std_logic;
+        a2 : in std_logic;
+        a3 : in std_logic;
         q : out std_logic
     );
 end registeredXOR4;
@@ -1570,12 +1570,12 @@ entity registeredXOR5 is
     );
     port (
         clk : in std_logic;
-        reset_n : in std_logic;;
-        a0 : in std_logic;;
-        a1 : in std_logic;;
-        a2 : in std_logic;;
-        a3 : in std_logic;;
-        a4 : in std_logic;;
+        reset_n : in std_logic;
+        a0 : in std_logic;
+        a1 : in std_logic;
+        a2 : in std_logic;
+        a3 : in std_logic;
+        a4 : in std_logic;
         q : out std_logic
     );
 end registeredXOR5;
@@ -1620,13 +1620,13 @@ entity registeredXOR6 is
     );
     port (
         clk : in std_logic;
-        reset_n : in std_logic;;
-        a0 : in std_logic;;
-        a1 : in std_logic;;
-        a2 : in std_logic;;
-        a3 : in std_logic;;
-        a4 : in std_logic;;
-        a5 : in std_logic;;
+        reset_n : in std_logic;
+        a0 : in std_logic;
+        a1 : in std_logic;
+        a2 : in std_logic;
+        a3 : in std_logic;
+        a4 : in std_logic;
+        a5 : in std_logic;
         q : out std_logic
     );
 end registeredXOR6;
@@ -1671,14 +1671,14 @@ entity registeredXOR7 is
     );
     port (
         clk : in std_logic;
-        reset_n : in std_logic;;
-        a0 : in std_logic;;
-        a1 : in std_logic;;
-        a2 : in std_logic;;
-        a3 : in std_logic;;
-        a4 : in std_logic;;
-        a5 : in std_logic;;
-        a6 : in std_logic;;
+        reset_n : in std_logic;
+        a0 : in std_logic;
+        a1 : in std_logic;
+        a2 : in std_logic;
+        a3 : in std_logic;
+        a4 : in std_logic;
+        a5 : in std_logic;
+        a6 : in std_logic;
         q : out std_logic
     );
 end registeredXOR7;
