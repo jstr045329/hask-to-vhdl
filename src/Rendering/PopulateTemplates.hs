@@ -65,11 +65,21 @@ getWrappedBitRange :: Width -> String
 getWrappedBitRange w = "(" ++ (getBitRange w) ++ ")"
 
 
+wrapGenericSection :: [String] -> [String]
+wrapGenericSection [] = []
+wrapGenericSection los = ["generic ("] ++ (zipTab los) ++ [");"]
+
+
+wrapPortSection :: [String] -> [String]
+wrapPortSection [] = []
+wrapPortSection los = ["port ("] ++ (zipTab los) ++ [");"]
+
+
 populateEntityTemplate :: [String] -> [String] -> [String] -> [String] -> Settings -> [String]
 populateEntityTemplate genericDecs portDecs signalDecs logic settings =
     (entityHeader [] settings) ++
-    (zipTab genericDecs) ++ 
-    (zipTab portDecs) ++ 
+    (zipTab (wrapGenericSection genericDecs)) ++ 
+    (zipTab (wrapPortSection portDecs)) ++ 
     (entityFooter [] settings) ++ 
     (architectureHeader [] settings) ++ 
     (zipTab signalDecs) ++ 
