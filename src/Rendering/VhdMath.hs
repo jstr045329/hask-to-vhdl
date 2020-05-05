@@ -27,7 +27,7 @@ getRightSide (Assignment _ x) = x
 
 
 assignment2Str :: Assignment -> String
-assignment2Str (Assignment i1 i2) = (nomen i1) ++ (assignmentOperator i1) ++ (nomen i2)
+assignment2Str (Assignment i1 i2) = (nomen i1) ++ (assignmentOperator i1) ++ (nomen i2) ++ ";"
 
 
 assignBatch :: [Assignment] -> [String]
