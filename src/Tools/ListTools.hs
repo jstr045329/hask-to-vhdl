@@ -1,6 +1,12 @@
 module Tools.ListTools where
 
 
+skipN :: [a] -> Int -> [a]
+skipN [] _ = []
+skipN someList 0 = someList
+skipN someList n = skipN (tail someList) (n-1)
+
+
 dropLast :: [a] -> [a]
 dropLast someList
     | length someList == 0 = []
