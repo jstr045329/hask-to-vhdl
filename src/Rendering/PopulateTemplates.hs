@@ -2,6 +2,7 @@ module Rendering.PopulateTemplates where
 import Data.List
 import Tools.WhiteSpaceTools
 import Rendering.InfoTypes
+import Tools.ListTools
 
 
 data SimType = UnboundedInt | BoundedInt | SimBool deriving (Eq, Show)
@@ -65,6 +66,16 @@ getWrappedBitRange :: Width -> String
 getWrappedBitRange w = "(" ++ (getBitRange w) ++ ")"
 
 
+-- Drop the last semicolon from a list of strings:
+skipLastSemicolon :: [String] -> [String]
+skipLastSemicolon [] = []
+skipLastSemicolon los
+    | (last (last los)) == ';' = (dropLast los) ++ [dropLast lastString]
+    | otherwise = los
+        where
+            lastString = last los
+
+
 wrapGenericSection :: [String] -> [String]
 wrapGenericSection [] = []
 wrapGenericSection los = ["generic ("] ++ (zipTab los) ++ [");"]
@@ -78,8 +89,8 @@ wrapPortSection los = ["port ("] ++ (zipTab los) ++ [");"]
 populateEntityTemplate :: [String] -> [String] -> [String] -> [String] -> Settings -> [String]
 populateEntityTemplate genericDecs portDecs signalDecs logic settings =
     (entityHeader [] settings) ++
-    (zipTab (wrapGenericSection genericDecs)) ++ 
-    (zipTab (wrapPortSection portDecs)) ++ 
+    (zipTab (wrapGenericSection (skipLastSemicolon genericDecs))) ++ 
+    (zipTab (wrapPortSection (skipLastSemicolon portDecs))) ++ 
     (entityFooter [] settings) ++ 
     (architectureHeader [] settings) ++ 
     (zipTab signalDecs) ++ 
