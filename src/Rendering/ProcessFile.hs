@@ -19,3 +19,7 @@ processFile fileNameIn fileNameOut businessLogic = do
                 writeFile fileNameOut y
 
 
+dump2File fileNameOut los = do
+    y <- glueStrings' los
+    writeFile fileNameOut y
+
