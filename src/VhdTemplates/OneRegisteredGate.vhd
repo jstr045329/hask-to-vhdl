@@ -23,6 +23,8 @@ end <entity_name_here>;
 
 architecture behavioral_<entity_name_here> of <entity_name_here> is
 
+begin
+
 USE_ASYNC_RESET_BLOCK: if use_async_reset = '1' generate 
     process(clk, <reset_name_here>)
     begin
@@ -35,7 +37,7 @@ USE_ASYNC_RESET_BLOCK: if use_async_reset = '1' generate
 end generate;
 
 USE_SYNC_RESET_BLOCK: if use_async_reset = '0' generate
-    process(clk, <reset_name_here>)
+    process(clk)
     begin
         if rising_edge(clk) then
             <test_reset_here>

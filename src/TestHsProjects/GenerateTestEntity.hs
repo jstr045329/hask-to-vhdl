@@ -8,6 +8,7 @@ import Rendering.InfoTypes
 import Rendering.VhdMath
 import Rendering.Process
 import Rendering.Literals
+import Rendering.RegisteredGates
 
 
 ----------------------------------------------------------------------------------------------------
@@ -163,6 +164,28 @@ p2 = easyProcess "joe_422_driver"
 -- TODO: make it possible for constant to set default/reset value for signals/ports
 
 
+----------------------------------------------------------------------------------------------------
+-- Test Counting of 1s:
+----------------------------------------------------------------------------------------------------
+bigSlList :: Int -> [Information]
+bigSlList 0 = []
+bigSlList n = [easySig ("some_bit_" ++ (show n)) StdLogic (Hard 1) []] ++ bigSlList (n-1) 
+
+bigSlvList :: Int -> [Information]
+bigSlvList 0 = []
+bigSlvList n = [easySig ("level_1_sums" ++ (show n)) StdLogic (Hard 4) []] ++ bigSlvList (n-1) 
+
+-- countOnes :: Information -> Information -> [Information] -> [Information] -> Int -> [String]
+testCountOnes :: [String]
+testCountOnes = countOnes clk rst (bigSlList 42) (bigSlvList 6) 0 
+
+bigSlvList2 :: Int -> [Information]
+bigSlvList2 0 = []
+bigSlvList2 n = [easySig ("level_2_sums" ++ (show n)) StdLogic (Hard 5) []] ++ bigSlvList2(n-1) 
+
+
+testAddCounts :: [String]
+testAddCounts = addCounts clk rst (bigSlvList 6) (bigSlvList2 3) 4 0
 
 
 

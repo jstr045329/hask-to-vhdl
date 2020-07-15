@@ -1,10 +1,10 @@
 cabal-version: 1.12
 
--- This file has been generated from package.yaml by hpack version 0.31.2.
+-- This file has been generated from package.yaml by hpack version 0.33.0.
 --
 -- see: https://github.com/sol/hpack
 --
--- hash: 564ea4a9fa40b0c5b8fe373548c302463e106bdd273507f6f0b98528148c98e7
+-- hash: 2a7de34eb98727ad56b7c2e6a71b125df69c27e3dc120bab67a407e8e3517f1d
 
 name:           hask-to-vhd
 version:        0.1.0.0
@@ -41,6 +41,7 @@ library
       Rendering.FilterUnique
       Rendering.Function
       Rendering.GenerateTestbench
+      Rendering.GlueSigNames
       Rendering.GlueStatements
       Rendering.InfoNames
       Rendering.InfoTypes
@@ -52,6 +53,7 @@ library
       Rendering.Procedure
       Rendering.Process
       Rendering.ProcessFile
+      Rendering.RegisteredGates
       Rendering.RegisterPorts
       Rendering.RenderPorts
       Rendering.SemicolonTools
@@ -74,6 +76,7 @@ library
     , bytestring >=0.10 && <1
     , hashable >=1.2 && <2
     , tasty >=1.2 && <2
+    , text >=1.2 && <2
     , unique
     , unordered-containers >=0.2 && <0.3
   default-language: Haskell2010
@@ -92,6 +95,7 @@ executable hask-to-vhd-exe
     , hashable >=1.2 && <2
     , hask-to-vhd
     , tasty >=1.2 && <2
+    , text >=1.2 && <2
     , unique
     , unordered-containers >=0.2 && <0.3
   default-language: Haskell2010
@@ -109,6 +113,7 @@ test-suite hask-to-vhd-test
     , hashable >=1.2 && <2
     , hask-to-vhd
     , tasty >=1.2 && <2
+    , text >=1.2 && <2
     , unique
     , unordered-containers >=0.2 && <0.3
   default-language: Haskell2010

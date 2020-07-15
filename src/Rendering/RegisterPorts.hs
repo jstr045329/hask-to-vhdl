@@ -2,7 +2,9 @@ module Rendering.RegisterPorts where
 import Rendering.InfoTypes
 import Tools.WhiteSpaceTools
 
-
+-- TODO: Write functions that wrap results from this function in an entity, and 
+-- handle component declaration. 
+-- TODO: Test results
 registerPorts :: Information -> Information -> [Information] -> [String]
 registerPorts clkIn rstIn portList = 
     ["process(" ++ (nomen clkIn) ++ ")"] ++ 

@@ -17,6 +17,8 @@ end registeredAND1;
 
 architecture behavioral_registeredAND1 of registeredAND1 is
 
+begin
+
 USE_ASYNC_RESET_BLOCK: if use_async_reset = '1' generate 
     process(clk, reset_n)
     begin
@@ -63,6 +65,8 @@ end registeredAND2;
 
 
 architecture behavioral_registeredAND2 of registeredAND2 is
+
+begin
 
 USE_ASYNC_RESET_BLOCK: if use_async_reset = '1' generate 
     process(clk, reset_n)
@@ -112,6 +116,8 @@ end registeredAND3;
 
 architecture behavioral_registeredAND3 of registeredAND3 is
 
+begin
+
 USE_ASYNC_RESET_BLOCK: if use_async_reset = '1' generate 
     process(clk, reset_n)
     begin
@@ -160,6 +166,8 @@ end registeredAND4;
 
 
 architecture behavioral_registeredAND4 of registeredAND4 is
+
+begin
 
 USE_ASYNC_RESET_BLOCK: if use_async_reset = '1' generate 
     process(clk, reset_n)
@@ -211,6 +219,8 @@ end registeredAND5;
 
 architecture behavioral_registeredAND5 of registeredAND5 is
 
+begin
+
 USE_ASYNC_RESET_BLOCK: if use_async_reset = '1' generate 
     process(clk, reset_n)
     begin
@@ -261,6 +271,8 @@ end registeredAND6;
 
 
 architecture behavioral_registeredAND6 of registeredAND6 is
+
+begin
 
 USE_ASYNC_RESET_BLOCK: if use_async_reset = '1' generate 
     process(clk, reset_n)
@@ -314,6 +326,8 @@ end registeredAND7;
 
 architecture behavioral_registeredAND7 of registeredAND7 is
 
+begin
+
 USE_ASYNC_RESET_BLOCK: if use_async_reset = '1' generate 
     process(clk, reset_n)
     begin
@@ -359,6 +373,8 @@ end registeredOR1;
 
 
 architecture behavioral_registeredOR1 of registeredOR1 is
+
+begin
 
 USE_ASYNC_RESET_BLOCK: if use_async_reset = '1' generate 
     process(clk, reset_n)
@@ -406,6 +422,8 @@ end registeredOR2;
 
 
 architecture behavioral_registeredOR2 of registeredOR2 is
+
+begin
 
 USE_ASYNC_RESET_BLOCK: if use_async_reset = '1' generate 
     process(clk, reset_n)
@@ -455,6 +473,8 @@ end registeredOR3;
 
 architecture behavioral_registeredOR3 of registeredOR3 is
 
+begin
+
 USE_ASYNC_RESET_BLOCK: if use_async_reset = '1' generate 
     process(clk, reset_n)
     begin
@@ -503,6 +523,8 @@ end registeredOR4;
 
 
 architecture behavioral_registeredOR4 of registeredOR4 is
+
+begin
 
 USE_ASYNC_RESET_BLOCK: if use_async_reset = '1' generate 
     process(clk, reset_n)
@@ -554,6 +576,8 @@ end registeredOR5;
 
 architecture behavioral_registeredOR5 of registeredOR5 is
 
+begin
+
 USE_ASYNC_RESET_BLOCK: if use_async_reset = '1' generate 
     process(clk, reset_n)
     begin
@@ -604,6 +628,8 @@ end registeredOR6;
 
 
 architecture behavioral_registeredOR6 of registeredOR6 is
+
+begin
 
 USE_ASYNC_RESET_BLOCK: if use_async_reset = '1' generate 
     process(clk, reset_n)
@@ -657,6 +683,8 @@ end registeredOR7;
 
 architecture behavioral_registeredOR7 of registeredOR7 is
 
+begin
+
 USE_ASYNC_RESET_BLOCK: if use_async_reset = '1' generate 
     process(clk, reset_n)
     begin
@@ -702,6 +730,8 @@ end registeredNAND1;
 
 
 architecture behavioral_registeredNAND1 of registeredNAND1 is
+
+begin
 
 USE_ASYNC_RESET_BLOCK: if use_async_reset = '1' generate 
     process(clk, reset_n)
@@ -749,6 +779,8 @@ end registeredNAND2;
 
 
 architecture behavioral_registeredNAND2 of registeredNAND2 is
+
+begin
 
 USE_ASYNC_RESET_BLOCK: if use_async_reset = '1' generate 
     process(clk, reset_n)
@@ -798,6 +830,8 @@ end registeredNAND3;
 
 architecture behavioral_registeredNAND3 of registeredNAND3 is
 
+begin
+
 USE_ASYNC_RESET_BLOCK: if use_async_reset = '1' generate 
     process(clk, reset_n)
     begin
@@ -846,6 +880,8 @@ end registeredNAND4;
 
 
 architecture behavioral_registeredNAND4 of registeredNAND4 is
+
+begin
 
 USE_ASYNC_RESET_BLOCK: if use_async_reset = '1' generate 
     process(clk, reset_n)
@@ -897,6 +933,8 @@ end registeredNAND5;
 
 architecture behavioral_registeredNAND5 of registeredNAND5 is
 
+begin
+
 USE_ASYNC_RESET_BLOCK: if use_async_reset = '1' generate 
     process(clk, reset_n)
     begin
@@ -947,6 +985,8 @@ end registeredNAND6;
 
 
 architecture behavioral_registeredNAND6 of registeredNAND6 is
+
+begin
 
 USE_ASYNC_RESET_BLOCK: if use_async_reset = '1' generate 
     process(clk, reset_n)
@@ -1000,6 +1040,8 @@ end registeredNAND7;
 
 architecture behavioral_registeredNAND7 of registeredNAND7 is
 
+begin
+
 USE_ASYNC_RESET_BLOCK: if use_async_reset = '1' generate 
     process(clk, reset_n)
     begin
@@ -1045,6 +1087,8 @@ end registeredNOR1;
 
 
 architecture behavioral_registeredNOR1 of registeredNOR1 is
+
+begin
 
 USE_ASYNC_RESET_BLOCK: if use_async_reset = '1' generate 
     process(clk, reset_n)
@@ -1092,6 +1136,8 @@ end registeredNOR2;
 
 
 architecture behavioral_registeredNOR2 of registeredNOR2 is
+
+begin
 
 USE_ASYNC_RESET_BLOCK: if use_async_reset = '1' generate 
     process(clk, reset_n)
@@ -1141,6 +1187,8 @@ end registeredNOR3;
 
 architecture behavioral_registeredNOR3 of registeredNOR3 is
 
+begin
+
 USE_ASYNC_RESET_BLOCK: if use_async_reset = '1' generate 
     process(clk, reset_n)
     begin
@@ -1189,6 +1237,8 @@ end registeredNOR4;
 
 
 architecture behavioral_registeredNOR4 of registeredNOR4 is
+
+begin
 
 USE_ASYNC_RESET_BLOCK: if use_async_reset = '1' generate 
     process(clk, reset_n)
@@ -1240,6 +1290,8 @@ end registeredNOR5;
 
 architecture behavioral_registeredNOR5 of registeredNOR5 is
 
+begin
+
 USE_ASYNC_RESET_BLOCK: if use_async_reset = '1' generate 
     process(clk, reset_n)
     begin
@@ -1290,6 +1342,8 @@ end registeredNOR6;
 
 
 architecture behavioral_registeredNOR6 of registeredNOR6 is
+
+begin
 
 USE_ASYNC_RESET_BLOCK: if use_async_reset = '1' generate 
     process(clk, reset_n)
@@ -1343,6 +1397,8 @@ end registeredNOR7;
 
 architecture behavioral_registeredNOR7 of registeredNOR7 is
 
+begin
+
 USE_ASYNC_RESET_BLOCK: if use_async_reset = '1' generate 
     process(clk, reset_n)
     begin
@@ -1388,6 +1444,8 @@ end registeredXOR1;
 
 
 architecture behavioral_registeredXOR1 of registeredXOR1 is
+
+begin
 
 USE_ASYNC_RESET_BLOCK: if use_async_reset = '1' generate 
     process(clk, reset_n)
@@ -1436,6 +1494,8 @@ end registeredXOR2;
 
 architecture behavioral_registeredXOR2 of registeredXOR2 is
 
+begin
+
 USE_ASYNC_RESET_BLOCK: if use_async_reset = '1' generate 
     process(clk, reset_n)
     begin
@@ -1483,6 +1543,8 @@ end registeredXOR3;
 
 
 architecture behavioral_registeredXOR3 of registeredXOR3 is
+
+begin
 
 USE_ASYNC_RESET_BLOCK: if use_async_reset = '1' generate 
     process(clk, reset_n)
@@ -1533,6 +1595,8 @@ end registeredXOR4;
 
 architecture behavioral_registeredXOR4 of registeredXOR4 is
 
+begin
+
 USE_ASYNC_RESET_BLOCK: if use_async_reset = '1' generate 
     process(clk, reset_n)
     begin
@@ -1582,6 +1646,8 @@ end registeredXOR5;
 
 
 architecture behavioral_registeredXOR5 of registeredXOR5 is
+
+begin
 
 USE_ASYNC_RESET_BLOCK: if use_async_reset = '1' generate 
     process(clk, reset_n)
@@ -1634,6 +1700,8 @@ end registeredXOR6;
 
 architecture behavioral_registeredXOR6 of registeredXOR6 is
 
+begin
+
 USE_ASYNC_RESET_BLOCK: if use_async_reset = '1' generate 
     process(clk, reset_n)
     begin
@@ -1685,6 +1753,8 @@ end registeredXOR7;
 
 
 architecture behavioral_registeredXOR7 of registeredXOR7 is
+
+begin
 
 USE_ASYNC_RESET_BLOCK: if use_async_reset = '1' generate 
     process(clk, reset_n)
