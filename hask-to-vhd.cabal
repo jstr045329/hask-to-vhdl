@@ -4,7 +4,7 @@ cabal-version: 1.12
 --
 -- see: https://github.com/sol/hpack
 --
--- hash: 2a7de34eb98727ad56b7c2e6a71b125df69c27e3dc120bab67a407e8e3517f1d
+-- hash: fccb7d2e316ba14197a0e8213db8285356eba67843c0c7ff45e265496bd7de32
 
 name:           hask-to-vhd
 version:        0.1.0.0
@@ -34,7 +34,11 @@ library
       Parsing.PortExtractor
       Parsing.SensitivityScanner
       Parsing.TokenMatchingTools
+      Rendering.Assignment
       Rendering.BitCountingTools
+      Rendering.ClkRst
+      Rendering.Condition
+      Rendering.Count1s
       Rendering.DeclareGenerics
       Rendering.DeclarePorts
       Rendering.DeclareSignals
@@ -48,11 +52,13 @@ library
       Rendering.IntToBin
       Rendering.Literals
       Rendering.MajorityRules
+      Rendering.Percentage
       Rendering.PopulateTemplates
       Rendering.PortMap
       Rendering.Procedure
       Rendering.Process
       Rendering.ProcessFile
+      Rendering.RegGateOutputPack
       Rendering.RegisteredGates
       Rendering.RegisterPorts
       Rendering.RenderPorts
@@ -64,8 +70,10 @@ library
       TestHsProjects.GenerateTestEntity
       Tools.ListTools
       Tools.LogicTools
+      Tools.MathTools
       Tools.StringTools
       Tools.WhiteSpaceTools
+      Tools.XOrMore
   other-modules:
       Paths_hask_to_vhd
   hs-source-dirs:

@@ -1,10 +1,14 @@
 module Rendering.RegisteredGates where
+import Rendering.ClkRst
 import Rendering.InfoTypes
 import Rendering.GlueSigNames
+import Rendering.RegGateOutputPack
 import Tools.ListTools
+import Tools.MathTools
+import Tools.XOrMore
+import Tools.WhiteSpaceTools
 import qualified Data.Text as T
 import qualified Text.Printf as Pf
-import Tools.WhiteSpaceTools
 
 -- TODO: Add package declaration to output file
 
@@ -28,6 +32,9 @@ oneLine gateName numInputs clk rst sigList results =
     [(num2RegGate gateName numInputs) ++ " port map (" ++ (glue' clk rst sigList results) ++ ");"]
 
 
+inputsPerGate :: Int
+inputsPerGate = 3
+
 -- This function bites off up to 3 signals from the list of inputs, routes them to a 
 -- component (such as registeredNOR3), takes 1 signal from the results list and routes
 -- it to the output of the component (in this example, a 3-input NOR gate), and recurses
@@ -41,19 +48,107 @@ regGateMap gateName clk rst sigList results
     | otherwise = (oneLine gateName 3 clk rst sigList results) ++ 
                   (regGateMap gateName clk rst (skipN sigList 3) (tail results))
 
+-- TODO: Refactor regGateMap so that inputsPerGate can be anything.
 
 -- We can free ourselves from needing to know the exact number of intermediate signals
 -- by creating an infinite sequence. Note that since this list is infinite, you cannot
 -- rely on the 6 digit numbers staying 6 digits - unless you can guarantee that 
--- whatever this list is zipped has less than 1M things. 
+-- whatever this list is zipped with has less than 1M things. 
 intermediateSigs :: String -> Int -> [Information]
 intermediateSigs nameStub layerNum = 
-    [easyClockedSL s | s <- map (\n -> Pf.printf "%s_layer_%06d_intermed_%06d" nameStub layerNum (n :: Int)) [0..]]
+    [easyClockedSL s | s <- map (\n -> Pf.printf "%s_layer_%06d_output_%06d" nameStub layerNum (n :: Int)) [0..]]
 
 
 makeOneGateLayer :: String -> Information -> Information -> [Information] -> String -> Int -> [String]
 makeOneGateLayer gateName clk rst sigList resultNameStub layerNum =
     regGateMap gateName clk rst sigList (intermediateSigs resultNameStub layerNum)
+
+
+zeroOrOne :: Double -> Double
+zeroOrOne q
+    | (approxEqual (fromIntegral (floor q)) q) = 0 
+    | otherwise = 1
+
+
+-- Calculate the number of outputs a layer will need:
+--numOutputs :: (RealFrac a, Ord a, Num a, Num b, RealFrac b) => a -> a -> b
+numOutputs :: Int -> Int -> Int
+numOutputs inputSigs inputsPerLayer
+    | (inputSigs <= inputsPerLayer) = 1
+    | otherwise = round(fromIntegral(floor(quotient)) + (zeroOrOne quotient)) where
+        quotient = ((fromIntegral inputSigs) / (fromIntegral inputsPerLayer)) :: Double
+
+
+fullServiceRegGate :: String -> ClkRst -> [Information] -> Int -> Maybe RegGateOutputPack
+fullServiceRegGate _ _ [] _ = Nothing
+fullServiceRegGate gateName (ClkRst clk rst) sigList layerNum =
+    Just RegGateOutputPack {
+        vhdLines = makeOneGateLayer gateName clk rst newSignals gateName layerNum
+    ,   allSignals = take nOutputs newSignals
+    ,   myLayerNum = layerNum
+    ,   outputSignals = take nOutputs newSignals
+    ,   nextLayer = oneNewLayer
+    } where
+        nOutputs = numOutputs (length sigList) inputsPerGate
+        newSignals = intermediateSigs gateName layerNum
+        oneNewLayer = 
+            if (nOutputs == 1)
+                then Nothing
+                else fullServiceRegGate gateName (ClkRst clk rst) newSignals (layerNum+1)
+            
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-- TODO: PICK UP HERE: Flesh this out
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-- TODO: Refactor codebase to accept ClkRst in lieu of Information -> Information.
 
 -- TODO: PICK UP HERE: Write a function that recursively calls makeOneGateLayer until 
 -- length results == 1.
