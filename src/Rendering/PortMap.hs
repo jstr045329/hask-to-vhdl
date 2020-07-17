@@ -1,6 +1,7 @@
 module Rendering.PortMap where
 import Rendering.InfoTypes
 import Rendering.VhdMath
+import Rendering.Assignment
 import Tools.WhiteSpaceTools
 
 

@@ -295,7 +295,6 @@ datatypeToStr StdULogicVector WidthNotRelevant = "std_ulogic_vector"
 datatypeToStr Signed WidthNotSpecified   = "signed"
 datatypeToStr Signed WidthNotRelevant   = "signed"
 datatypeToStr Unsigned WidthNotSpecified   = "unsigned"
-datatypeToStr Unsigned WidthNotSpecified   = "unsigned"
 
 
 ----------------------------------------------------------------------------------------------------

@@ -1,4 +1,6 @@
 module Rendering.Process where
+import Rendering.Assignment
+import Rendering.Condition
 import Rendering.InfoTypes
 import Rendering.VhdMath
 import Tools.ListTools

@@ -5,6 +5,9 @@
 ----------------------------------------------------------------------------------------------------
 module TestHsProjects.GenerateTestEntity where
 import Rendering.InfoTypes
+import Rendering.Assignment
+import Rendering.Condition
+import Rendering.Count1s
 import Rendering.VhdMath
 import Rendering.Process
 import Rendering.Literals

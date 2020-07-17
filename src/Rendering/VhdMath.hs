@@ -1,63 +1,15 @@
 module Rendering.VhdMath where
 import Rendering.InfoTypes
+import Rendering.Percentage
+import Rendering.Condition
+import Rendering.Assignment
+
 -- TODO: Add functions that automatically convert std_logic_vector 
 -- to signed/unsigned for arithmetic, then convert the result back again.
 -- They should make sure the appropriate libraries are included.
 
 -- TODO: Add functions that automatically convert std_logic_vector
 -- to signed/unsigned for comparisons, then convert the result to std_logic.
-
-
-data Assignment =   Assignment Information Information 
-                    deriving (Eq, Show)
-
-
-assignmentOperator :: Information -> String
-assignmentOperator (Port _ _ _ _ _ _ _ _ _) = " <= "
-assignmentOperator (VhdSig _ _ _ _ _ _ _ _) = " <= "
-assignmentOperator _ = " := "
-
-
-getLeftSide :: Assignment -> Information
-getLeftSide (Assignment x _) = x
-
-
-getRightSide :: Assignment -> Information
-getRightSide (Assignment _ x) = x
-
-
-assignment2Str :: Assignment -> String
-assignment2Str (Assignment i1 i2) = (nomen i1) ++ (assignmentOperator i1) ++ (nomen i2) ++ ";"
-
-
-assignBatch :: [Assignment] -> [String]
-assignBatch aList = map assignment2Str aList
-
-
-----------------------------------------------------------------------------------------------------
---        Define a Type that Codifies Conditions as Well as Ways of Combining Conditions
-----------------------------------------------------------------------------------------------------
-data Condition = 
-                    -- Comparisons of Magnitude:
-                        JustTrue -- Always true. Useful for unconditional assignments
-                    |   GreaterT Information Information 
-                    |   LesserT Information Information
-                    |   EqualTo Information Information
-                    |   GreaterTEq Information Information
-                    |   LessTEq Information Information
-                    |   Princess [Condition] -- List of demands
-                    |   Pauper [Condition] -- Takes whatever it can get
-
-                    -- Logical Operations:
-                    |   Not Condition
-                    |   JustInfo Information -- Like a buffer. Allows Information to be wrapped in the Condition type.
-                    |   And [Condition]
-                    |   Or [Condition]
-                    |   Xor [Condition]
-                    |   Nand [Condition]
-                    |   Nor [Condition]
-                    |   Xnor [Condition]
-                        deriving (Eq, Show)
 
 
 liftInfo :: Condition -> Information
@@ -75,7 +27,10 @@ combineConditions cList gate
     | length cList == 1     = cond2Str (head cList)
     | otherwise             = cond2Str (head cList) ++ " " ++ gate ++ " " ++ combineConditions (tail cList) gate
 
-
+-- The following functions are intended for combining a small enough number of conditions
+-- that the resulting expression can realistically happen within 1 clock cycle. 
+-- If you need to combine a greater number of conditions, and therefore pipelining, 
+-- use RegisteredGates.hs.
 andConditions :: [Condition] -> String
 andConditions cList = combineConditions cList "and"
 
@@ -134,7 +89,7 @@ cond2Str (Princess cList) -- The Princess has a list of demands, which she ANDs 
     | length cList == 1 = cond2Str (head cList)
     | otherwise = (cond2Str (head cList)) ++ " and " ++ cond2Str (Princess (tail cList))
 
-cond2Str (Pauper cList) -- Beggars can't be choosers. This dude ORs conditions together. 
+cond2Str (Pauper cList) -- Beggars can't be choosers. This unfortunate soul ORs conditions together. 
     | cList == [] = ""
     | length cList == 1 = cond2Str (head cList)
     | otherwise = (cond2Str (head cList)) ++ " or " ++ cond2Str (Pauper (tail cList))

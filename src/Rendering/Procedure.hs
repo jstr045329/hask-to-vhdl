@@ -1,6 +1,7 @@
 module Rendering.Procedure where
 import Rendering.InfoTypes
 import Rendering.VhdMath
+import Rendering.Assignment
 import Tools.WhiteSpaceTools
 
 
