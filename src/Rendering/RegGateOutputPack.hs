@@ -4,11 +4,13 @@ import Rendering.InfoTypes
 ----------------------------------------------------------------------------------------------------
 --                          Define a Type to Convey Registered Gate Output
 ----------------------------------------------------------------------------------------------------
-data RegGateOutputPack = RegGateOutputPack {
+data RegGateOutputPack = 
+    TerminateRegGate |
+    RegGateOutputPack {
         vhdLines :: [String]
     ,   allSignals :: [Information]
     ,   outputSignals :: [Information]
     ,   myLayerNum :: Int
-    ,   nextLayer :: Maybe RegGateOutputPack
+    ,   nextLayer :: RegGateOutputPack
     } deriving (Eq, Show)
 

@@ -29,11 +29,12 @@ num2RegGate gateName numInputs = "registered" ++ T.unpack(T.toUpper (T.pack gate
 --      registeredAND1 port map (clk, rst, a, x);
 oneLine :: String -> Integer -> Information -> Information -> [Information] -> [Information] -> [String]
 oneLine gateName numInputs clk rst sigList results = 
-    [(num2RegGate gateName numInputs) ++ " port map (" ++ (glue' clk rst sigList results) ++ ");"]
+    [(num2RegGate gateName numInputs) ++ " port map (" ++ (glue' clk rst sigList results) ++ ");\n"]
 
 
 inputsPerGate :: Int
 inputsPerGate = 3
+
 
 -- This function bites off up to 3 signals from the list of inputs, routes them to a 
 -- component (such as registeredNOR3), takes 1 signal from the results list and routes
@@ -45,7 +46,7 @@ regGateMap gateName clk rst sigList results
     | (length sigList) == 0 = []
     | (length sigList) == 1 = oneLine gateName 1 clk rst sigList results
     | (length sigList) == 2 = oneLine gateName 2 clk rst sigList results
-    | otherwise = (oneLine gateName 3 clk rst sigList results) ++ 
+    | otherwise = (oneLine gateName 3 clk rst (take 3 sigList) results) ++ 
                   (regGateMap gateName clk rst (skipN sigList 3) (tail results))
 
 -- TODO: Refactor regGateMap so that inputsPerGate can be anything.
@@ -56,12 +57,21 @@ regGateMap gateName clk rst sigList results
 -- whatever this list is zipped with has less than 1M things. 
 intermediateSigs :: String -> Int -> [Information]
 intermediateSigs nameStub layerNum = 
-    [easyClockedSL s | s <- map (\n -> Pf.printf "%s_layer_%06d_output_%06d" nameStub layerNum (n :: Int)) [0..]]
+    [easyClockedSL s | s <- map (\n -> Pf.printf "%s_%04d_%04d" nameStub layerNum (n :: Int)) [0..]]
+
+
+-- Calculate the number of outputs a layer will need:
+numOutputs :: Int -> Int -> Int
+numOutputs inputSigs inputsPerLayer
+    | (inputSigs <= inputsPerLayer) = 1
+    | otherwise = round(fromIntegral(floor(quotient)) + (zeroOrOne quotient)) where
+        quotient = ((fromIntegral inputSigs) / (fromIntegral inputsPerLayer)) :: Double
 
 
 makeOneGateLayer :: String -> Information -> Information -> [Information] -> String -> Int -> [String]
 makeOneGateLayer gateName clk rst sigList resultNameStub layerNum =
-    regGateMap gateName clk rst sigList (intermediateSigs resultNameStub layerNum)
+    regGateMap gateName clk rst sigList (take nOutputs (intermediateSigs resultNameStub (layerNum+1))) where
+        nOutputs = numOutputs (length sigList) inputsPerGate
 
 
 zeroOrOne :: Double -> Double
@@ -70,55 +80,34 @@ zeroOrOne q
     | otherwise = 1
 
 
--- Calculate the number of outputs a layer will need:
---numOutputs :: (RealFrac a, Ord a, Num a, Num b, RealFrac b) => a -> a -> b
-numOutputs :: Int -> Int -> Int
-numOutputs inputSigs inputsPerLayer
-    | (inputSigs <= inputsPerLayer) = 1
-    | otherwise = round(fromIntegral(floor(quotient)) + (zeroOrOne quotient)) where
-        quotient = ((fromIntegral inputSigs) / (fromIntegral inputsPerLayer)) :: Double
-
-
-fullServiceRegGate :: String -> ClkRst -> [Information] -> Int -> Maybe RegGateOutputPack
-fullServiceRegGate _ _ [] _ = Nothing
+fullServiceRegGate :: String -> ClkRst -> [Information] -> Int -> RegGateOutputPack
+fullServiceRegGate _ _ [] _ = TerminateRegGate
 fullServiceRegGate gateName (ClkRst clk rst) sigList layerNum =
-    Just RegGateOutputPack {
-        vhdLines = makeOneGateLayer gateName clk rst newSignals gateName layerNum
+    RegGateOutputPack {
+        vhdLines = makeOneGateLayer gateName clk rst sigList gateName (layerNum-1)
     ,   allSignals = take nOutputs newSignals
     ,   myLayerNum = layerNum
     ,   outputSignals = take nOutputs newSignals
     ,   nextLayer = oneNewLayer
     } where
         nOutputs = numOutputs (length sigList) inputsPerGate
-        newSignals = intermediateSigs gateName layerNum
+        newSignals = take nOutputs (intermediateSigs gateName layerNum)
         oneNewLayer = 
             if (nOutputs == 1)
-                then Nothing
+                then TerminateRegGate
                 else fullServiceRegGate gateName (ClkRst clk rst) newSignals (layerNum+1)
-            
+ 
+ 
+renderFullService :: RegGateOutputPack -> [String]
+renderFullService TerminateRegGate = []
+renderFullService oneRegGate = (vhdLines oneRegGate) ++ renderFullService (nextLayer oneRegGate)
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
--- TODO: PICK UP HERE: Flesh this out
-
-
-
-
-
-
+getFirstLayer :: RegGateOutputPack -> RegGateOutputPack
+getFirstLayer TerminateRegGate = TerminateRegGate
+getFirstLayer x
+    | ((nextLayer x) == TerminateRegGate) = x
+    | otherwise = getFirstLayer x
 
 
 
