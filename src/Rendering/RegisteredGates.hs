@@ -10,8 +10,6 @@ import Tools.WhiteSpaceTools
 import qualified Data.Text as T
 import qualified Text.Printf as Pf
 
--- TODO: Add package declaration to output file
-
 ----------------------------------------------------------------------------------------------------
 --                             Generating Trees of Registered Gates
 ----------------------------------------------------------------------------------------------------
@@ -48,8 +46,6 @@ regGateMap gateName clk rst sigList results
     | (length sigList) == 2 = oneLine gateName 2 clk rst sigList results
     | otherwise = (oneLine gateName 3 clk rst (take 3 sigList) results) ++ 
                   (regGateMap gateName clk rst (skipN sigList 3) (tail results))
-
--- TODO: Refactor regGateMap so that inputsPerGate can be anything.
 
 -- We can free ourselves from needing to know the exact number of intermediate signals
 -- by creating an infinite sequence. Note that since this list is infinite, you cannot
@@ -97,89 +93,50 @@ fullServiceRegGate gateName (ClkRst clk rst) sigList layerNum =
                 then TerminateRegGate
                 else fullServiceRegGate gateName (ClkRst clk rst) newSignals (layerNum+1)
  
- 
+
+----------------------------------------------------------------------------------------------------
+--                           Descriptive Wrappers for Registered Gates
+----------------------------------------------------------------------------------------------------
+
+-- These functions give you easy-to-use names for fullServiceRegGate.
+-- They also initialize layerNum to 0 so that's 1 less thing to type.
+--
+-- In these functions:
+--      * inputList is a list of signals you want gated together. 
+--      * clkRst is an instance of ClkRst, which wraps up your clock and your reset. 
+--        See ClkRst.hs
+--
+-- After calling one of these functions, pass the result to renderFullService,
+-- below, to get the rendered VHDL. 
+
+andSigs :: ClkRst -> [Information] -> RegGateOutputPack
+andSigs clkRst inputList = fullServiceRegGate "and" clkRst inputList 0
+
+
+nandSigs :: ClkRst -> [Information] -> RegGateOutputPack
+nandSigs clkRst inputList = fullServiceRegGate "nand" clkRst inputList 0
+
+
+orSigs :: ClkRst -> [Information] -> RegGateOutputPack
+orSigs clkRst inputList = fullServiceRegGate "or" clkRst inputList 0
+
+
+xorSigs :: ClkRst -> [Information] -> RegGateOutputPack
+xorSigs clkRst inputList = fullServiceRegGate "xor" clkRst inputList 0
+
+
+norSigs :: ClkRst -> [Information] -> RegGateOutputPack
+norSigs clkRst inputList = fullServiceRegGate "nor" clkRst inputList 0
+
+
+----------------------------------------------------------------------------------------------------
+--                                Call This To Generated Code
+----------------------------------------------------------------------------------------------------
+
+-- Pass a RegGateOutputPack into this function, and it will recursively glean 
+-- the VHDL from every layer of RegGateOutputPack.
 renderFullService :: RegGateOutputPack -> [String]
 renderFullService TerminateRegGate = []
 renderFullService oneRegGate = (vhdLines oneRegGate) ++ renderFullService (nextLayer oneRegGate)
 
-
-getFirstLayer :: RegGateOutputPack -> RegGateOutputPack
-getFirstLayer TerminateRegGate = TerminateRegGate
-getFirstLayer x
-    | ((nextLayer x) == TerminateRegGate) = x
-    | otherwise = getFirstLayer x
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
--- TODO: Refactor codebase to accept ClkRst in lieu of Information -> Information.
-
--- TODO: PICK UP HERE: Write a function that recursively calls makeOneGateLayer until 
--- length results == 1.
-
--- sigList is a list of signals you want ANDed together. 
--- results is a list of signals that will accept the output.
-andSigs :: Information -> Information -> [Information] -> [Information] -> [String]
-andSigs clk rst sigList results = regGateMap "and" clk rst sigList results
-
-
--- sigList is a list of signals you want ORed together. 
--- results is a list of signals that will accept the output.
-orSigs :: Information -> Information -> [Information] -> [Information] -> [String]
-orSigs clk rst sigList results = regGateMap "or" clk rst sigList results
-
-
--- sigList is a list of signals you want NANDed together. 
--- results is a list of signals that will accept the output.
-nandSigs :: Information -> Information -> [Information] -> [Information] -> [String]
-nandSigs clk rst sigList results = regGateMap "nand" clk rst sigList results
-
-
--- sigList is a list of signals you want NORed together. 
--- results is a list of signals that will accept the output.
-norSigs :: Information -> Information -> [Information] -> [Information] -> [String]
-norSigs clk rst sigList results = regGateMap "nor" clk rst sigList results
-
-
--- sigList is a list of signals you want XORed together. 
--- results is a list of signals that will accept the output.
-xorSigs :: Information -> Information -> [Information] -> [Information] -> [String]
-xorSigs clk rst sigList results = regGateMap "xor" clk rst sigList results
-
-
-
-
--- TODO: PICK UP HERE: Write a function that figures out the intermediate signals
--- and calls the descriptive name. 
--- 
--- TODO: Write a function that takes results from above and dumps results into 
--- a new entity.
-
--- TODO: Figure out (emphasis = design) how I might get all the functions in a project
--- to create component declarations and dump them all in a single library.
 

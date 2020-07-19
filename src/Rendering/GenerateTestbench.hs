@@ -220,7 +220,7 @@ generateTestbench los =
     ["process"] ++
     ["begin"] ++
     ["    wait for clk_per*10;"] ++
-    ["    reset <= not reset;"] ++ -- TODO: Replace hard coded name with some kind of parsing
+    ["    reset <= not reset;"] ++ 
     ["    wait;"] ++
     ["end process;"] ++
     [""] ++

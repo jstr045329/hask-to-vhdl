@@ -98,7 +98,6 @@ unpackConditions cList =
         (c, aT, aF) = head cList
 
 
--- TODO: Make inclusion of rst in sensitivity list contingent on async reset
 renderProcess :: Process -> [String]
 renderProcess p = 
     [(processHeader (pNomen p) (sensitivityList p))] ++

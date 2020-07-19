@@ -194,22 +194,6 @@ def main(input_los, posReset):
             y.extend(populateTemplateOnce(input_los, pack, numInputs, posReset))
     return y
     
-# TODO: PICK UP HERE: Make entity names correct
-
-# TODO: Parse input for a random seed, & choose a default if none selected.
-
-# TODO: Add optional random 
-
-# TODO: Give user option to enable random trials, generate the same module 1000x,
-#       and choose the one with the lowest latency.
-
-# TODO: Give user the option to use random trials, and output a module with an 
-#       exact latency, with a limit on # of trials, wall time, etc.  
-#       This option makes it easier to achieve higher clock speeds. 
-
-# TODO: Give user the option to prepend 1+ input dffs for each bit, intentionally
-#       add 1+ delays to latency, and then prefer smaller numbers of inputs. 
-#       This option makes it easier to achieve higher clock speeds. 
 
 if __name__ == "__main__":
     newLib = main(inputLines, POS_RESET)

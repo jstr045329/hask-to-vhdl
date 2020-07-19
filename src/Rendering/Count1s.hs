@@ -28,7 +28,6 @@ countSome1s sigList
                   (countSome1s (tail sigList))
 
 
--- TODO: Provide option to assign generic use_async_reset
 mapOne1Counter :: Information -> Information -> [Information] -> Information -> Int -> [String]
 mapOne1Counter clk rst sigList oneResultSig instNum 
     | length sigList > 8 = error "Maximum 8 inputs supported at this time."
@@ -108,32 +107,5 @@ addCounts clk rst sigList results bitsIn instNum
 --    Step 3: Figure Out Number of Layers and
 --      Intermediate Signals in Each Layer
 --------------------------------------------------
-
--- TODO: Review this file and look for design patterns I can boil down.
---       It may be helpful to write functions for intermediate signal calculation
---       that work both for registered gates and addCounts. 
---
--- TODO: Write algorithms that figure out the intermediate signals for you.
---       Ultimately, I want to be able to call stuff like this:
---
---           makeBitCountingEntity sigList
---
---       and get a single instance of data containing everying. Or this:
---          
---           makeRegisteredAndModule sigList
---  
---       and get a similar result - 1 data structure containing everything. 
---
---       It may be helpful to create something like this:
---           data SpawnedModule [Information] [Information] [String]
---       which contains a list of ports, a list of signals, and a list of strings showing the
---       resulting VHDL. 
-
--- TODO: Write a module similar to this one, but accepts [Condition] and pipelines the
--- result. Call it PipelineConditions.
-
--- TODO: Go through this entire codebase, and convert all TODO's into action requests.
--- If project attracts volunteers, I might get some help!!! :)
-
 
 

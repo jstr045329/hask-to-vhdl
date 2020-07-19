@@ -50,8 +50,6 @@ data DataType =           StdLogic
                           deriving (Eq, Show)
 
 
-
--- TODO: Add highFanout :: Bool to Port & VhdSig
 data Information = 
                   Port {
                   nomen                 :: String
@@ -697,14 +695,6 @@ customResetVal x s = VhdSig {
             , comments = comments x
             , assertionLevel = assertionLevel x
             }
-
-
--- TODO: Flesh this out:
--- Parses a list of VHDL strings and extracts information about the signals
---      getSignalList :: [String] -> [VhdSig]
---      getSignalList [] = []
---      getSignalList (x:xs) = 
--- But only do that after dividing this project into a Rendering folder and a Parsing folder
 
 
 ----------------------------------------------------------------------------------------------------

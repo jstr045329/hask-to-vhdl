@@ -33,11 +33,5 @@ def main():
 
 if __name__ == "__main__":
     main()
-# TODO: PICK UP HERE: Make a Py script that generates a sequence of modules:
-#       Add two 4-bit numbers with 5-bit output,
-#       Add two 5-bit numbers with 6-bit output, etc.
-#       All with registered output.
-#       Then write the Haskell to stitch this all together.
-
 
 

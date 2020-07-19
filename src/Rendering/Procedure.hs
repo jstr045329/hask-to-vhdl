@@ -37,5 +37,4 @@ renderProcedure fDef =
     (zipTab (pLines fDef)) ++
     ["end procedure;"]
 
--- TODO: Decide if this file is worth fleshing out
 

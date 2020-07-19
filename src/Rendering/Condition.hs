@@ -37,11 +37,3 @@ data Condition =
                         deriving (Eq, Show)
 
 
--- TODO: Write rendering functions for Fuzzy Logic & Soft Operation Constructors, above. 
--- TODO: Go through all functions that accept the Condition type, and handle Fuzzy Logic.
-
-
--- The rendering of all this can all build on the Count 1's module. Therefore, think about 
--- whether to split off the Condition datatype into its own module to avoid mutual imports.
-
-

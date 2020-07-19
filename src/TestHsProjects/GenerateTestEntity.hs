@@ -95,7 +95,7 @@ p0 = Process {
             , pRst = rst
             , syncronousReset = True
             , clkEdge = Rising
-            , sensitivityList = [clk] -- TODO: See if I can delete this field
+            , sensitivityList = [clk] 
             , inputSignals = []
             , variables = []
             , internalState = [x0, x1, x2, x3]
@@ -160,11 +160,6 @@ p2 = easyProcess "joe_422_driver"
 --                                   Create a Testbench
 ----------------------------------------------------------------------------------------------------
 
--- TODO: Make it possible for generic to be reset value for a signal or output
--- TODO: Make it possible for generic to be default value for a signal or port
--- TODO: Make it possible for generic to be width of signal or port
--- TODO: Make it possible for constant to set width for signal/port
--- TODO: make it possible for constant to set default/reset value for signals/ports
 
 
 ----------------------------------------------------------------------------------------------------

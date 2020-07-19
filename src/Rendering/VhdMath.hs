@@ -4,13 +4,6 @@ import Rendering.Percentage
 import Rendering.Condition
 import Rendering.Assignment
 
--- TODO: Add functions that automatically convert std_logic_vector 
--- to signed/unsigned for arithmetic, then convert the result back again.
--- They should make sure the appropriate libraries are included.
-
--- TODO: Add functions that automatically convert std_logic_vector
--- to signed/unsigned for comparisons, then convert the result to std_logic.
-
 
 liftInfo :: Condition -> Information
 liftInfo (JustInfo i) = i
@@ -93,13 +86,5 @@ cond2Str (Pauper cList) -- Beggars can't be choosers. This unfortunate soul ORs 
     | cList == [] = ""
     | length cList == 1 = cond2Str (head cList)
     | otherwise = (cond2Str (head cList)) ++ " or " ++ cond2Str (Pauper (tail cList))
-
-
--- TODO: It would be really handy to enable something like for loops that distribute computation over time.
--- But they are rendered as an FSM. That way, synthesis would be reliable. 
-
--- TODO: Write a library that mimics for loops, with one type representing the loop distributed over time,
--- and another type representing loop distributed across space. The former renders to an FSM; the latter
--- to a generate statement, function, or set of pipelined functions. 
 
 

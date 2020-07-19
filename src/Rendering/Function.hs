@@ -32,13 +32,6 @@ renderFunction fDef =
     ["end function;"]
 
 
--- TODO: Modify nomenIsFormatted in InfoTypes so that generics, constants, and literals do not
---       need _d0000
--- TODO: Add to InfoTypes functions that convert a signal to a variable,
---      signal to port, port to signal, etc. 
---      Not just the name, but the whole hashmap.
--- FIRST THOUGH verify I haven't already done that.
-
 getFuncInputList :: [Information] -> String
 getFuncInputList fInList
     | fInList == [] = ""

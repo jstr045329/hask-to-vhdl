@@ -156,8 +156,8 @@ containsSubstr someStr searchFor
 -- constrained, this function extracts the limits. 
 resolveConstrainedness :: [String] -> DataType
 resolveConstrainedness tokList
-    | elem "downto" (take 3 tokList)        = ConstrainedInt 0 0 -- todo: flesh this out
-    | elem "to" (take 3 tokList)            = ConstrainedInt 0 0 -- todo: flesh this out
+    | elem "downto" (take 3 tokList)        = ConstrainedInt 0 0 
+    | elem "to" (take 3 tokList)            = ConstrainedInt 0 0 
     | otherwise                             = UnconstrainedInt
 
 
@@ -329,17 +329,6 @@ isOutputName :: String -> Bool
 isOutputName s = (take 3 s) == "o__"
 
 
--- todo: Write a function that scans an entire entity and generates 
--- a report, but the report should be a data structure.
-
--- todo: You should be able to pass a port map or a generic map
--- into an entity wrapper (which may also generate double buffering)
--- and the wrapper routes whatever ports or generics in the way
--- you specify. It then takes all other ports/generics and routes
--- them through the wrapper.
-
-
-
 hasDelay :: String -> Bool
 hasDelay s = containsSubStr s "__d"
 
@@ -352,8 +341,5 @@ extractDelay :: String -> Maybe Integer
 extractDelay s
     | findDelayIdx s == Nothing = Nothing
     | otherwise = Just (read (skipNChars s (3 + (fromMaybe 0 (findDelayIdx s)))) :: Integer)
-
-
-
 
 

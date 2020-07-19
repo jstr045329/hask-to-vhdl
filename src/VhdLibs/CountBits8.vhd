@@ -579,4 +579,4 @@ USE_SYNC_RESET_BLOCK: if use_async_reset = '0' generate
 end generate;
 
 end behavioral_count1s;
--- TODO: Think about how many 4 bit numbers to add together in single module        
+

@@ -5,7 +5,6 @@ use IEEE.STD_LOGIC_1164.ALL;
 entity BitsAreEqual is
     generic (
         use_async_reset : std_logic := '1'
-        -- TODO: Test generate blocks on RegisteredGates before investing time in this one.
     );
     port (
         clk : in std_logic;
