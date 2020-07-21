@@ -1,5 +1,5 @@
 # Takes the template for counting bits and populates reset name & reset level.
-INPUT_FILENAME = "./CountBitsTemplate.vhd"
+INPUT_FILENAME = "../VhdTemplates/CountBitsTemplate.vhd"
 OUTPUT_FILENAME = "../VhdLibs/CountBits8.vhd"
 
 

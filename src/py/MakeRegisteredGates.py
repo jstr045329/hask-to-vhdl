@@ -2,7 +2,7 @@
 
 
 if __name__ == "__main__":
-    INPUT_FILE = "./OneRegisteredGate.vhd"
+    INPUT_FILE = "../VhdTemplates/OneRegisteredGate.vhd"
     OUTPUT_FILE = "../VhdLibs/RegisteredGatesPkg.vhd"
     POS_RESET = False
     with open(INPUT_FILE, 'r') as f:

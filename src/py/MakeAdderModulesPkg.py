@@ -1,6 +1,6 @@
 # Takes the template for counting bits and populates reset name & reset level.
 from os import linesep as eol
-INPUT_FILENAME = "./OneAdderTemplate.vhd"
+INPUT_FILENAME = "../VhdTemplates/OneAdderTemplate.vhd"
 OUTPUT_FILENAME = "../VhdLibs/AdderModulesPkg.vhd"
 ENTITY_STUB = "AddTwoNumbers_%04d_bits_in_%04d_bits_out"
 BITS_IN_START = 2
