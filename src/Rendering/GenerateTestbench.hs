@@ -94,8 +94,6 @@ generatePortMap instName los
             entChunk = skipNTokens (stopAtEnd (afterKeyword los ["entity"])) 4
             genMap = genDec2Map entChunk
             portMap = portDec2Map entChunk
-            
-
 
 
 isClock :: String -> Bool
@@ -208,7 +206,7 @@ generateTestbench los =
     ["begin"] ++
     [""] ++
     [""] ++
-    ["process"] ++
+    ["CLOCK_PROCESS: process"] ++
     ["begin"] ++
     ["    if sim_done /= '1' then"] ++
     ["        wait for clk_per/2;"] ++
@@ -217,7 +215,7 @@ generateTestbench los =
     ["end process;"] ++
     [""] ++
     [""] ++
-    ["process"] ++
+    ["STIM_PROCESS: process"] ++
     ["begin"] ++
     ["    wait for clk_per*10;"] ++
     ["    reset <= not reset;"] ++ 
