@@ -184,6 +184,14 @@ declareSignals los = declareBatch sigList where
         sigList = clockList ++ resetList ++ otherSigs
 
 
+resetStimSignals :: [String] -> [String]
+resetStimSignals [] = []
+resetStimSignals los = resetBatch stimSigs where
+        portList = removeClocks (removeResets (extractPorts los))
+        inputList = [x | x <- portList, Rendering.InfoTypes.isInput x]
+        stimSigs = map convertPort2Sig inputList
+
+
 generateTestbench :: [String] -> [String]
 generateTestbench los = 
     ["library ieee;"] ++
@@ -198,6 +206,7 @@ generateTestbench los =
     (glueStatements (generateComponentDec los)) ++ 
     ["",""] ++ 
     (declareSignals (tail (dropLast (extractDeclaration "port" los)))) ++
+    [";"] ++
     [""] ++
     ["constant clk_per : time := 10 ns;"] ++
     ["signal sim_done : std_logic := '0';"] ++
@@ -217,6 +226,7 @@ generateTestbench los =
     [""] ++
     ["STIM_PROCESS: process"] ++
     ["begin"] ++
+    (zipTab (resetStimSignals los)) ++ 
     ["    wait for clk_per*10;"] ++
     ["    reset <= not reset;"] ++ 
     ["    wait;"] ++
