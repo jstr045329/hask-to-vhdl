@@ -4,7 +4,7 @@ cabal-version: 1.12
 --
 -- see: https://github.com/sol/hpack
 --
--- hash: fccb7d2e316ba14197a0e8213db8285356eba67843c0c7ff45e265496bd7de32
+-- hash: 5107d192483e1023a04845f95cf7de67aae74ae3f2f2587267381ac7758e5eb7
 
 name:           hask-to-vhd
 version:        0.1.0.0
@@ -37,6 +37,7 @@ library
       Rendering.Assignment
       Rendering.BitCountingTools
       Rendering.ClkRst
+      Rendering.Clock
       Rendering.Condition
       Rendering.Count1s
       Rendering.DeclareGenerics
