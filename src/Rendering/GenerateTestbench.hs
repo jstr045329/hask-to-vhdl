@@ -7,6 +7,7 @@ import Rendering.InfoTypes
 import Rendering.RenderPorts
 import Rendering.GlueStatements
 import Tools.WhiteSpaceTools
+import Rendering.CommentTools
 
 
 dropLastIfNotEnd :: [String] -> [String]
@@ -46,11 +47,21 @@ addEndIfNotLast los
     | otherwise = los ++ ["end"]
 
 
+insertSemicolonBeforeEnd :: [String] -> [String]
+insertSemicolonBeforeEnd los
+    | last los == "end" = (dropLast los) ++ [";"] ++ ["end"]
+    | otherwise = los
+
+
 generateComponentDec :: [String] -> [String]
 generateComponentDec los
     | length (isolateEntityDec los) < 2 = []
     | otherwise = ["component"] ++ 
-                    (addEndIfNotLast (tail (dropLastIfNotEnd (isolateEntityDec los)))) ++ 
+                    (insertSemicolonBeforeEnd 
+                        (addEndIfNotLast 
+                        (tail 
+                        (dropLastIfNotEnd 
+                        (isolateEntityDec los))))) ++ 
                     ["component", ";"]
 
 
@@ -194,6 +205,7 @@ resetStimSignals los = resetBatch stimSigs where
 
 generateTestbench :: [String] -> [String]
 generateTestbench los = 
+    (commentBlock ["Testbench for " ++ (getEntityName los)]) ++ 
     ["library ieee;"] ++
     ["use ieee.std_logic_1164.all;"] ++
     ["use ieee.numeric_std.all;"] ++
@@ -206,7 +218,6 @@ generateTestbench los =
     (glueStatements (generateComponentDec los)) ++ 
     ["",""] ++ 
     (declareSignals (tail (dropLast (extractDeclaration "port" los)))) ++
-    [";"] ++
     [""] ++
     ["constant clk_per : time := 10 ns;"] ++
     ["signal sim_done : std_logic := '0';"] ++
@@ -215,6 +226,7 @@ generateTestbench los =
     ["begin"] ++
     [""] ++
     [""] ++
+    (commentBlock ["Boiler Plate"]) ++ 
     ["CLOCK_PROCESS: process"] ++
     ["begin"] ++
     ["    if sim_done /= '1' then"] ++
@@ -224,6 +236,7 @@ generateTestbench los =
     ["end process;"] ++
     [""] ++
     [""] ++
+    (commentBlock ["Stim Process"]) ++ 
     ["STIM_PROCESS: process"] ++
     ["begin"] ++
     (zipTab (resetStimSignals los)) ++ 
@@ -235,6 +248,7 @@ generateTestbench los =
     [""] ++
     [""] ++
     [""] ++
+    (commentBlock ["Unit Under Test"]) ++ 
     (generatePortMap "UUT" los) ++ 
     [""] ++
     [""] ++

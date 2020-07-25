@@ -4,7 +4,7 @@ cabal-version: 1.12
 --
 -- see: https://github.com/sol/hpack
 --
--- hash: 5107d192483e1023a04845f95cf7de67aae74ae3f2f2587267381ac7758e5eb7
+-- hash: e52ada8e8a11b417c6ad5525a50a2bb9ae15c8232c57e67284d8b02b82bc6925
 
 name:           hask-to-vhd
 version:        0.1.0.0
@@ -27,6 +27,7 @@ source-repository head
 
 library
   exposed-modules:
+      Cookbook.ShiftRegister
       Modification.AssignmentAligner
       Parsing.EntityReport
       Parsing.ExtractEntity
@@ -38,6 +39,7 @@ library
       Rendering.BitCountingTools
       Rendering.ClkRst
       Rendering.Clock
+      Rendering.CommentTools
       Rendering.Condition
       Rendering.Count1s
       Rendering.DeclareGenerics

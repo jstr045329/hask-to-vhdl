@@ -25,4 +25,10 @@ eol :: String
 eol = "\n"
 
 
+spacePad :: Int -> String -> String
+spacePad n s
+    | n == 0 = s
+    | otherwise = " " ++ (spacePad (n-1) s)
+
+
 
