@@ -10,3 +10,7 @@ import Rendering.InfoTypes
 -- over and over. Here is a type to wrap those up:
 data ClkRst = ClkRst Information Information deriving (Eq, Show)
 
+
+easyClkRst :: ClkRst
+easyClkRst = ClkRst easyClk easyRst
+
