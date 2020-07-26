@@ -185,7 +185,7 @@ removeClocks x = [i | i <- x, not (isClock (nomen i))]
 
 
 getPorts :: [String] -> [Information]
-getPorts = [x | x <- rawSignals, isPort x] where
+getPorts los = [x | x <- rawSignals, Rendering.InfoTypes.isPort x] where
     portList = extractPorts los
     rawSignals = map convertPort2Sig portList
     
@@ -247,10 +247,10 @@ generateTestbench los =
     ["begin"] ++
     (zipTab (resetStimSignals los)) ++ 
     ["    wait for clk_per*10;"] ++
---    ["    reset <= not reset;"] ++ 
-    -- Invert all resets:
+    -- Invert all resets
+    -- Typically use exactly one in practice. 
     (map (\oneRst -> "    " ++ (nomen oneRst) ++ " <= not " ++ (nomen oneRst) ++ ";")
-         (extractResets (getPorts los))) ++ 
+         (extractResets (Rendering.GenerateTestbench.getPorts los))) ++ 
     ["    wait;"] ++
     ["end process;"] ++
     [""] ++
