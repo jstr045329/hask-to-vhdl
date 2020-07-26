@@ -185,9 +185,9 @@ removeClocks x = [i | i <- x, not (isClock (nomen i))]
 
 
 getPorts :: [String] -> [Information]
-getPorts los = [x | x <- rawSignals, Rendering.InfoTypes.isPort x] where
+getPorts los = [x | x <- portList] where
+--getPorts los = [x | x <- portList, Rendering.InfoTypes.isPort x] where
     portList = extractPorts los
-    rawSignals = map convertPort2Sig portList
     
 
 declareSignals :: [String] -> [String]
@@ -219,7 +219,7 @@ generateTestbench los =
     ["entity " ++ (getEntityName los) ++ "_tb is"] ++
     ["end " ++ (getEntityName los) ++ "_tb;"] ++
     ["", ""] ++
-    ["architecture behavioral_" ++ (getEntityName los) ++ " of " ++ (getEntityName los) ++ " is"] ++
+    ["architecture behavioral_" ++ (getEntityName los) ++ "_tb of " ++ (getEntityName los) ++ "_tb is"] ++
     ["",""] ++ 
     (glueStatements (generateComponentDec los)) ++ 
     ["",""] ++ 
