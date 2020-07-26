@@ -184,23 +184,29 @@ removeClocks :: [Information] -> [Information]
 removeClocks x = [i | i <- x, not (isClock (nomen i))]
 
 
+getPorts :: [String] -> [Information]
+getPorts = [x | x <- rawSignals, isPort x] where
+    portList = extractPorts los
+    rawSignals = map convertPort2Sig portList
+    
+
 declareSignals :: [String] -> [String]
 declareSignals [] = []
 declareSignals los = declareBatch sigList where
-        portList = extractPorts los
-        rawSignals = map convertPort2Sig portList
-        clockList = extractClocks rawSignals
-        resetList = extractResets rawSignals
-        otherSigs = removeClocks (removeResets rawSignals)
-        sigList = clockList ++ resetList ++ otherSigs
+    portList = extractPorts los
+    rawSignals = map convertPort2Sig portList
+    clockList = extractClocks rawSignals
+    resetList = extractResets rawSignals
+    otherSigs = removeClocks (removeResets rawSignals)
+    sigList = clockList ++ resetList ++ otherSigs
 
 
 resetStimSignals :: [String] -> [String]
 resetStimSignals [] = []
 resetStimSignals los = resetBatch stimSigs where
-        portList = removeClocks (removeResets (extractPorts los))
-        inputList = [x | x <- portList, Rendering.InfoTypes.isInput x]
-        stimSigs = map convertPort2Sig inputList
+    portList = removeClocks (removeResets (extractPorts los))
+    inputList = [x | x <- portList, Rendering.InfoTypes.isInput x]
+    stimSigs = map convertPort2Sig inputList
 
 
 generateTestbench :: [String] -> [String]
@@ -213,7 +219,7 @@ generateTestbench los =
     ["entity " ++ (getEntityName los) ++ "_tb is"] ++
     ["end " ++ (getEntityName los) ++ "_tb;"] ++
     ["", ""] ++
-    ["architecture behavioral_" ++ (getEntityName los) ++ " is"] ++
+    ["architecture behavioral_" ++ (getEntityName los) ++ " of " ++ (getEntityName los) ++ " is"] ++
     ["",""] ++ 
     (glueStatements (generateComponentDec los)) ++ 
     ["",""] ++ 
@@ -241,7 +247,10 @@ generateTestbench los =
     ["begin"] ++
     (zipTab (resetStimSignals los)) ++ 
     ["    wait for clk_per*10;"] ++
-    ["    reset <= not reset;"] ++ 
+--    ["    reset <= not reset;"] ++ 
+    -- Invert all resets:
+    (map (\oneRst -> "    " ++ (nomen oneRst) ++ " <= not " ++ (nomen oneRst) ++ ";")
+         (extractResets (getPorts los))) ++ 
     ["    wait;"] ++
     ["end process;"] ++
     [""] ++
