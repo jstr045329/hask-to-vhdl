@@ -28,7 +28,7 @@ signal agg : std_logic_vector(3 downto 0);
 
 function count_bits(
     x : std_logic_vector(7 downto 0)
-    ) return std_logic_vector(3 downto 0) is
+    ) return std_logic_vector is
 variable y : std_logic_vector(3 downto 0);
 begin
     y := (others => '0');
