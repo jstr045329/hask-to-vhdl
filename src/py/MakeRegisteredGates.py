@@ -119,6 +119,54 @@ def glueNames(nameList, functionStr):
     return functionStr.join(nameList)
 
 
+TWO_INPUT_INFIX_OPERATORS = ["nand"]
+
+
+def wrapInSpaces(s):
+    return " " + s + " "
+
+
+def leftAssociateParens(s):
+    """Takes this:
+            x nand y nand z
+    And turns it into this:
+            ((x nand y) nand z)
+    In other words, it provides a precedence order for infix operators that are only defined
+    for 2 inputs."""
+    los = s.split()
+    if len(los) < 5:
+        # 3 is the minimum length at which this function will not cause an error.
+        # But 5 is the minimum length for which you would want to use this.
+        return None
+    y = []
+    numParens = 0
+    if los[1] in TWO_INPUT_INFIX_OPERATORS:
+        y.append("(")
+        numParens += 1
+    y.append(los[0])
+    y.append(wrapInSpaces(los[1]))
+    youWantToUseThis = False
+    for i in range(2, len(los)-1, 2):
+        thisTok = los[i] # Even numbered token. Should always be an input name.
+        nextTok = None
+        if len(los)-1 > i:
+            nextTok = los[i+1] # Odd numbered token. Should always be an infix operator.
+        if nextTok is not None and nextTok in TWO_INPUT_INFIX_OPERATORS:
+            y.append("(")
+            numParens += 1
+            youWantToUseThis = True
+        y.append(thisTok)
+        if nextTok is not None:
+            y.append(wrapInSpaces(nextTok))
+        else:
+            break
+    y.append(los[-1])
+    y.extend([")"]*numParens)
+    if not youWantToUseThis:
+        return None
+    return ''.join(y)
+
+
 def populateTemplateOnce(los, onePack, numInputs, posReset):
     y = []
 #    print(onePack)
@@ -132,18 +180,41 @@ def populateTemplateOnce(los, onePack, numInputs, posReset):
                 input_4 = numInputs > 4
                 input_5 = numInputs > 5
                 input_6 = numInputs > 6
-                nameList = ["a0"]
+                nameList = []
+                numParens = 0
+                infixOpDefFor2InputsOnly = False
+                if oneKey == "<insert_logic_here>" and onePack["<insert_logic_here>"]() in [" nand "]:
+                    infixOpDefFor2INputsOnly = True
+                nameList.append("a0")
                 if input_1:
-                    nameList.append("a1")    
+                    if infixOpDefFor2InputsOnly:
+                        nameList.append("(")
+                        numParens += 1
+                    nameList.append("a1")
                 if input_2:
+                    if infixOpDefFor2InputsOnly:
+                        nameList.append("(")
+                        numParens += 1
                     nameList.append("a2")    
                 if input_3:
+                    if infixOpDefFor2InputsOnly:
+                        nameList.append("(")
+                        numParens += 1
                     nameList.append("a3")    
                 if input_4:
+                    if infixOpDefFor2InputsOnly:
+                        nameList.append("(")
+                        numParens += 1
                     nameList.append("a4")    
                 if input_5:
+                    if infixOpDefFor2InputsOnly:
+                        nameList.append("(")
+                        numParens += 1
                     nameList.append("a5")    
                 if input_6:
+                    if infixOpDefFor2InputsOnly:
+                        nameList.append("(")
+                        numParens += 1
                     nameList.append("a6")    
                 
                 if oneKey == "<input_0_here>":
@@ -161,7 +232,12 @@ def populateTemplateOnce(los, onePack, numInputs, posReset):
                 elif oneKey == "<input_6_here>" and input_3:
                     line = line.replace(oneKey, "a6 : in std_logic;")
                 elif oneKey == "<insert_logic_here>":
-                    line = line.replace(oneKey, glueNames(nameList, onePack["<insert_logic_here>"]()))
+                    logicStr = glueNames(nameList, onePack["<insert_logic_here>"]())
+                    logicWithParens = leftAssociateParens(logicStr)
+                    if logicWithParens is not None:
+                        line = line.replace(oneKey, logicWithParens)
+                    else:
+                        line = line.replace(oneKey, logicStr)
                 elif oneKey == "<reset_name_here>":
                     line = line.replace(oneKey, reset_name(posReset=posReset))
                 elif oneKey == "<test_reset_here>":

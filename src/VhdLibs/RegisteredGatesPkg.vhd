@@ -31,7 +31,7 @@ USE_ASYNC_RESET_BLOCK: if use_async_reset = '1' generate
 end generate;
 
 USE_SYNC_RESET_BLOCK: if use_async_reset = '0' generate
-    process(clk, reset_n)
+    process(clk)
     begin
         if rising_edge(clk) then
             if reset_n = '0' then
@@ -80,7 +80,7 @@ USE_ASYNC_RESET_BLOCK: if use_async_reset = '1' generate
 end generate;
 
 USE_SYNC_RESET_BLOCK: if use_async_reset = '0' generate
-    process(clk, reset_n)
+    process(clk)
     begin
         if rising_edge(clk) then
             if reset_n = '0' then
@@ -130,7 +130,7 @@ USE_ASYNC_RESET_BLOCK: if use_async_reset = '1' generate
 end generate;
 
 USE_SYNC_RESET_BLOCK: if use_async_reset = '0' generate
-    process(clk, reset_n)
+    process(clk)
     begin
         if rising_edge(clk) then
             if reset_n = '0' then
@@ -181,7 +181,7 @@ USE_ASYNC_RESET_BLOCK: if use_async_reset = '1' generate
 end generate;
 
 USE_SYNC_RESET_BLOCK: if use_async_reset = '0' generate
-    process(clk, reset_n)
+    process(clk)
     begin
         if rising_edge(clk) then
             if reset_n = '0' then
@@ -233,7 +233,7 @@ USE_ASYNC_RESET_BLOCK: if use_async_reset = '1' generate
 end generate;
 
 USE_SYNC_RESET_BLOCK: if use_async_reset = '0' generate
-    process(clk, reset_n)
+    process(clk)
     begin
         if rising_edge(clk) then
             if reset_n = '0' then
@@ -286,7 +286,7 @@ USE_ASYNC_RESET_BLOCK: if use_async_reset = '1' generate
 end generate;
 
 USE_SYNC_RESET_BLOCK: if use_async_reset = '0' generate
-    process(clk, reset_n)
+    process(clk)
     begin
         if rising_edge(clk) then
             if reset_n = '0' then
@@ -340,7 +340,7 @@ USE_ASYNC_RESET_BLOCK: if use_async_reset = '1' generate
 end generate;
 
 USE_SYNC_RESET_BLOCK: if use_async_reset = '0' generate
-    process(clk, reset_n)
+    process(clk)
     begin
         if rising_edge(clk) then
             if reset_n = '0' then
@@ -388,7 +388,7 @@ USE_ASYNC_RESET_BLOCK: if use_async_reset = '1' generate
 end generate;
 
 USE_SYNC_RESET_BLOCK: if use_async_reset = '0' generate
-    process(clk, reset_n)
+    process(clk)
     begin
         if rising_edge(clk) then
             if reset_n = '0' then
@@ -437,7 +437,7 @@ USE_ASYNC_RESET_BLOCK: if use_async_reset = '1' generate
 end generate;
 
 USE_SYNC_RESET_BLOCK: if use_async_reset = '0' generate
-    process(clk, reset_n)
+    process(clk)
     begin
         if rising_edge(clk) then
             if reset_n = '0' then
@@ -487,7 +487,7 @@ USE_ASYNC_RESET_BLOCK: if use_async_reset = '1' generate
 end generate;
 
 USE_SYNC_RESET_BLOCK: if use_async_reset = '0' generate
-    process(clk, reset_n)
+    process(clk)
     begin
         if rising_edge(clk) then
             if reset_n = '0' then
@@ -538,7 +538,7 @@ USE_ASYNC_RESET_BLOCK: if use_async_reset = '1' generate
 end generate;
 
 USE_SYNC_RESET_BLOCK: if use_async_reset = '0' generate
-    process(clk, reset_n)
+    process(clk)
     begin
         if rising_edge(clk) then
             if reset_n = '0' then
@@ -590,7 +590,7 @@ USE_ASYNC_RESET_BLOCK: if use_async_reset = '1' generate
 end generate;
 
 USE_SYNC_RESET_BLOCK: if use_async_reset = '0' generate
-    process(clk, reset_n)
+    process(clk)
     begin
         if rising_edge(clk) then
             if reset_n = '0' then
@@ -643,7 +643,7 @@ USE_ASYNC_RESET_BLOCK: if use_async_reset = '1' generate
 end generate;
 
 USE_SYNC_RESET_BLOCK: if use_async_reset = '0' generate
-    process(clk, reset_n)
+    process(clk)
     begin
         if rising_edge(clk) then
             if reset_n = '0' then
@@ -697,7 +697,7 @@ USE_ASYNC_RESET_BLOCK: if use_async_reset = '1' generate
 end generate;
 
 USE_SYNC_RESET_BLOCK: if use_async_reset = '0' generate
-    process(clk, reset_n)
+    process(clk)
     begin
         if rising_edge(clk) then
             if reset_n = '0' then
@@ -745,7 +745,7 @@ USE_ASYNC_RESET_BLOCK: if use_async_reset = '1' generate
 end generate;
 
 USE_SYNC_RESET_BLOCK: if use_async_reset = '0' generate
-    process(clk, reset_n)
+    process(clk)
     begin
         if rising_edge(clk) then
             if reset_n = '0' then
@@ -794,7 +794,7 @@ USE_ASYNC_RESET_BLOCK: if use_async_reset = '1' generate
 end generate;
 
 USE_SYNC_RESET_BLOCK: if use_async_reset = '0' generate
-    process(clk, reset_n)
+    process(clk)
     begin
         if rising_edge(clk) then
             if reset_n = '0' then
@@ -838,19 +838,19 @@ USE_ASYNC_RESET_BLOCK: if use_async_reset = '1' generate
         if reset_n = '0' then
             q <= '0';
         elsif rising_edge(clk) then
-            q <= a0 nand a1 nand a2;
+            q <= (a0 nand (a1 nand a2));
         end if;
     end process;
 end generate;
 
 USE_SYNC_RESET_BLOCK: if use_async_reset = '0' generate
-    process(clk, reset_n)
+    process(clk)
     begin
         if rising_edge(clk) then
             if reset_n = '0' then
                 q <= '0';
             else
-                q <= a0 nand a1 nand a2;
+                q <= (a0 nand (a1 nand a2));
             end if;
         end if;
     end process;
@@ -889,19 +889,19 @@ USE_ASYNC_RESET_BLOCK: if use_async_reset = '1' generate
         if reset_n = '0' then
             q <= '0';
         elsif rising_edge(clk) then
-            q <= a0 nand a1 nand a2 nand a3;
+            q <= (a0 nand (a1 nand (a2 nand a3)));
         end if;
     end process;
 end generate;
 
 USE_SYNC_RESET_BLOCK: if use_async_reset = '0' generate
-    process(clk, reset_n)
+    process(clk)
     begin
         if rising_edge(clk) then
             if reset_n = '0' then
                 q <= '0';
             else
-                q <= a0 nand a1 nand a2 nand a3;
+                q <= (a0 nand (a1 nand (a2 nand a3)));
             end if;
         end if;
     end process;
@@ -941,19 +941,19 @@ USE_ASYNC_RESET_BLOCK: if use_async_reset = '1' generate
         if reset_n = '0' then
             q <= '0';
         elsif rising_edge(clk) then
-            q <= a0 nand a1 nand a2 nand a3 nand a4;
+            q <= (a0 nand (a1 nand (a2 nand (a3 nand a4))));
         end if;
     end process;
 end generate;
 
 USE_SYNC_RESET_BLOCK: if use_async_reset = '0' generate
-    process(clk, reset_n)
+    process(clk)
     begin
         if rising_edge(clk) then
             if reset_n = '0' then
                 q <= '0';
             else
-                q <= a0 nand a1 nand a2 nand a3 nand a4;
+                q <= (a0 nand (a1 nand (a2 nand (a3 nand a4))));
             end if;
         end if;
     end process;
@@ -994,19 +994,19 @@ USE_ASYNC_RESET_BLOCK: if use_async_reset = '1' generate
         if reset_n = '0' then
             q <= '0';
         elsif rising_edge(clk) then
-            q <= a0 nand a1 nand a2 nand a3 nand a4 nand a5;
+            q <= (a0 nand (a1 nand (a2 nand (a3 nand (a4 nand a5)))));
         end if;
     end process;
 end generate;
 
 USE_SYNC_RESET_BLOCK: if use_async_reset = '0' generate
-    process(clk, reset_n)
+    process(clk)
     begin
         if rising_edge(clk) then
             if reset_n = '0' then
                 q <= '0';
             else
-                q <= a0 nand a1 nand a2 nand a3 nand a4 nand a5;
+                q <= (a0 nand (a1 nand (a2 nand (a3 nand (a4 nand a5)))));
             end if;
         end if;
     end process;
@@ -1048,19 +1048,19 @@ USE_ASYNC_RESET_BLOCK: if use_async_reset = '1' generate
         if reset_n = '0' then
             q <= '0';
         elsif rising_edge(clk) then
-            q <= a0 nand a1 nand a2 nand a3 nand a4 nand a5 nand a6;
+            q <= (a0 nand (a1 nand (a2 nand (a3 nand (a4 nand (a5 nand a6))))));
         end if;
     end process;
 end generate;
 
 USE_SYNC_RESET_BLOCK: if use_async_reset = '0' generate
-    process(clk, reset_n)
+    process(clk)
     begin
         if rising_edge(clk) then
             if reset_n = '0' then
                 q <= '0';
             else
-                q <= a0 nand a1 nand a2 nand a3 nand a4 nand a5 nand a6;
+                q <= (a0 nand (a1 nand (a2 nand (a3 nand (a4 nand (a5 nand a6))))));
             end if;
         end if;
     end process;
@@ -1102,7 +1102,7 @@ USE_ASYNC_RESET_BLOCK: if use_async_reset = '1' generate
 end generate;
 
 USE_SYNC_RESET_BLOCK: if use_async_reset = '0' generate
-    process(clk, reset_n)
+    process(clk)
     begin
         if rising_edge(clk) then
             if reset_n = '0' then
@@ -1151,7 +1151,7 @@ USE_ASYNC_RESET_BLOCK: if use_async_reset = '1' generate
 end generate;
 
 USE_SYNC_RESET_BLOCK: if use_async_reset = '0' generate
-    process(clk, reset_n)
+    process(clk)
     begin
         if rising_edge(clk) then
             if reset_n = '0' then
@@ -1201,7 +1201,7 @@ USE_ASYNC_RESET_BLOCK: if use_async_reset = '1' generate
 end generate;
 
 USE_SYNC_RESET_BLOCK: if use_async_reset = '0' generate
-    process(clk, reset_n)
+    process(clk)
     begin
         if rising_edge(clk) then
             if reset_n = '0' then
@@ -1252,7 +1252,7 @@ USE_ASYNC_RESET_BLOCK: if use_async_reset = '1' generate
 end generate;
 
 USE_SYNC_RESET_BLOCK: if use_async_reset = '0' generate
-    process(clk, reset_n)
+    process(clk)
     begin
         if rising_edge(clk) then
             if reset_n = '0' then
@@ -1304,7 +1304,7 @@ USE_ASYNC_RESET_BLOCK: if use_async_reset = '1' generate
 end generate;
 
 USE_SYNC_RESET_BLOCK: if use_async_reset = '0' generate
-    process(clk, reset_n)
+    process(clk)
     begin
         if rising_edge(clk) then
             if reset_n = '0' then
@@ -1357,7 +1357,7 @@ USE_ASYNC_RESET_BLOCK: if use_async_reset = '1' generate
 end generate;
 
 USE_SYNC_RESET_BLOCK: if use_async_reset = '0' generate
-    process(clk, reset_n)
+    process(clk)
     begin
         if rising_edge(clk) then
             if reset_n = '0' then
@@ -1411,7 +1411,7 @@ USE_ASYNC_RESET_BLOCK: if use_async_reset = '1' generate
 end generate;
 
 USE_SYNC_RESET_BLOCK: if use_async_reset = '0' generate
-    process(clk, reset_n)
+    process(clk)
     begin
         if rising_edge(clk) then
             if reset_n = '0' then
@@ -1459,7 +1459,7 @@ USE_ASYNC_RESET_BLOCK: if use_async_reset = '1' generate
 end generate;
 
 USE_SYNC_RESET_BLOCK: if use_async_reset = '0' generate
-    process(clk, reset_n)
+    process(clk)
     begin
         if rising_edge(clk) then
             if reset_n = '0' then
@@ -1508,7 +1508,7 @@ USE_ASYNC_RESET_BLOCK: if use_async_reset = '1' generate
 end generate;
 
 USE_SYNC_RESET_BLOCK: if use_async_reset = '0' generate
-    process(clk, reset_n)
+    process(clk)
     begin
         if rising_edge(clk) then
             if reset_n = '0' then
@@ -1558,7 +1558,7 @@ USE_ASYNC_RESET_BLOCK: if use_async_reset = '1' generate
 end generate;
 
 USE_SYNC_RESET_BLOCK: if use_async_reset = '0' generate
-    process(clk, reset_n)
+    process(clk)
     begin
         if rising_edge(clk) then
             if reset_n = '0' then
@@ -1609,7 +1609,7 @@ USE_ASYNC_RESET_BLOCK: if use_async_reset = '1' generate
 end generate;
 
 USE_SYNC_RESET_BLOCK: if use_async_reset = '0' generate
-    process(clk, reset_n)
+    process(clk)
     begin
         if rising_edge(clk) then
             if reset_n = '0' then
@@ -1661,7 +1661,7 @@ USE_ASYNC_RESET_BLOCK: if use_async_reset = '1' generate
 end generate;
 
 USE_SYNC_RESET_BLOCK: if use_async_reset = '0' generate
-    process(clk, reset_n)
+    process(clk)
     begin
         if rising_edge(clk) then
             if reset_n = '0' then
@@ -1714,7 +1714,7 @@ USE_ASYNC_RESET_BLOCK: if use_async_reset = '1' generate
 end generate;
 
 USE_SYNC_RESET_BLOCK: if use_async_reset = '0' generate
-    process(clk, reset_n)
+    process(clk)
     begin
         if rising_edge(clk) then
             if reset_n = '0' then
@@ -1768,7 +1768,7 @@ USE_ASYNC_RESET_BLOCK: if use_async_reset = '1' generate
 end generate;
 
 USE_SYNC_RESET_BLOCK: if use_async_reset = '0' generate
-    process(clk, reset_n)
+    process(clk)
     begin
         if rising_edge(clk) then
             if reset_n = '0' then
