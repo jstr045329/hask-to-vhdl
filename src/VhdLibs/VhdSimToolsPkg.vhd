@@ -26,6 +26,8 @@ end component;
 ----------------------------------------------------------------------------------------------------
 --                                      Syncronous Delay
 ----------------------------------------------------------------------------------------------------
+-- These procedures allow you to wait a specified number of clks
+-- without the next event being off by 1 ps.
 procedure sync_wait_rising(
     signal clk : in std_logic;
     constant n : in integer
@@ -37,6 +39,11 @@ procedure sync_wait_falling(
     );
 
 
+-- These procedures allow you to strobe an enable signal (or anything
+-- else you might want) for 1 clk. They do not care whether signal
+-- is asserted high or asserted low. Technically you could use them 
+-- to de-assert a signal for 1 clk so long as the signal is asserted
+-- before calling the procedure.
 procedure strobe_rising(
     signal clk : in std_logic;
     signal en : inout std_logic
@@ -70,7 +77,7 @@ begin
     for i in 0 to n-1 loop
         wait until rising_edge(clk);
     end loop;
-end sync_wait;
+end sync_wait_rising;
 
 
 procedure sync_wait_falling(
@@ -81,7 +88,7 @@ begin
     for i in 0 to n-1 loop
         wait until falling_edge(clk);
     end loop;
-end sync_wait;
+end sync_wait_falling;
 
 
 -- Waits until a clock edge, then reverses en.
@@ -99,7 +106,7 @@ begin
     wait until rising_edge(clk);
     en <= not en;
     wait until rising_edge(clk);
-end strobe_2_clk;
+end strobe_rising;
 
 
 procedure strobe_falling(
@@ -111,7 +118,7 @@ begin
     wait until falling_edge(clk);
     en <= not en;
     wait until falling_edge(clk);
-end strobe_2_clk;
+end strobe_falling;
 
 
 end package body VhdSimToolsPkg ;
