@@ -31,7 +31,7 @@ USE_ASYNC_RESET_BLOCK: if use_async_reset = '1' generate
             q <= (others => '0');
         elsif rising_edge(clk) then
             q <= (others => '0');
-            q <= std_logic_vector(unsigned(a0) + unsigned(a1));
+            q <= std_logic_vector(unsigned('0' & a0) + unsigned('0' & a1));
         end if; 
     end process;
 end generate;
@@ -44,7 +44,7 @@ USE_SYNC_RESET_BLOCK: if use_async_reset = '0' generate
                 q <= (others => '0');
             else
                 q <= (others => '0');
-                q <= std_logic_vector(unsigned(a0) + unsigned(a1));
+                q <= std_logic_vector(unsigned('0' & a0) + unsigned('0' & a1));
             end if; 
         end if; 
     end process;
@@ -86,7 +86,7 @@ USE_ASYNC_RESET_BLOCK: if use_async_reset = '1' generate
             q <= (others => '0');
         elsif rising_edge(clk) then
             q <= (others => '0');
-            q <= std_logic_vector(unsigned(a0) + unsigned(a1));
+            q <= std_logic_vector(unsigned('0' & a0) + unsigned('0' & a1));
         end if; 
     end process;
 end generate;
@@ -99,7 +99,7 @@ USE_SYNC_RESET_BLOCK: if use_async_reset = '0' generate
                 q <= (others => '0');
             else
                 q <= (others => '0');
-                q <= std_logic_vector(unsigned(a0) + unsigned(a1));
+                q <= std_logic_vector(unsigned('0' & a0) + unsigned('0' & a1));
             end if; 
         end if; 
     end process;
@@ -141,7 +141,7 @@ USE_ASYNC_RESET_BLOCK: if use_async_reset = '1' generate
             q <= (others => '0');
         elsif rising_edge(clk) then
             q <= (others => '0');
-            q <= std_logic_vector(unsigned(a0) + unsigned(a1));
+            q <= std_logic_vector(unsigned('0' & a0) + unsigned('0' & a1));
         end if; 
     end process;
 end generate;
@@ -154,7 +154,7 @@ USE_SYNC_RESET_BLOCK: if use_async_reset = '0' generate
                 q <= (others => '0');
             else
                 q <= (others => '0');
-                q <= std_logic_vector(unsigned(a0) + unsigned(a1));
+                q <= std_logic_vector(unsigned('0' & a0) + unsigned('0' & a1));
             end if; 
         end if; 
     end process;
@@ -196,7 +196,7 @@ USE_ASYNC_RESET_BLOCK: if use_async_reset = '1' generate
             q <= (others => '0');
         elsif rising_edge(clk) then
             q <= (others => '0');
-            q <= std_logic_vector(unsigned(a0) + unsigned(a1));
+            q <= std_logic_vector(unsigned('0' & a0) + unsigned('0' & a1));
         end if; 
     end process;
 end generate;
@@ -209,7 +209,7 @@ USE_SYNC_RESET_BLOCK: if use_async_reset = '0' generate
                 q <= (others => '0');
             else
                 q <= (others => '0');
-                q <= std_logic_vector(unsigned(a0) + unsigned(a1));
+                q <= std_logic_vector(unsigned('0' & a0) + unsigned('0' & a1));
             end if; 
         end if; 
     end process;
@@ -251,7 +251,7 @@ USE_ASYNC_RESET_BLOCK: if use_async_reset = '1' generate
             q <= (others => '0');
         elsif rising_edge(clk) then
             q <= (others => '0');
-            q <= std_logic_vector(unsigned(a0) + unsigned(a1));
+            q <= std_logic_vector(unsigned('0' & a0) + unsigned('0' & a1));
         end if; 
     end process;
 end generate;
@@ -264,7 +264,7 @@ USE_SYNC_RESET_BLOCK: if use_async_reset = '0' generate
                 q <= (others => '0');
             else
                 q <= (others => '0');
-                q <= std_logic_vector(unsigned(a0) + unsigned(a1));
+                q <= std_logic_vector(unsigned('0' & a0) + unsigned('0' & a1));
             end if; 
         end if; 
     end process;
@@ -306,7 +306,7 @@ USE_ASYNC_RESET_BLOCK: if use_async_reset = '1' generate
             q <= (others => '0');
         elsif rising_edge(clk) then
             q <= (others => '0');
-            q <= std_logic_vector(unsigned(a0) + unsigned(a1));
+            q <= std_logic_vector(unsigned('0' & a0) + unsigned('0' & a1));
         end if; 
     end process;
 end generate;
@@ -319,7 +319,7 @@ USE_SYNC_RESET_BLOCK: if use_async_reset = '0' generate
                 q <= (others => '0');
             else
                 q <= (others => '0');
-                q <= std_logic_vector(unsigned(a0) + unsigned(a1));
+                q <= std_logic_vector(unsigned('0' & a0) + unsigned('0' & a1));
             end if; 
         end if; 
     end process;
@@ -361,7 +361,7 @@ USE_ASYNC_RESET_BLOCK: if use_async_reset = '1' generate
             q <= (others => '0');
         elsif rising_edge(clk) then
             q <= (others => '0');
-            q <= std_logic_vector(unsigned(a0) + unsigned(a1));
+            q <= std_logic_vector(unsigned('0' & a0) + unsigned('0' & a1));
         end if; 
     end process;
 end generate;
@@ -374,7 +374,7 @@ USE_SYNC_RESET_BLOCK: if use_async_reset = '0' generate
                 q <= (others => '0');
             else
                 q <= (others => '0');
-                q <= std_logic_vector(unsigned(a0) + unsigned(a1));
+                q <= std_logic_vector(unsigned('0' & a0) + unsigned('0' & a1));
             end if; 
         end if; 
     end process;
@@ -416,7 +416,7 @@ USE_ASYNC_RESET_BLOCK: if use_async_reset = '1' generate
             q <= (others => '0');
         elsif rising_edge(clk) then
             q <= (others => '0');
-            q <= std_logic_vector(unsigned(a0) + unsigned(a1));
+            q <= std_logic_vector(unsigned('0' & a0) + unsigned('0' & a1));
         end if; 
     end process;
 end generate;
@@ -429,7 +429,7 @@ USE_SYNC_RESET_BLOCK: if use_async_reset = '0' generate
                 q <= (others => '0');
             else
                 q <= (others => '0');
-                q <= std_logic_vector(unsigned(a0) + unsigned(a1));
+                q <= std_logic_vector(unsigned('0' & a0) + unsigned('0' & a1));
             end if; 
         end if; 
     end process;
@@ -471,7 +471,7 @@ USE_ASYNC_RESET_BLOCK: if use_async_reset = '1' generate
             q <= (others => '0');
         elsif rising_edge(clk) then
             q <= (others => '0');
-            q <= std_logic_vector(unsigned(a0) + unsigned(a1));
+            q <= std_logic_vector(unsigned('0' & a0) + unsigned('0' & a1));
         end if; 
     end process;
 end generate;
@@ -484,7 +484,7 @@ USE_SYNC_RESET_BLOCK: if use_async_reset = '0' generate
                 q <= (others => '0');
             else
                 q <= (others => '0');
-                q <= std_logic_vector(unsigned(a0) + unsigned(a1));
+                q <= std_logic_vector(unsigned('0' & a0) + unsigned('0' & a1));
             end if; 
         end if; 
     end process;
@@ -526,7 +526,7 @@ USE_ASYNC_RESET_BLOCK: if use_async_reset = '1' generate
             q <= (others => '0');
         elsif rising_edge(clk) then
             q <= (others => '0');
-            q <= std_logic_vector(unsigned(a0) + unsigned(a1));
+            q <= std_logic_vector(unsigned('0' & a0) + unsigned('0' & a1));
         end if; 
     end process;
 end generate;
@@ -539,7 +539,7 @@ USE_SYNC_RESET_BLOCK: if use_async_reset = '0' generate
                 q <= (others => '0');
             else
                 q <= (others => '0');
-                q <= std_logic_vector(unsigned(a0) + unsigned(a1));
+                q <= std_logic_vector(unsigned('0' & a0) + unsigned('0' & a1));
             end if; 
         end if; 
     end process;
@@ -581,7 +581,7 @@ USE_ASYNC_RESET_BLOCK: if use_async_reset = '1' generate
             q <= (others => '0');
         elsif rising_edge(clk) then
             q <= (others => '0');
-            q <= std_logic_vector(unsigned(a0) + unsigned(a1));
+            q <= std_logic_vector(unsigned('0' & a0) + unsigned('0' & a1));
         end if; 
     end process;
 end generate;
@@ -594,7 +594,7 @@ USE_SYNC_RESET_BLOCK: if use_async_reset = '0' generate
                 q <= (others => '0');
             else
                 q <= (others => '0');
-                q <= std_logic_vector(unsigned(a0) + unsigned(a1));
+                q <= std_logic_vector(unsigned('0' & a0) + unsigned('0' & a1));
             end if; 
         end if; 
     end process;
@@ -636,7 +636,7 @@ USE_ASYNC_RESET_BLOCK: if use_async_reset = '1' generate
             q <= (others => '0');
         elsif rising_edge(clk) then
             q <= (others => '0');
-            q <= std_logic_vector(unsigned(a0) + unsigned(a1));
+            q <= std_logic_vector(unsigned('0' & a0) + unsigned('0' & a1));
         end if; 
     end process;
 end generate;
@@ -649,7 +649,7 @@ USE_SYNC_RESET_BLOCK: if use_async_reset = '0' generate
                 q <= (others => '0');
             else
                 q <= (others => '0');
-                q <= std_logic_vector(unsigned(a0) + unsigned(a1));
+                q <= std_logic_vector(unsigned('0' & a0) + unsigned('0' & a1));
             end if; 
         end if; 
     end process;
@@ -691,7 +691,7 @@ USE_ASYNC_RESET_BLOCK: if use_async_reset = '1' generate
             q <= (others => '0');
         elsif rising_edge(clk) then
             q <= (others => '0');
-            q <= std_logic_vector(unsigned(a0) + unsigned(a1));
+            q <= std_logic_vector(unsigned('0' & a0) + unsigned('0' & a1));
         end if; 
     end process;
 end generate;
@@ -704,7 +704,7 @@ USE_SYNC_RESET_BLOCK: if use_async_reset = '0' generate
                 q <= (others => '0');
             else
                 q <= (others => '0');
-                q <= std_logic_vector(unsigned(a0) + unsigned(a1));
+                q <= std_logic_vector(unsigned('0' & a0) + unsigned('0' & a1));
             end if; 
         end if; 
     end process;
@@ -746,7 +746,7 @@ USE_ASYNC_RESET_BLOCK: if use_async_reset = '1' generate
             q <= (others => '0');
         elsif rising_edge(clk) then
             q <= (others => '0');
-            q <= std_logic_vector(unsigned(a0) + unsigned(a1));
+            q <= std_logic_vector(unsigned('0' & a0) + unsigned('0' & a1));
         end if; 
     end process;
 end generate;
@@ -759,7 +759,7 @@ USE_SYNC_RESET_BLOCK: if use_async_reset = '0' generate
                 q <= (others => '0');
             else
                 q <= (others => '0');
-                q <= std_logic_vector(unsigned(a0) + unsigned(a1));
+                q <= std_logic_vector(unsigned('0' & a0) + unsigned('0' & a1));
             end if; 
         end if; 
     end process;
@@ -801,7 +801,7 @@ USE_ASYNC_RESET_BLOCK: if use_async_reset = '1' generate
             q <= (others => '0');
         elsif rising_edge(clk) then
             q <= (others => '0');
-            q <= std_logic_vector(unsigned(a0) + unsigned(a1));
+            q <= std_logic_vector(unsigned('0' & a0) + unsigned('0' & a1));
         end if; 
     end process;
 end generate;
@@ -814,7 +814,7 @@ USE_SYNC_RESET_BLOCK: if use_async_reset = '0' generate
                 q <= (others => '0');
             else
                 q <= (others => '0');
-                q <= std_logic_vector(unsigned(a0) + unsigned(a1));
+                q <= std_logic_vector(unsigned('0' & a0) + unsigned('0' & a1));
             end if; 
         end if; 
     end process;
