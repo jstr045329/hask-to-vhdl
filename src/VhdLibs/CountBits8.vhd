@@ -24,7 +24,8 @@ end count1s;
 
 architecture behavioral_count1s of count1s is
 
-signal agg : std_logic_vector(3 downto 0);
+-- Following should have same number of bits as this module has inputs:
+signal agg : std_logic_vector(7 downto 0);
 
 function count_bits(
     x : std_logic_vector(7 downto 0)
