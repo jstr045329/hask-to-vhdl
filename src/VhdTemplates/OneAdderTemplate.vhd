@@ -17,7 +17,7 @@ entity <entity_name_here> is
         a1 : in std_logic_vector(<bits_in_msb_here> downto 0) := (others => '0');
         q : out std_logic_vector(<bits_out_msb_here> downto 0)
     );
-end entity <entity_name_here>;
+end entity;
 -- <entity_declaration_stop>
 
 architecture behavioral_<entity_name_here> is

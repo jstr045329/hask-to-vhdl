@@ -16,7 +16,7 @@ entity AddTwoNumbers_0002_bits_in_0003_bits_out is
         a1 : in std_logic_vector(1 downto 0) := (others => '0');
         q : out std_logic_vector(2 downto 0)
     );
-end entity AddTwoNumbers_0002_bits_in_0003_bits_out;
+end entity;
 
 architecture behavioral_AddTwoNumbers_0002_bits_in_0003_bits_out is
 
@@ -70,7 +70,7 @@ entity AddTwoNumbers_0003_bits_in_0004_bits_out is
         a1 : in std_logic_vector(2 downto 0) := (others => '0');
         q : out std_logic_vector(3 downto 0)
     );
-end entity AddTwoNumbers_0003_bits_in_0004_bits_out;
+end entity;
 
 architecture behavioral_AddTwoNumbers_0003_bits_in_0004_bits_out is
 
@@ -124,7 +124,7 @@ entity AddTwoNumbers_0004_bits_in_0005_bits_out is
         a1 : in std_logic_vector(3 downto 0) := (others => '0');
         q : out std_logic_vector(4 downto 0)
     );
-end entity AddTwoNumbers_0004_bits_in_0005_bits_out;
+end entity;
 
 architecture behavioral_AddTwoNumbers_0004_bits_in_0005_bits_out is
 
@@ -178,7 +178,7 @@ entity AddTwoNumbers_0005_bits_in_0006_bits_out is
         a1 : in std_logic_vector(4 downto 0) := (others => '0');
         q : out std_logic_vector(5 downto 0)
     );
-end entity AddTwoNumbers_0005_bits_in_0006_bits_out;
+end entity;
 
 architecture behavioral_AddTwoNumbers_0005_bits_in_0006_bits_out is
 
@@ -232,7 +232,7 @@ entity AddTwoNumbers_0006_bits_in_0007_bits_out is
         a1 : in std_logic_vector(5 downto 0) := (others => '0');
         q : out std_logic_vector(6 downto 0)
     );
-end entity AddTwoNumbers_0006_bits_in_0007_bits_out;
+end entity;
 
 architecture behavioral_AddTwoNumbers_0006_bits_in_0007_bits_out is
 
@@ -286,7 +286,7 @@ entity AddTwoNumbers_0007_bits_in_0008_bits_out is
         a1 : in std_logic_vector(6 downto 0) := (others => '0');
         q : out std_logic_vector(7 downto 0)
     );
-end entity AddTwoNumbers_0007_bits_in_0008_bits_out;
+end entity;
 
 architecture behavioral_AddTwoNumbers_0007_bits_in_0008_bits_out is
 
@@ -340,7 +340,7 @@ entity AddTwoNumbers_0008_bits_in_0009_bits_out is
         a1 : in std_logic_vector(7 downto 0) := (others => '0');
         q : out std_logic_vector(8 downto 0)
     );
-end entity AddTwoNumbers_0008_bits_in_0009_bits_out;
+end entity;
 
 architecture behavioral_AddTwoNumbers_0008_bits_in_0009_bits_out is
 
@@ -394,7 +394,7 @@ entity AddTwoNumbers_0009_bits_in_0010_bits_out is
         a1 : in std_logic_vector(8 downto 0) := (others => '0');
         q : out std_logic_vector(9 downto 0)
     );
-end entity AddTwoNumbers_0009_bits_in_0010_bits_out;
+end entity;
 
 architecture behavioral_AddTwoNumbers_0009_bits_in_0010_bits_out is
 
@@ -448,7 +448,7 @@ entity AddTwoNumbers_0010_bits_in_0011_bits_out is
         a1 : in std_logic_vector(9 downto 0) := (others => '0');
         q : out std_logic_vector(10 downto 0)
     );
-end entity AddTwoNumbers_0010_bits_in_0011_bits_out;
+end entity;
 
 architecture behavioral_AddTwoNumbers_0010_bits_in_0011_bits_out is
 
@@ -502,7 +502,7 @@ entity AddTwoNumbers_0011_bits_in_0012_bits_out is
         a1 : in std_logic_vector(10 downto 0) := (others => '0');
         q : out std_logic_vector(11 downto 0)
     );
-end entity AddTwoNumbers_0011_bits_in_0012_bits_out;
+end entity;
 
 architecture behavioral_AddTwoNumbers_0011_bits_in_0012_bits_out is
 
@@ -556,7 +556,7 @@ entity AddTwoNumbers_0012_bits_in_0013_bits_out is
         a1 : in std_logic_vector(11 downto 0) := (others => '0');
         q : out std_logic_vector(12 downto 0)
     );
-end entity AddTwoNumbers_0012_bits_in_0013_bits_out;
+end entity;
 
 architecture behavioral_AddTwoNumbers_0012_bits_in_0013_bits_out is
 
@@ -610,7 +610,7 @@ entity AddTwoNumbers_0013_bits_in_0014_bits_out is
         a1 : in std_logic_vector(12 downto 0) := (others => '0');
         q : out std_logic_vector(13 downto 0)
     );
-end entity AddTwoNumbers_0013_bits_in_0014_bits_out;
+end entity;
 
 architecture behavioral_AddTwoNumbers_0013_bits_in_0014_bits_out is
 
@@ -664,7 +664,7 @@ entity AddTwoNumbers_0014_bits_in_0015_bits_out is
         a1 : in std_logic_vector(13 downto 0) := (others => '0');
         q : out std_logic_vector(14 downto 0)
     );
-end entity AddTwoNumbers_0014_bits_in_0015_bits_out;
+end entity;
 
 architecture behavioral_AddTwoNumbers_0014_bits_in_0015_bits_out is
 
@@ -718,7 +718,7 @@ entity AddTwoNumbers_0015_bits_in_0016_bits_out is
         a1 : in std_logic_vector(14 downto 0) := (others => '0');
         q : out std_logic_vector(15 downto 0)
     );
-end entity AddTwoNumbers_0015_bits_in_0016_bits_out;
+end entity;
 
 architecture behavioral_AddTwoNumbers_0015_bits_in_0016_bits_out is
 
@@ -772,7 +772,7 @@ entity AddTwoNumbers_0016_bits_in_0017_bits_out is
         a1 : in std_logic_vector(15 downto 0) := (others => '0');
         q : out std_logic_vector(16 downto 0)
     );
-end entity AddTwoNumbers_0016_bits_in_0017_bits_out;
+end entity;
 
 architecture behavioral_AddTwoNumbers_0016_bits_in_0017_bits_out is
 
@@ -828,7 +828,7 @@ component AddTwoNumbers_0002_bits_in_0003_bits_out is
         a1 : in std_logic_vector(1 downto 0) := (others => '0');
         q : out std_logic_vector(2 downto 0)
     );
-end component AddTwoNumbers_0002_bits_in_0003_bits_out;
+end component;
 
 component AddTwoNumbers_0003_bits_in_0004_bits_out is
     generic(
@@ -841,7 +841,7 @@ component AddTwoNumbers_0003_bits_in_0004_bits_out is
         a1 : in std_logic_vector(2 downto 0) := (others => '0');
         q : out std_logic_vector(3 downto 0)
     );
-end component AddTwoNumbers_0003_bits_in_0004_bits_out;
+end component;
 
 component AddTwoNumbers_0004_bits_in_0005_bits_out is
     generic(
@@ -854,7 +854,7 @@ component AddTwoNumbers_0004_bits_in_0005_bits_out is
         a1 : in std_logic_vector(3 downto 0) := (others => '0');
         q : out std_logic_vector(4 downto 0)
     );
-end component AddTwoNumbers_0004_bits_in_0005_bits_out;
+end component;
 
 component AddTwoNumbers_0005_bits_in_0006_bits_out is
     generic(
@@ -867,7 +867,7 @@ component AddTwoNumbers_0005_bits_in_0006_bits_out is
         a1 : in std_logic_vector(4 downto 0) := (others => '0');
         q : out std_logic_vector(5 downto 0)
     );
-end component AddTwoNumbers_0005_bits_in_0006_bits_out;
+end component;
 
 component AddTwoNumbers_0006_bits_in_0007_bits_out is
     generic(
@@ -880,7 +880,7 @@ component AddTwoNumbers_0006_bits_in_0007_bits_out is
         a1 : in std_logic_vector(5 downto 0) := (others => '0');
         q : out std_logic_vector(6 downto 0)
     );
-end component AddTwoNumbers_0006_bits_in_0007_bits_out;
+end component;
 
 component AddTwoNumbers_0007_bits_in_0008_bits_out is
     generic(
@@ -893,7 +893,7 @@ component AddTwoNumbers_0007_bits_in_0008_bits_out is
         a1 : in std_logic_vector(6 downto 0) := (others => '0');
         q : out std_logic_vector(7 downto 0)
     );
-end component AddTwoNumbers_0007_bits_in_0008_bits_out;
+end component;
 
 component AddTwoNumbers_0008_bits_in_0009_bits_out is
     generic(
@@ -906,7 +906,7 @@ component AddTwoNumbers_0008_bits_in_0009_bits_out is
         a1 : in std_logic_vector(7 downto 0) := (others => '0');
         q : out std_logic_vector(8 downto 0)
     );
-end component AddTwoNumbers_0008_bits_in_0009_bits_out;
+end component;
 
 component AddTwoNumbers_0009_bits_in_0010_bits_out is
     generic(
@@ -919,7 +919,7 @@ component AddTwoNumbers_0009_bits_in_0010_bits_out is
         a1 : in std_logic_vector(8 downto 0) := (others => '0');
         q : out std_logic_vector(9 downto 0)
     );
-end component AddTwoNumbers_0009_bits_in_0010_bits_out;
+end component;
 
 component AddTwoNumbers_0010_bits_in_0011_bits_out is
     generic(
@@ -932,7 +932,7 @@ component AddTwoNumbers_0010_bits_in_0011_bits_out is
         a1 : in std_logic_vector(9 downto 0) := (others => '0');
         q : out std_logic_vector(10 downto 0)
     );
-end component AddTwoNumbers_0010_bits_in_0011_bits_out;
+end component;
 
 component AddTwoNumbers_0011_bits_in_0012_bits_out is
     generic(
@@ -945,7 +945,7 @@ component AddTwoNumbers_0011_bits_in_0012_bits_out is
         a1 : in std_logic_vector(10 downto 0) := (others => '0');
         q : out std_logic_vector(11 downto 0)
     );
-end component AddTwoNumbers_0011_bits_in_0012_bits_out;
+end component;
 
 component AddTwoNumbers_0012_bits_in_0013_bits_out is
     generic(
@@ -958,7 +958,7 @@ component AddTwoNumbers_0012_bits_in_0013_bits_out is
         a1 : in std_logic_vector(11 downto 0) := (others => '0');
         q : out std_logic_vector(12 downto 0)
     );
-end component AddTwoNumbers_0012_bits_in_0013_bits_out;
+end component;
 
 component AddTwoNumbers_0013_bits_in_0014_bits_out is
     generic(
@@ -971,7 +971,7 @@ component AddTwoNumbers_0013_bits_in_0014_bits_out is
         a1 : in std_logic_vector(12 downto 0) := (others => '0');
         q : out std_logic_vector(13 downto 0)
     );
-end component AddTwoNumbers_0013_bits_in_0014_bits_out;
+end component;
 
 component AddTwoNumbers_0014_bits_in_0015_bits_out is
     generic(
@@ -984,7 +984,7 @@ component AddTwoNumbers_0014_bits_in_0015_bits_out is
         a1 : in std_logic_vector(13 downto 0) := (others => '0');
         q : out std_logic_vector(14 downto 0)
     );
-end component AddTwoNumbers_0014_bits_in_0015_bits_out;
+end component;
 
 component AddTwoNumbers_0015_bits_in_0016_bits_out is
     generic(
@@ -997,7 +997,7 @@ component AddTwoNumbers_0015_bits_in_0016_bits_out is
         a1 : in std_logic_vector(14 downto 0) := (others => '0');
         q : out std_logic_vector(15 downto 0)
     );
-end component AddTwoNumbers_0015_bits_in_0016_bits_out;
+end component;
 
 component AddTwoNumbers_0016_bits_in_0017_bits_out is
     generic(
@@ -1010,7 +1010,7 @@ component AddTwoNumbers_0016_bits_in_0017_bits_out is
         a1 : in std_logic_vector(15 downto 0) := (others => '0');
         q : out std_logic_vector(16 downto 0)
     );
-end component AddTwoNumbers_0016_bits_in_0017_bits_out;
+end component;
 
 
 end package AdderModulePkg;
