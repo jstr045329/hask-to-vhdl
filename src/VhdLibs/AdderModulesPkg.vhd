@@ -5,7 +5,8 @@ library ieee;
 use ieee.std_logic_1164.all;
 use ieee.numeric_std.all;
 
-entity AddTwoNumbers_0002_bits_in_0003_bits_out is
+-- The naming convention is AddTwoNumbers_<bits_in>_<bits_out>
+entity AddTwoNumbers_0002_0003 is
     generic(
         use_async_reset : std_logic := '1'
     );
@@ -18,7 +19,7 @@ entity AddTwoNumbers_0002_bits_in_0003_bits_out is
     );
 end entity;
 
-architecture behavioral_AddTwoNumbers_0002_bits_in_0003_bits_out is
+architecture behavioral_AddTwoNumbers_0002_0003 of AddTwoNumbers_0002_0003 is
 
 begin
 
@@ -49,7 +50,7 @@ USE_SYNC_RESET_BLOCK: if use_async_reset = '0' generate
     end process;
 end generate;
 
-end behavioral_AddTwoNumbers_0002_bits_in_0003_bits_out;
+end behavioral_AddTwoNumbers_0002_0003;
 
 
 ----------------------------------------------------------------------------------------------------
@@ -59,7 +60,8 @@ library ieee;
 use ieee.std_logic_1164.all;
 use ieee.numeric_std.all;
 
-entity AddTwoNumbers_0003_bits_in_0004_bits_out is
+-- The naming convention is AddTwoNumbers_<bits_in>_<bits_out>
+entity AddTwoNumbers_0003_0004 is
     generic(
         use_async_reset : std_logic := '1'
     );
@@ -72,7 +74,7 @@ entity AddTwoNumbers_0003_bits_in_0004_bits_out is
     );
 end entity;
 
-architecture behavioral_AddTwoNumbers_0003_bits_in_0004_bits_out is
+architecture behavioral_AddTwoNumbers_0003_0004 of AddTwoNumbers_0003_0004 is
 
 begin
 
@@ -103,7 +105,7 @@ USE_SYNC_RESET_BLOCK: if use_async_reset = '0' generate
     end process;
 end generate;
 
-end behavioral_AddTwoNumbers_0003_bits_in_0004_bits_out;
+end behavioral_AddTwoNumbers_0003_0004;
 
 
 ----------------------------------------------------------------------------------------------------
@@ -113,7 +115,8 @@ library ieee;
 use ieee.std_logic_1164.all;
 use ieee.numeric_std.all;
 
-entity AddTwoNumbers_0004_bits_in_0005_bits_out is
+-- The naming convention is AddTwoNumbers_<bits_in>_<bits_out>
+entity AddTwoNumbers_0004_0005 is
     generic(
         use_async_reset : std_logic := '1'
     );
@@ -126,7 +129,7 @@ entity AddTwoNumbers_0004_bits_in_0005_bits_out is
     );
 end entity;
 
-architecture behavioral_AddTwoNumbers_0004_bits_in_0005_bits_out is
+architecture behavioral_AddTwoNumbers_0004_0005 of AddTwoNumbers_0004_0005 is
 
 begin
 
@@ -157,7 +160,7 @@ USE_SYNC_RESET_BLOCK: if use_async_reset = '0' generate
     end process;
 end generate;
 
-end behavioral_AddTwoNumbers_0004_bits_in_0005_bits_out;
+end behavioral_AddTwoNumbers_0004_0005;
 
 
 ----------------------------------------------------------------------------------------------------
@@ -167,7 +170,8 @@ library ieee;
 use ieee.std_logic_1164.all;
 use ieee.numeric_std.all;
 
-entity AddTwoNumbers_0005_bits_in_0006_bits_out is
+-- The naming convention is AddTwoNumbers_<bits_in>_<bits_out>
+entity AddTwoNumbers_0005_0006 is
     generic(
         use_async_reset : std_logic := '1'
     );
@@ -180,7 +184,7 @@ entity AddTwoNumbers_0005_bits_in_0006_bits_out is
     );
 end entity;
 
-architecture behavioral_AddTwoNumbers_0005_bits_in_0006_bits_out is
+architecture behavioral_AddTwoNumbers_0005_0006 of AddTwoNumbers_0005_0006 is
 
 begin
 
@@ -211,7 +215,7 @@ USE_SYNC_RESET_BLOCK: if use_async_reset = '0' generate
     end process;
 end generate;
 
-end behavioral_AddTwoNumbers_0005_bits_in_0006_bits_out;
+end behavioral_AddTwoNumbers_0005_0006;
 
 
 ----------------------------------------------------------------------------------------------------
@@ -221,7 +225,8 @@ library ieee;
 use ieee.std_logic_1164.all;
 use ieee.numeric_std.all;
 
-entity AddTwoNumbers_0006_bits_in_0007_bits_out is
+-- The naming convention is AddTwoNumbers_<bits_in>_<bits_out>
+entity AddTwoNumbers_0006_0007 is
     generic(
         use_async_reset : std_logic := '1'
     );
@@ -234,7 +239,7 @@ entity AddTwoNumbers_0006_bits_in_0007_bits_out is
     );
 end entity;
 
-architecture behavioral_AddTwoNumbers_0006_bits_in_0007_bits_out is
+architecture behavioral_AddTwoNumbers_0006_0007 of AddTwoNumbers_0006_0007 is
 
 begin
 
@@ -265,7 +270,7 @@ USE_SYNC_RESET_BLOCK: if use_async_reset = '0' generate
     end process;
 end generate;
 
-end behavioral_AddTwoNumbers_0006_bits_in_0007_bits_out;
+end behavioral_AddTwoNumbers_0006_0007;
 
 
 ----------------------------------------------------------------------------------------------------
@@ -275,7 +280,8 @@ library ieee;
 use ieee.std_logic_1164.all;
 use ieee.numeric_std.all;
 
-entity AddTwoNumbers_0007_bits_in_0008_bits_out is
+-- The naming convention is AddTwoNumbers_<bits_in>_<bits_out>
+entity AddTwoNumbers_0007_0008 is
     generic(
         use_async_reset : std_logic := '1'
     );
@@ -288,7 +294,7 @@ entity AddTwoNumbers_0007_bits_in_0008_bits_out is
     );
 end entity;
 
-architecture behavioral_AddTwoNumbers_0007_bits_in_0008_bits_out is
+architecture behavioral_AddTwoNumbers_0007_0008 of AddTwoNumbers_0007_0008 is
 
 begin
 
@@ -319,7 +325,7 @@ USE_SYNC_RESET_BLOCK: if use_async_reset = '0' generate
     end process;
 end generate;
 
-end behavioral_AddTwoNumbers_0007_bits_in_0008_bits_out;
+end behavioral_AddTwoNumbers_0007_0008;
 
 
 ----------------------------------------------------------------------------------------------------
@@ -329,7 +335,8 @@ library ieee;
 use ieee.std_logic_1164.all;
 use ieee.numeric_std.all;
 
-entity AddTwoNumbers_0008_bits_in_0009_bits_out is
+-- The naming convention is AddTwoNumbers_<bits_in>_<bits_out>
+entity AddTwoNumbers_0008_0009 is
     generic(
         use_async_reset : std_logic := '1'
     );
@@ -342,7 +349,7 @@ entity AddTwoNumbers_0008_bits_in_0009_bits_out is
     );
 end entity;
 
-architecture behavioral_AddTwoNumbers_0008_bits_in_0009_bits_out is
+architecture behavioral_AddTwoNumbers_0008_0009 of AddTwoNumbers_0008_0009 is
 
 begin
 
@@ -373,7 +380,7 @@ USE_SYNC_RESET_BLOCK: if use_async_reset = '0' generate
     end process;
 end generate;
 
-end behavioral_AddTwoNumbers_0008_bits_in_0009_bits_out;
+end behavioral_AddTwoNumbers_0008_0009;
 
 
 ----------------------------------------------------------------------------------------------------
@@ -383,7 +390,8 @@ library ieee;
 use ieee.std_logic_1164.all;
 use ieee.numeric_std.all;
 
-entity AddTwoNumbers_0009_bits_in_0010_bits_out is
+-- The naming convention is AddTwoNumbers_<bits_in>_<bits_out>
+entity AddTwoNumbers_0009_0010 is
     generic(
         use_async_reset : std_logic := '1'
     );
@@ -396,7 +404,7 @@ entity AddTwoNumbers_0009_bits_in_0010_bits_out is
     );
 end entity;
 
-architecture behavioral_AddTwoNumbers_0009_bits_in_0010_bits_out is
+architecture behavioral_AddTwoNumbers_0009_0010 of AddTwoNumbers_0009_0010 is
 
 begin
 
@@ -427,7 +435,7 @@ USE_SYNC_RESET_BLOCK: if use_async_reset = '0' generate
     end process;
 end generate;
 
-end behavioral_AddTwoNumbers_0009_bits_in_0010_bits_out;
+end behavioral_AddTwoNumbers_0009_0010;
 
 
 ----------------------------------------------------------------------------------------------------
@@ -437,7 +445,8 @@ library ieee;
 use ieee.std_logic_1164.all;
 use ieee.numeric_std.all;
 
-entity AddTwoNumbers_0010_bits_in_0011_bits_out is
+-- The naming convention is AddTwoNumbers_<bits_in>_<bits_out>
+entity AddTwoNumbers_0010_0011 is
     generic(
         use_async_reset : std_logic := '1'
     );
@@ -450,7 +459,7 @@ entity AddTwoNumbers_0010_bits_in_0011_bits_out is
     );
 end entity;
 
-architecture behavioral_AddTwoNumbers_0010_bits_in_0011_bits_out is
+architecture behavioral_AddTwoNumbers_0010_0011 of AddTwoNumbers_0010_0011 is
 
 begin
 
@@ -481,7 +490,7 @@ USE_SYNC_RESET_BLOCK: if use_async_reset = '0' generate
     end process;
 end generate;
 
-end behavioral_AddTwoNumbers_0010_bits_in_0011_bits_out;
+end behavioral_AddTwoNumbers_0010_0011;
 
 
 ----------------------------------------------------------------------------------------------------
@@ -491,7 +500,8 @@ library ieee;
 use ieee.std_logic_1164.all;
 use ieee.numeric_std.all;
 
-entity AddTwoNumbers_0011_bits_in_0012_bits_out is
+-- The naming convention is AddTwoNumbers_<bits_in>_<bits_out>
+entity AddTwoNumbers_0011_0012 is
     generic(
         use_async_reset : std_logic := '1'
     );
@@ -504,7 +514,7 @@ entity AddTwoNumbers_0011_bits_in_0012_bits_out is
     );
 end entity;
 
-architecture behavioral_AddTwoNumbers_0011_bits_in_0012_bits_out is
+architecture behavioral_AddTwoNumbers_0011_0012 of AddTwoNumbers_0011_0012 is
 
 begin
 
@@ -535,7 +545,7 @@ USE_SYNC_RESET_BLOCK: if use_async_reset = '0' generate
     end process;
 end generate;
 
-end behavioral_AddTwoNumbers_0011_bits_in_0012_bits_out;
+end behavioral_AddTwoNumbers_0011_0012;
 
 
 ----------------------------------------------------------------------------------------------------
@@ -545,7 +555,8 @@ library ieee;
 use ieee.std_logic_1164.all;
 use ieee.numeric_std.all;
 
-entity AddTwoNumbers_0012_bits_in_0013_bits_out is
+-- The naming convention is AddTwoNumbers_<bits_in>_<bits_out>
+entity AddTwoNumbers_0012_0013 is
     generic(
         use_async_reset : std_logic := '1'
     );
@@ -558,7 +569,7 @@ entity AddTwoNumbers_0012_bits_in_0013_bits_out is
     );
 end entity;
 
-architecture behavioral_AddTwoNumbers_0012_bits_in_0013_bits_out is
+architecture behavioral_AddTwoNumbers_0012_0013 of AddTwoNumbers_0012_0013 is
 
 begin
 
@@ -589,7 +600,7 @@ USE_SYNC_RESET_BLOCK: if use_async_reset = '0' generate
     end process;
 end generate;
 
-end behavioral_AddTwoNumbers_0012_bits_in_0013_bits_out;
+end behavioral_AddTwoNumbers_0012_0013;
 
 
 ----------------------------------------------------------------------------------------------------
@@ -599,7 +610,8 @@ library ieee;
 use ieee.std_logic_1164.all;
 use ieee.numeric_std.all;
 
-entity AddTwoNumbers_0013_bits_in_0014_bits_out is
+-- The naming convention is AddTwoNumbers_<bits_in>_<bits_out>
+entity AddTwoNumbers_0013_0014 is
     generic(
         use_async_reset : std_logic := '1'
     );
@@ -612,7 +624,7 @@ entity AddTwoNumbers_0013_bits_in_0014_bits_out is
     );
 end entity;
 
-architecture behavioral_AddTwoNumbers_0013_bits_in_0014_bits_out is
+architecture behavioral_AddTwoNumbers_0013_0014 of AddTwoNumbers_0013_0014 is
 
 begin
 
@@ -643,7 +655,7 @@ USE_SYNC_RESET_BLOCK: if use_async_reset = '0' generate
     end process;
 end generate;
 
-end behavioral_AddTwoNumbers_0013_bits_in_0014_bits_out;
+end behavioral_AddTwoNumbers_0013_0014;
 
 
 ----------------------------------------------------------------------------------------------------
@@ -653,7 +665,8 @@ library ieee;
 use ieee.std_logic_1164.all;
 use ieee.numeric_std.all;
 
-entity AddTwoNumbers_0014_bits_in_0015_bits_out is
+-- The naming convention is AddTwoNumbers_<bits_in>_<bits_out>
+entity AddTwoNumbers_0014_0015 is
     generic(
         use_async_reset : std_logic := '1'
     );
@@ -666,7 +679,7 @@ entity AddTwoNumbers_0014_bits_in_0015_bits_out is
     );
 end entity;
 
-architecture behavioral_AddTwoNumbers_0014_bits_in_0015_bits_out is
+architecture behavioral_AddTwoNumbers_0014_0015 of AddTwoNumbers_0014_0015 is
 
 begin
 
@@ -697,7 +710,7 @@ USE_SYNC_RESET_BLOCK: if use_async_reset = '0' generate
     end process;
 end generate;
 
-end behavioral_AddTwoNumbers_0014_bits_in_0015_bits_out;
+end behavioral_AddTwoNumbers_0014_0015;
 
 
 ----------------------------------------------------------------------------------------------------
@@ -707,7 +720,8 @@ library ieee;
 use ieee.std_logic_1164.all;
 use ieee.numeric_std.all;
 
-entity AddTwoNumbers_0015_bits_in_0016_bits_out is
+-- The naming convention is AddTwoNumbers_<bits_in>_<bits_out>
+entity AddTwoNumbers_0015_0016 is
     generic(
         use_async_reset : std_logic := '1'
     );
@@ -720,7 +734,7 @@ entity AddTwoNumbers_0015_bits_in_0016_bits_out is
     );
 end entity;
 
-architecture behavioral_AddTwoNumbers_0015_bits_in_0016_bits_out is
+architecture behavioral_AddTwoNumbers_0015_0016 of AddTwoNumbers_0015_0016 is
 
 begin
 
@@ -751,7 +765,7 @@ USE_SYNC_RESET_BLOCK: if use_async_reset = '0' generate
     end process;
 end generate;
 
-end behavioral_AddTwoNumbers_0015_bits_in_0016_bits_out;
+end behavioral_AddTwoNumbers_0015_0016;
 
 
 ----------------------------------------------------------------------------------------------------
@@ -761,7 +775,8 @@ library ieee;
 use ieee.std_logic_1164.all;
 use ieee.numeric_std.all;
 
-entity AddTwoNumbers_0016_bits_in_0017_bits_out is
+-- The naming convention is AddTwoNumbers_<bits_in>_<bits_out>
+entity AddTwoNumbers_0016_0017 is
     generic(
         use_async_reset : std_logic := '1'
     );
@@ -774,7 +789,7 @@ entity AddTwoNumbers_0016_bits_in_0017_bits_out is
     );
 end entity;
 
-architecture behavioral_AddTwoNumbers_0016_bits_in_0017_bits_out is
+architecture behavioral_AddTwoNumbers_0016_0017 of AddTwoNumbers_0016_0017 is
 
 begin
 
@@ -805,7 +820,7 @@ USE_SYNC_RESET_BLOCK: if use_async_reset = '0' generate
     end process;
 end generate;
 
-end behavioral_AddTwoNumbers_0016_bits_in_0017_bits_out;
+end behavioral_AddTwoNumbers_0016_0017;
 
 
 ----------------------------------------------------------------------------------------------------
@@ -817,7 +832,7 @@ use ieee.numeric_std.all;
 
 
 package AdderModulePkg is
-component AddTwoNumbers_0002_bits_in_0003_bits_out is
+component AddTwoNumbers_0002_0003 is
     generic(
         use_async_reset : std_logic := '1'
     );
@@ -830,7 +845,7 @@ component AddTwoNumbers_0002_bits_in_0003_bits_out is
     );
 end component;
 
-component AddTwoNumbers_0003_bits_in_0004_bits_out is
+component AddTwoNumbers_0003_0004 is
     generic(
         use_async_reset : std_logic := '1'
     );
@@ -843,7 +858,7 @@ component AddTwoNumbers_0003_bits_in_0004_bits_out is
     );
 end component;
 
-component AddTwoNumbers_0004_bits_in_0005_bits_out is
+component AddTwoNumbers_0004_0005 is
     generic(
         use_async_reset : std_logic := '1'
     );
@@ -856,7 +871,7 @@ component AddTwoNumbers_0004_bits_in_0005_bits_out is
     );
 end component;
 
-component AddTwoNumbers_0005_bits_in_0006_bits_out is
+component AddTwoNumbers_0005_0006 is
     generic(
         use_async_reset : std_logic := '1'
     );
@@ -869,7 +884,7 @@ component AddTwoNumbers_0005_bits_in_0006_bits_out is
     );
 end component;
 
-component AddTwoNumbers_0006_bits_in_0007_bits_out is
+component AddTwoNumbers_0006_0007 is
     generic(
         use_async_reset : std_logic := '1'
     );
@@ -882,7 +897,7 @@ component AddTwoNumbers_0006_bits_in_0007_bits_out is
     );
 end component;
 
-component AddTwoNumbers_0007_bits_in_0008_bits_out is
+component AddTwoNumbers_0007_0008 is
     generic(
         use_async_reset : std_logic := '1'
     );
@@ -895,7 +910,7 @@ component AddTwoNumbers_0007_bits_in_0008_bits_out is
     );
 end component;
 
-component AddTwoNumbers_0008_bits_in_0009_bits_out is
+component AddTwoNumbers_0008_0009 is
     generic(
         use_async_reset : std_logic := '1'
     );
@@ -908,7 +923,7 @@ component AddTwoNumbers_0008_bits_in_0009_bits_out is
     );
 end component;
 
-component AddTwoNumbers_0009_bits_in_0010_bits_out is
+component AddTwoNumbers_0009_0010 is
     generic(
         use_async_reset : std_logic := '1'
     );
@@ -921,7 +936,7 @@ component AddTwoNumbers_0009_bits_in_0010_bits_out is
     );
 end component;
 
-component AddTwoNumbers_0010_bits_in_0011_bits_out is
+component AddTwoNumbers_0010_0011 is
     generic(
         use_async_reset : std_logic := '1'
     );
@@ -934,7 +949,7 @@ component AddTwoNumbers_0010_bits_in_0011_bits_out is
     );
 end component;
 
-component AddTwoNumbers_0011_bits_in_0012_bits_out is
+component AddTwoNumbers_0011_0012 is
     generic(
         use_async_reset : std_logic := '1'
     );
@@ -947,7 +962,7 @@ component AddTwoNumbers_0011_bits_in_0012_bits_out is
     );
 end component;
 
-component AddTwoNumbers_0012_bits_in_0013_bits_out is
+component AddTwoNumbers_0012_0013 is
     generic(
         use_async_reset : std_logic := '1'
     );
@@ -960,7 +975,7 @@ component AddTwoNumbers_0012_bits_in_0013_bits_out is
     );
 end component;
 
-component AddTwoNumbers_0013_bits_in_0014_bits_out is
+component AddTwoNumbers_0013_0014 is
     generic(
         use_async_reset : std_logic := '1'
     );
@@ -973,7 +988,7 @@ component AddTwoNumbers_0013_bits_in_0014_bits_out is
     );
 end component;
 
-component AddTwoNumbers_0014_bits_in_0015_bits_out is
+component AddTwoNumbers_0014_0015 is
     generic(
         use_async_reset : std_logic := '1'
     );
@@ -986,7 +1001,7 @@ component AddTwoNumbers_0014_bits_in_0015_bits_out is
     );
 end component;
 
-component AddTwoNumbers_0015_bits_in_0016_bits_out is
+component AddTwoNumbers_0015_0016 is
     generic(
         use_async_reset : std_logic := '1'
     );
@@ -999,7 +1014,7 @@ component AddTwoNumbers_0015_bits_in_0016_bits_out is
     );
 end component;
 
-component AddTwoNumbers_0016_bits_in_0017_bits_out is
+component AddTwoNumbers_0016_0017 is
     generic(
         use_async_reset : std_logic := '1'
     );

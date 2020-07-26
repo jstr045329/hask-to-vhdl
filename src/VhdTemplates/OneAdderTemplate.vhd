@@ -5,6 +5,7 @@ library ieee;
 use ieee.std_logic_1164.all;
 use ieee.numeric_std.all;
 
+-- The naming convention is AddTwoNumbers_<bits_in>_<bits_out>
 -- <entity_declaration_start>
 entity <entity_name_here> is
     generic(
@@ -20,7 +21,7 @@ entity <entity_name_here> is
 end entity;
 -- <entity_declaration_stop>
 
-architecture behavioral_<entity_name_here> is
+architecture behavioral_<entity_name_here> of <entity_name_here> is
 
 begin
 

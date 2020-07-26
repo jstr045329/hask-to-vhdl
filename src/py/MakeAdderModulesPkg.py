@@ -2,7 +2,7 @@
 from os import linesep as eol
 INPUT_FILENAME = "../VhdTemplates/OneAdderTemplate.vhd"
 OUTPUT_FILENAME = "../VhdLibs/AdderModulesPkg.vhd"
-ENTITY_STUB = "AddTwoNumbers_%04d_bits_in_%04d_bits_out"
+ENTITY_STUB = "AddTwoNumbers_%04d_%04d"
 BITS_IN_START = 2
 BITS_IN_STOP = 16
 
