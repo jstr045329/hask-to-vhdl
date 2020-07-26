@@ -1195,7 +1195,7 @@ USE_ASYNC_RESET_BLOCK: if use_async_reset = '1' generate
         if reset_n = '0' then
             q <= '0';
         elsif rising_edge(clk) then
-            q <= a0 nor a1 nor a2;
+            q <= (a0 nor (a1 nor a2));
         end if;
     end process;
 end generate;
@@ -1207,7 +1207,7 @@ USE_SYNC_RESET_BLOCK: if use_async_reset = '0' generate
             if reset_n = '0' then
                 q <= '0';
             else
-                q <= a0 nor a1 nor a2;
+                q <= (a0 nor (a1 nor a2));
             end if;
         end if;
     end process;
@@ -1246,7 +1246,7 @@ USE_ASYNC_RESET_BLOCK: if use_async_reset = '1' generate
         if reset_n = '0' then
             q <= '0';
         elsif rising_edge(clk) then
-            q <= a0 nor a1 nor a2 nor a3;
+            q <= (a0 nor (a1 nor (a2 nor a3)));
         end if;
     end process;
 end generate;
@@ -1258,7 +1258,7 @@ USE_SYNC_RESET_BLOCK: if use_async_reset = '0' generate
             if reset_n = '0' then
                 q <= '0';
             else
-                q <= a0 nor a1 nor a2 nor a3;
+                q <= (a0 nor (a1 nor (a2 nor a3)));
             end if;
         end if;
     end process;
@@ -1298,7 +1298,7 @@ USE_ASYNC_RESET_BLOCK: if use_async_reset = '1' generate
         if reset_n = '0' then
             q <= '0';
         elsif rising_edge(clk) then
-            q <= a0 nor a1 nor a2 nor a3 nor a4;
+            q <= (a0 nor (a1 nor (a2 nor (a3 nor a4))));
         end if;
     end process;
 end generate;
@@ -1310,7 +1310,7 @@ USE_SYNC_RESET_BLOCK: if use_async_reset = '0' generate
             if reset_n = '0' then
                 q <= '0';
             else
-                q <= a0 nor a1 nor a2 nor a3 nor a4;
+                q <= (a0 nor (a1 nor (a2 nor (a3 nor a4))));
             end if;
         end if;
     end process;
@@ -1351,7 +1351,7 @@ USE_ASYNC_RESET_BLOCK: if use_async_reset = '1' generate
         if reset_n = '0' then
             q <= '0';
         elsif rising_edge(clk) then
-            q <= a0 nor a1 nor a2 nor a3 nor a4 nor a5;
+            q <= (a0 nor (a1 nor (a2 nor (a3 nor (a4 nor a5)))));
         end if;
     end process;
 end generate;
@@ -1363,7 +1363,7 @@ USE_SYNC_RESET_BLOCK: if use_async_reset = '0' generate
             if reset_n = '0' then
                 q <= '0';
             else
-                q <= a0 nor a1 nor a2 nor a3 nor a4 nor a5;
+                q <= (a0 nor (a1 nor (a2 nor (a3 nor (a4 nor a5)))));
             end if;
         end if;
     end process;
@@ -1405,7 +1405,7 @@ USE_ASYNC_RESET_BLOCK: if use_async_reset = '1' generate
         if reset_n = '0' then
             q <= '0';
         elsif rising_edge(clk) then
-            q <= a0 nor a1 nor a2 nor a3 nor a4 nor a5 nor a6;
+            q <= (a0 nor (a1 nor (a2 nor (a3 nor (a4 nor (a5 nor a6))))));
         end if;
     end process;
 end generate;
@@ -1417,7 +1417,7 @@ USE_SYNC_RESET_BLOCK: if use_async_reset = '0' generate
             if reset_n = '0' then
                 q <= '0';
             else
-                q <= a0 nor a1 nor a2 nor a3 nor a4 nor a5 nor a6;
+                q <= (a0 nor (a1 nor (a2 nor (a3 nor (a4 nor (a5 nor a6))))));
             end if;
         end if;
     end process;

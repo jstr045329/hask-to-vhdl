@@ -119,7 +119,7 @@ def glueNames(nameList, functionStr):
     return functionStr.join(nameList)
 
 
-TWO_INPUT_INFIX_OPERATORS = ["nand"]
+TWO_INPUT_INFIX_OPERATORS = ["nand", "nor"]
 
 
 def wrapInSpaces(s):
