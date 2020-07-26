@@ -32,6 +32,7 @@ function count_bits(
 variable y : std_logic_vector(3 downto 0);
 begin
     y := (others => '0');
+    case x is
     when "00000000" =>
         y <= "0000";
     when "00000001" =>
