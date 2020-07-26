@@ -40,7 +40,7 @@ def main():
     y = []
     y.append("function count_bits(")
     y.append(tab() + ("x : std_logic_vector(%d downto 0)" % (NUM_INPUT_BITS-1,)))
-    y.append(tab() + ") return std_logic_vector(%d downto 0) is" %(NUM_OUTPUT_BITS-1,))
+    y.append(tab() + ") return std_logic_vector is")
     y.append("variable y : std_logic_vector(%d downto 0);" % (NUM_OUTPUT_BITS-1,))
     y.append("begin")
     y.append(tab() + "y := (others => '0');")
@@ -63,8 +63,6 @@ def main():
 if __name__ == "__main__":
     logicLines = main()
     templateLines = []
-    for line in logicLines:
-        print(line)
     with open(INPUT_FILE, 'r') as f:
         templateLines.extend(f.readlines())
     y = []
@@ -77,7 +75,6 @@ if __name__ == "__main__":
 
     with open(OUTPUT_FILE, 'w') as f:
         for line in y:
-            print(line)
             f.write(line)
 
 
