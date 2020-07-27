@@ -733,6 +733,16 @@ getNames :: [Information] -> [String]
 getNames sigList = map (\x -> nomen x) sigList
 
 
+convertGen2Const :: Information -> Information
+convertGen2Const p = 
+    Constant {  nomen = nomen p
+            ,   dataType = dataType p
+            ,   width = width p
+            ,   sDefault = sDefault p
+            ,   comments = comments p
+            }
+
+
 convertPort2Sig :: Information -> Information
 convertPort2Sig p = 
     VhdSig  {   nomen = nomen p

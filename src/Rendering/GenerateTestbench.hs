@@ -33,6 +33,14 @@ stopAtEnd x
     | otherwise = [(head x)] ++ stopAtEnd (tail x)
 
 
+stopAtGeneric :: [String] -> [String]
+stopAtGeneric x = untilKeyword x ["generic"] []
+
+
+afterGeneric :: [String] -> [String]
+afterGeneric x = afterKeyword x ["generic"]
+
+
 stopAtPort :: [String] -> [String]
 stopAtPort x = untilKeyword x ["port"] []
 
@@ -186,9 +194,15 @@ removeClocks x = [i | i <- x, not (isClock (nomen i))]
 
 getPorts :: [String] -> [Information]
 getPorts los = [x | x <- portList] where
---getPorts los = [x | x <- portList, Rendering.InfoTypes.isPort x] where
     portList = extractPorts los
     
+
+declareConstants :: [String] -> [String]
+declareConstants [] = []
+declareConstants los = declareBatch constList where
+    genList = extractGenerics los
+    constList = map convertGen2Const genList
+
 
 declareSignals :: [String] -> [String]
 declareSignals [] = []
@@ -223,6 +237,7 @@ generateTestbench los =
     ["",""] ++ 
     (glueStatements (generateComponentDec los)) ++ 
     ["",""] ++ 
+    (declareConstants (tail (dropLast (extractDeclaration "generic" los)))) ++ 
     (declareSignals (tail (dropLast (extractDeclaration "port" los)))) ++
     [""] ++
     ["constant clk_per : time := 10 ns;"] ++
