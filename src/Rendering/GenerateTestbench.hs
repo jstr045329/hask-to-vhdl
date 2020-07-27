@@ -237,7 +237,7 @@ generateTestbench los =
     ["",""] ++ 
     (glueStatements (generateComponentDec los)) ++ 
     ["",""] ++ 
-    (declareConstants (tail (dropLast (extractDeclaration "generic" los)))) ++ 
+    (declareConstants los) ++ 
     (declareSignals (tail (dropLast (extractDeclaration "port" los)))) ++
     [""] ++
     ["constant clk_per : time := 10 ns;"] ++
