@@ -62,7 +62,7 @@ testTokens =   ["entity", "entity_name", "is",
                 "generic", "(", "width", ":", "integer", ":=", "8", ";",
                 "depth", ":", "std_ulogic", ":=", "64", ";",
                 "rst_val", ":", "std_logic_vector", "(", "7", "downto", "0", ")", ";",
-                "other_val", ":", "std_logic", ")", ";",
+                "other_val", ":", "std_logic", ":=", "'1'", ")", ";",
                 "port", "(", "clk", ":", "in", "std_logic", ";",
                 "rst", ":", "in", "std_logic", ":=", "'0'", ";",
                 "q", ":", "out", "std_logic_vector", "(", "width", "-", "1", "downto", "0", ")", ")", ";",
@@ -229,23 +229,15 @@ extractWidth xs
     | otherwise                             = extractWidth (tail xs)
 
 
-hasDefault :: [String] -> Bool
-hasDefault xs
-    | (length xs) <= 3                      = False
-    | endOfDeclaration (xs !! 1)            = False
-    | (xs !! 1) == ":="                     = True
-    | otherwise                             = hasDefault (tail xs)
-
-
 extractPortDefault :: [String] -> DefaultValue
 extractPortDefault xs
-    | hasDefault xs                         = Specified (xs !! 5)
+    | genericHasDefault xs                  = Specified (xs !! 5)
     | otherwise                             = Unspecified
 
 
 extractGenericDefault :: [String] -> DefaultValue
 extractGenericDefault xs
-    | hasDefault xs                         = Specified (xs !! 4)
+    | portHasDefault xs                         = Specified (xs !! 4)
     | otherwise                             = Unspecified
 
 
