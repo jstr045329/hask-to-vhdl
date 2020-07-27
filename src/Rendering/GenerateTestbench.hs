@@ -200,7 +200,7 @@ getPorts los = [x | x <- portList] where
 declareConstants :: [String] -> [String]
 declareConstants [] = []
 declareConstants los = declareBatch constList where
-    genList = extractGenerics (stopAtPort (dropLastIfEnd los))
+    genList = extractGenerics (tail (dropLast (extractDeclaration "generic" los)))
     constList = map convertGen2Const genList
 
 
