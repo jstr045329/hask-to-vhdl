@@ -60,11 +60,11 @@ stopAtClosingParen (x:xs) numOpening numClosing =
 testTokens :: [String]
 testTokens =   ["entity", "entity_name", "is", 
                 "generic", "(", "width", ":", "integer", ":=", "8", ";",
-                "depth", ":", "integer", ":=", "64", ";",
+                "depth", ":", "std_ulogic", ":=", "64", ";",
                 "rst_val", ":", "std_logic_vector", "(", "7", "downto", "0", ")", ";",
                 "other_val", ":", "std_logic", ")", ";",
                 "port", "(", "clk", ":", "in", "std_logic", ";",
-                "rst", ":", "in", "std_logic", ";",
+                "rst", ":", "in", "std_logic", ":=", "'0'", ";",
                 "q", ":", "out", "std_logic_vector", "(", "width", "-", "1", "downto", "0", ")", ")", ";",
                 "end", "entity_name", ";",
                 "architecture", "behavioral", "of", "entity_name", "is",
@@ -237,11 +237,16 @@ hasDefault xs
     | otherwise                             = hasDefault (tail xs)
 
 
-extractDefault :: [String] -> DefaultValue
-extractDefault xs
-    | hasDefault xs                         = Specified (xs !! 2)
+extractPortDefault :: [String] -> DefaultValue
+extractPortDefault xs
+    | hasDefault xs                         = Specified (xs !! 5)
     | otherwise                             = Unspecified
 
+
+extractGenericDefault :: [String] -> DefaultValue
+extractGenericDefault xs
+    | hasDefault xs                         = Specified (xs !! 4)
+    | otherwise                             = Unspecified
 
 
 -- Assume this function is fed by extractDeclaration "generic", above, and surrounding 
@@ -252,7 +257,7 @@ extractGenerics x
     | otherwise = [Generic {  nomen     =   x !! 0
                            , dataType  =   inferDatatype (tail (tail x))
                            , width     =   extractWidth x
-                           , sDefault  =   (extractDefault x)
+                           , sDefault  =   (extractGenericDefault x)
                            , comments  =   [""]}
                            ] ++ extractGenerics (remove1Declaration x)
 
@@ -266,7 +271,7 @@ extractPorts x
                                 ,   direction = if ((x !! 2) == "in")
                                                     then In
                                                     else Out
-                                ,   sDefault = (extractDefault x)
+                                ,   sDefault = (extractPortDefault x)
                                 ,   sReset = (makeResetVal (inferDatatype (tail (tail (tail x)))))
                                 ,   clocked = Nothing
                                 ,   comments = []
