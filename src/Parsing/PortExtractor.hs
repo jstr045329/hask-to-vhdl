@@ -326,7 +326,7 @@ extractWidth xs
     | (length xs) < 2                       = WidthNotSpecified
     | (not (containsParens (untilKeyword xs [";"] []))) = WidthNotSpecified
     | (usesTo (untilKeywordIncEnd xs [";"] []))   = 
-        tokList2Width (afterKeyword (untilKeywordIncEnd xs [";"] []) ["to"])
+        tokList2Width (["(", "0", "to"] ++ (afterKeyword (untilKeywordIncEnd xs [";"] []) ["to"]))
 
     | (usesDownto (untilKeywordIncEnd xs [";"] [])) = 
         tokList2Width (untilKeywordIncEnd (skipDataType xs) [";"] [])
