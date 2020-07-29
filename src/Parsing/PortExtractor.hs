@@ -109,12 +109,11 @@ firstDefaultAssignment (x:xs) n
 -- have been removed:
 genericHasDefault :: [String] -> Bool
 genericHasDefault xs
-    -- TODO: Try changing 4 to 6 and see if that breaks anything.
-    | length xs <= 4                = False
-    | firstDefaultAssignment xs 0 == (-1) = False
-    | firstSemicolon xs 0 == (-1)   = (firstDefaultAssignment xs 0) > 0
+    | (length xs <= 6)              = False
+    | (firstDefaultAssignment xs 0 == (-1)) = False
+    | (firstSemicolon xs 0 == (-1)) = (firstDefaultAssignment xs 0) > 0
     | otherwise                     = (firstSemicolon xs 0) > (firstDefaultAssignment xs 0) 
-                            
+
 
 portHasDefault :: [String] -> Bool
 portHasDefault xs 
