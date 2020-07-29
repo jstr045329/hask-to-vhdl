@@ -55,7 +55,7 @@ afterKeywordEarlyTerm los keywordList termList
     | otherwise = afterKeyword (tail los) keywordList
 
 
--- Excludes matching tokens at the beginning
+-- EXCLUDES matching tokens at the beginning
 -- This function searches depth first, but terminates search when it encounters a semicolon
 -- so inefficiency is greatly reduced.
 afterAny :: [String] -> [[String]] -> [String]
@@ -65,5 +65,17 @@ afterAny los keywordListList
     | (length (afterKeywordEarlyTerm los (head keywordListList) [";"]) > 0) = 
         (afterKeywordEarlyTerm los (head keywordListList) [";"])
     | otherwise = afterAny los (tail keywordListList)
+
+
+-- INCLUDES matching tokens at the beginning
+-- This function searches depth first, but terminates search when it encounters a semicolon
+-- so inefficiency is greatly reduced.
+afterAnyIncFirst :: [String] -> [[String]] -> [String]
+afterAnyIncFirst los keywordListList
+    | los == [] = []
+    | keywordListList == [] = []
+    | (length (afterKeywordEarlyTerm los (head keywordListList) [";"]) > 0) = 
+        (afterKeywordEarlyTerm los (head keywordListList) [";"]) ++ (head keywordListList)
+    | otherwise = afterAnyIncFirst los (tail keywordListList)
 
 
