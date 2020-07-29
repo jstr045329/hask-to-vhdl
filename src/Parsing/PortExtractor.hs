@@ -1,10 +1,12 @@
 module Parsing.PortExtractor where
-import Parsing.GuaranteeWhitespace
-import Rendering.InfoTypes
-import Text.Printf
-import Tools.StringTools
+import Data.List
 import Data.Maybe
+import Parsing.GuaranteeWhitespace
 import Parsing.TokenMatchingTools
+import Rendering.InfoTypes
+import Tools.LogicTools
+import Tools.StringTools
+import Text.Printf
 
 
 thisLineContainsPort :: String -> Bool
@@ -215,6 +217,24 @@ extractWidthVariable xs
     | otherwise                             = error "xs !! 1 MUST equal to or downto!!!"
 
 
+usesTo :: [String] -> Bool
+usesTo [] = False
+usesTo (x:xs)
+    | (x == ";") = False
+    | (x == "downto") = False
+    | (x == "to") = True
+    | otherwise = usesDownto xs
+
+
+usesDownto :: [String] -> Bool
+usesDownto [] = False
+usesDownto (x:xs)
+    | (x == ";") = False
+    | (x == "to") = False
+    | (x == "downto") = True
+    | otherwise = usesDownto xs
+
+
 rangeToken :: String -> Bool
 rangeToken "downto"                         = True
 rangeToken "to"                             = True
@@ -226,16 +246,98 @@ endOfDeclaration ";"                        = True
 endOfDeclaration _                          = False
 
 
+untilClosingParen :: [String] -> Int -> [String]
+untilClosingParen [] _ = []
+--untilClosingParen [] n = 
+--    if (n > 1)
+--        then error "Unbalanced parentheses"
+--        else []
+untilClosingParen los n
+    -- TODO: Check whether it is possible for function to terminate with 
+    -- unbalanced parentheses without throwing error
+    | (n < 0) = error "Unbalanced parentheses"
+    | ((head los) == ";") = []
+    | ((head los) == "(") = [head los] ++ (untilClosingParen (tail los) (n + 1))
+    | (((head los) == ")") && (n == 1)) = [head los]
+    | ((head los) == ")") = [head los] ++ (untilClosingParen (tail los) (n - 1))
+    | otherwise = [head los] ++ (untilClosingParen (tail los) n)
+
+
+-- Define a list of operators that are allowed in range declarations:
+rangeOperatorList :: [String]
+rangeOperatorList = ["+", "-", "*", "/", "**"]
+
+
+-- Make a descriptive name to determine if a token is a range operator:
+isRangeOperator :: String -> Bool
+isRangeOperator s = elem s rangeOperatorList
+
+
+-- Returns True if a list of strings is all numbers or range operators.
+-- Returns False otherwise. 
+allNumericOrOpToks :: [String] -> Bool
+allNumericOrOpToks [] = True
+allNumericOrOpToks los
+    | (not (isRangeOperator (head los))) && (not (is1Thru9 (head (head los)))) = False
+    | otherwise = allNumericOrOpToks (tail los)
+
+
+-- This function drops tokens until it encounters an opening parenthesis. 
+-- Then it builds a list until closing parenthesis is found. 
+-- If your VHDL file is syntactically correct, first and last tokens should
+-- always be ()'s. 
+extractWidthDownto' :: [String] -> [String]
+extractWidthDownto' [] = []
+extractWidthDownto' (x:xs)
+    | (x == "(") = [x] ++ untilClosingParen (x:xs) 0
+    | (x == ";") = []
+    | otherwise = extractWidthDownto' xs
+    
+
+-- This function drops tokens until it encounters an opening parenthesis. 
+-- Then it builds a list until closing parenthesis is found. 
+-- If your VHDL file is syntactically correct, first and last tokens should
+-- always be ()'s. 
+extractWidthTo' :: [String] -> [String]
+extractWidthTo' [] = []
+extractWidthTo' (x:xs)
+    | (x == "(") = [x] ++ untilClosingParen (x:xs) 0
+    | (x == ";") = []
+    | otherwise = extractWidthTo' xs
+   
+
+containsParens :: [String] -> Bool
+containsParens [] = False
+containsParens (x:xs)
+    | (x == "(") = True
+    | (x == ")") = True
+    | otherwise = containsParens xs
+ 
+
+tokList2Width :: [String] -> Width
+tokList2Width los = Soft (intercalate " " (extractWidthTo' los))
+
+
+skipDataType :: [String] -> [String]
+skipDataType los = afterAny los 
+    [ ["std_logic_vector"]
+    , ["std_ulogic_vector"]
+    , ["std_logic"]
+    , ["std_ulogic"]
+    , ["signed"]
+    , ["unsigned"]
+    , ["integer"]
+    ]
+
+
 extractWidth :: [String] -> Width
 extractWidth xs
     | (length xs) < 2                       = WidthNotSpecified
-    | (xs !! 1) == "downto"                 = if (tokenContainsInt (xs !! 0))
-                                                then Hard (extractUpper xs)
-                                                else Soft (extractWidthVariable xs)
-    | (xs !! 1) == "to"                     = if (tokenContainsInt (xs !! 2))
-                                                then Hard (extractUpper xs)
-                                                else Soft (extractWidthVariable xs)
-    | endOfDeclaration (xs !! 1)            = WidthNotSpecified
+    | (not (containsParens (untilKeyword xs [";"] []))) = WidthNotSpecified
+    | (usesTo (untilKeyword xs [";"] []))   = tokList2Width (afterKeyword (untilKeyword xs [";"] []) ["to"])
+
+    | (usesDownto (untilKeyword xs [";"] [])) = tokList2Width (untilKeyword (skipDataType xs) [";"] [])
+
     | otherwise                             = extractWidth (tail xs)
 
 
@@ -247,7 +349,7 @@ extractPortDefault xs
 
 extractGenericDefault :: [String] -> DefaultValue
 extractGenericDefault xs
-    | portHasDefault xs                         = Specified (xs !! 4)
+    | portHasDefault xs                     = Specified (xs !! 4)
     | otherwise                             = Unspecified
 
 
@@ -263,6 +365,9 @@ extractGenerics x
                            , comments  =   [""]}
                            ] ++ extractGenerics (remove1Declaration x)
 
+-- TODO: PICK UP HERE: 
+--      1. Fix (0 downto 0)
+--      2. Fix conversion of std_logic generic to std_logic_vector constant
 
 extractPorts :: [String] -> [Information]
 extractPorts x
