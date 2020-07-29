@@ -10,6 +10,7 @@ import qualified Data.ByteString.Internal as B
 import qualified Data.ByteString.Unsafe as B
 import Foreign.Ptr (castPtr)
 import Tools.StringTools
+import Data.List
 
 
 ----------------------------------------------------------------------------------------------------
@@ -47,6 +48,7 @@ data DataType =           StdLogic
                         | Bit
                         | UnconstrainedInt
                         | ConstrainedInt Int Int
+                        | Record String [Information]
                           deriving (Eq, Show)
 
 
@@ -80,7 +82,7 @@ data Information =
                 , clocked               :: Maybe Bool -- Nothing == Not decided. Just True/False = Decided
                 , comments              :: [String]
                 , assertionLevel        :: Maybe String
-                } 
+                }
 
             |     Variable {
                   nomen                 :: String
@@ -280,7 +282,12 @@ datatypeToStr Unsigned (Hard n)   = "unsigned(" ++ (show (n-1)) ++ " downto 0)"
 datatypeToStr Unsigned (Soft s)   = "unsigned(" ++ s ++ "-1 downto 0)"
 datatypeToStr UnconstrainedInt _ = "integer"
 datatypeToStr (ConstrainedInt x y) _ = "integer range " ++ (show x) ++ " to " ++ (show y)
-
+datatypeToStr (Record s infoList) _ =
+    "type " ++ s ++ " is record\n" ++ 
+    (intercalate 
+        "\n"
+        (map (\x -> ("    " ++ (declareOneThing x))) infoList)) ++
+    "end record " ++ s ++ ";"
 
 ----------------------------------------------------------------------------------------------------
 --                                  Convert Datatype to String
@@ -724,6 +731,10 @@ declareWithKind (Literal _ _ _ _) = error "You do not declare a literal"
 
 declareBatch :: [Information] -> [String]
 declareBatch sList = map declareWithKind sList
+
+
+
+
 
 
 -- Extract the names from a list of Informations
