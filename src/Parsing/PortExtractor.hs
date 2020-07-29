@@ -4,8 +4,8 @@ import Data.Maybe
 import Parsing.GuaranteeWhitespace
 import Parsing.TokenMatchingTools
 import Rendering.InfoTypes
-import Tools.LogicTools
 import Tools.StringTools
+import Tools.ListTools
 import Text.Printf
 
 
@@ -292,7 +292,11 @@ extractWidthDownto' (x:xs)
 extractWidthTo' :: [String] -> [String]
 extractWidthTo' [] = []
 extractWidthTo' (x:xs)
-    | (x == "(") = untilClosingParen (x:xs) 0
+--    | (x == "(") = untilClosingParen (x:xs) 0
+    | (x == "(") = 
+        if (usesTo (x:xs))
+            then dropLast (skipN (untilClosingParen (x:xs) 0) 3)
+            else tail (untilKeyword (x:xs) ["downto"] [])
     | (x == ";") = []
     | otherwise = extractWidthTo' xs
    
