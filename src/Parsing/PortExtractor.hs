@@ -181,7 +181,7 @@ inferDatatype (oneTok:moreTokens)
     | containsSubstr oneTok "bit"           = Bit
     | containsSubstr oneTok "integer"       = resolveConstrainedness moreTokens
     | otherwise                             = error "Unrecognized datatype"
-
+ 
 
 is1Thru9 :: Char -> Bool
 is1Thru9 c = elem c ['0'..'9']
