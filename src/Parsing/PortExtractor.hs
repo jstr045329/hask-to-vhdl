@@ -113,7 +113,7 @@ genericHasDefault xs
                             
 
 portHasDefault :: [String] -> Bool
-portHasDefault xs = 
+portHasDefault xs 
     | length xs <= 5                = False
     | firstSemicolon xs 0 == (-1)   = (firstDefaultAssignment xs 0) > 0
     | otherwise                     = (firstSemicolon xs 0) > (firstDefaultAssignment xs 0) 
