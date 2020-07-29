@@ -172,8 +172,8 @@ resolveConstrainedness tokList
 
 inferDatatype :: [String] -> DataType
 inferDatatype (oneTok:moreTokens)
-    | containsSubstr oneTok "std_logic"     = StdLogicVector
-    | containsSubstr oneTok "std_ulogic"    = StdULogicVector
+    | containsSubstr oneTok "std_logic_vector" = StdLogicVector
+    | containsSubstr oneTok "std_ulogic_vector" = StdULogicVector
     | containsSubstr oneTok "std_logic"     = StdLogic
     | containsSubstr oneTok "std_ulogic"    = StdULogic
     | containsSubstr oneTok "unsigned"      = Unsigned
