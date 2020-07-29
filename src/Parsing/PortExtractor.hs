@@ -113,7 +113,10 @@ genericHasDefault xs
                             
 
 portHasDefault :: [String] -> Bool
-portHasDefault xs = genericHasDefault xs                           
+portHasDefault xs = 
+    | length xs <= 5                = False
+    | firstSemicolon xs 0 == (-1)   = (firstDefaultAssignment xs 0) > 0
+    | otherwise                     = (firstSemicolon xs 0) > (firstDefaultAssignment xs 0) 
 
 
 -- This function repeats the tail function n times.
@@ -163,8 +166,11 @@ resolveConstrainedness tokList
 
 inferDatatype :: [String] -> DataType
 inferDatatype (oneTok:moreTokens)
+    | containsSubstr oneTok "std_logic"     = StdLogicVector
+    | containsSubstr oneTok "std_ulogic"    = StdULogicVector
     | containsSubstr oneTok "std_logic"     = StdLogic
     | containsSubstr oneTok "std_ulogic"    = StdULogic
+    | containsSubstr oneTok "unsigned"      = Unsigned
     | containsSubstr oneTok "signed"        = Signed
     | containsSubstr oneTok "bit"           = Bit
     | containsSubstr oneTok "integer"       = resolveConstrainedness moreTokens
