@@ -258,7 +258,7 @@ untilClosingParen los n
     | (n < 0) = error "Unbalanced parentheses"
     | ((head los) == ";") = []
 --    | (((head los) /= "(") && (n == 0)) = untilClosingParen (tail los) 0
---    | ((head los) == "(") = [head los] ++ (untilClosingParen (tail los) (n + 1))
+    | ((head los) == "(") = [head los] ++ (untilClosingParen (tail los) (n + 1))
     | (((head los) == ")") && (n == 1)) = [head los]
     | ((head los) == ")") = [head los] ++ (untilClosingParen (tail los) (n - 1))
     | otherwise = [head los] ++ (untilClosingParen (tail los) n)
@@ -302,7 +302,7 @@ extractWidthDownto' (x:xs)
 extractWidthTo' :: [String] -> [String]
 extractWidthTo' [] = []
 extractWidthTo' (x:xs)
-    | (x == "(") = [x] ++ untilClosingParen (x:xs) 1
+    | (x == "(") = [x] ++ untilClosingParen (x:xs) 0
     | (x == ";") = []
     | otherwise = extractWidthTo' xs
    
