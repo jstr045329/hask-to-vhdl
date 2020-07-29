@@ -295,8 +295,8 @@ extractWidthTo' (x:xs)
 --    | (x == "(") = untilClosingParen (x:xs) 0
     | (x == "(") = 
         if (usesTo (x:xs))
-            then dropLast (skipN (untilClosingParen (x:xs) 0) 3)
-            else tail (untilKeyword (x:xs) ["downto"] [])
+            then dropLast (dropLast (dropLast (skipN (untilClosingParen (x:xs) 0) 3)))
+            else dropLast (dropLast (tail (untilKeyword (x:xs) ["downto"] [])))
     | (x == ";") = []
     | otherwise = extractWidthTo' xs
    
