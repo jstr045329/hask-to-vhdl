@@ -245,13 +245,13 @@ endOfDeclaration :: String -> Bool
 endOfDeclaration ";"                        = True
 endOfDeclaration _                          = False
 
-
-untilClosingParen :: [String] -> Int -> [String]
-untilClosingParen [] _ = []
 --untilClosingParen [] n = 
 --    if (n > 1)
 --        then error "Unbalanced parentheses"
 --        else []
+
+untilClosingParen :: [String] -> Int -> [String]
+untilClosingParen [] _ = []
 untilClosingParen los n
     -- TODO: Check whether it is possible for function to terminate with 
     -- unbalanced parentheses without throwing error
@@ -302,7 +302,7 @@ extractWidthDownto' (x:xs)
 extractWidthTo' :: [String] -> [String]
 extractWidthTo' [] = []
 extractWidthTo' (x:xs)
-    | (x == "(") = [x] ++ untilClosingParen (x:xs) 0
+    | (x == "(") = [x] ++ untilClosingParen (x:xs) 1
     | (x == ";") = []
     | otherwise = extractWidthTo' xs
    
