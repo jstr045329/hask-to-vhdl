@@ -101,9 +101,8 @@ firstDefaultAssignment :: [String] -> Int -> Int
 firstDefaultAssignment [] n = (-1)
 firstDefaultAssignment (x:xs) n 
     | (x == ";") = (-1)
-    | otherwise = if (x == ":=") 
-                    then n
-                    else firstDefaultAssignment xs (n+1)
+    | (x == ":=") = n
+    | otherwise = firstDefaultAssignment xs (n+1)
 
 
 -- Assume this function is fed by extractDeclaration, above, except outermost ('s & )'s
@@ -119,9 +118,9 @@ genericHasDefault xs
 
 portHasDefault :: [String] -> Bool
 portHasDefault xs 
-    | length xs <= 7                = False
-    | firstDefaultAssignment xs 0 == (-1) = False
-    | firstSemicolon xs 0 == (-1)   = (firstDefaultAssignment xs 0) > 0
+    | (length xs <= 7)                = False
+    | (firstDefaultAssignment xs 0 == (-1)) = False
+    | (firstSemicolon xs 0 == (-1))   = (firstDefaultAssignment xs 0) > 0
     | otherwise                     = (firstSemicolon xs 0) > (firstDefaultAssignment xs 0) 
 
 
