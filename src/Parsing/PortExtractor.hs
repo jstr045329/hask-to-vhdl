@@ -277,29 +277,16 @@ allNumericOrOpToks los
 -- Then it builds a list until closing parenthesis is found. 
 -- If your VHDL file is syntactically correct, first and last tokens should
 -- always be ()'s. 
-extractWidthDownto' :: [String] -> [String]
-extractWidthDownto' [] = []
-extractWidthDownto' (x:xs)
-    | (x == "(") = [x] ++ untilClosingParen (x:xs) 0
-    | (x == ";") = []
-    | otherwise = extractWidthDownto' xs
-    
-
--- This function drops tokens until it encounters an opening parenthesis. 
--- Then it builds a list until closing parenthesis is found. 
--- If your VHDL file is syntactically correct, first and last tokens should
--- always be ()'s. 
 extractWidthTo' :: [String] -> [String]
 extractWidthTo' [] = []
 extractWidthTo' (x:xs)
---    | (x == "(") = untilClosingParen (x:xs) 0
     | (x == "(") = 
         if (usesTo (x:xs))
             then dropLast (dropLast (dropLast (skipN (untilClosingParen (x:xs) 0) 3)))
             else dropLast (dropLast (tail (untilKeyword (x:xs) ["downto"] [])))
     | (x == ";") = []
     | otherwise = extractWidthTo' xs
-   
+
 
 containsParens :: [String] -> Bool
 containsParens [] = False
@@ -362,8 +349,7 @@ extractGenerics x
                            , comments  =   [""]}
                            ] ++ extractGenerics (remove1Declaration x)
 
--- TODO: PICK UP HERE: 
---      1. Fix (0 downto 0)
+-- TODO:
 --      2. Fix conversion of std_logic generic to std_logic_vector constant
 
 extractPorts :: [String] -> [Information]

@@ -207,7 +207,7 @@ declareConstants los = declareBatch constList where
 declareSignals :: [String] -> [String]
 declareSignals [] = []
 declareSignals los = declareBatch sigList where
-    portList = extractPorts los
+    portList = extractPorts (generateComponentDec los)
     rawSignals = map convertPort2Sig portList
     clockList = extractClocks rawSignals
     resetList = extractResets rawSignals
