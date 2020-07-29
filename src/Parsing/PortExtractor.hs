@@ -218,21 +218,11 @@ extractWidthVariable xs
 
 
 usesTo :: [String] -> Bool
-usesTo [] = False
-usesTo (x:xs)
-    | (x == ";") = False
-    | (x == "downto") = False
-    | (x == "to") = True
-    | otherwise = usesDownto xs
+usesTo los = elem "to" (untilKeywordIncEnd los [";"] [])
 
 
 usesDownto :: [String] -> Bool
-usesDownto [] = False
-usesDownto (x:xs)
-    | (x == ";") = False
-    | (x == "to") = False
-    | (x == "downto") = True
-    | otherwise = usesDownto xs
+usesDownto los = elem "downto" (untilKeywordIncEnd los [";"] [])
 
 
 rangeToken :: String -> Bool
@@ -302,7 +292,7 @@ extractWidthDownto' (x:xs)
 extractWidthTo' :: [String] -> [String]
 extractWidthTo' [] = []
 extractWidthTo' (x:xs)
-    | (x == "(") = [x] ++ untilClosingParen (x:xs) 0
+    | (x == "(") = untilClosingParen (x:xs) 0
     | (x == ";") = []
     | otherwise = extractWidthTo' xs
    
@@ -335,9 +325,11 @@ extractWidth :: [String] -> Width
 extractWidth xs
     | (length xs) < 2                       = WidthNotSpecified
     | (not (containsParens (untilKeyword xs [";"] []))) = WidthNotSpecified
-    | (usesTo (untilKeyword xs [";"] []))   = tokList2Width (afterKeyword (untilKeyword xs [";"] []) ["to"])
+    | (usesTo (untilKeywordIncEnd xs [";"] []))   = 
+        tokList2Width (afterKeyword (untilKeywordIncEnd xs [";"] []) ["to"])
 
-    | (usesDownto (untilKeyword xs [";"] [])) = tokList2Width (untilKeyword (skipDataType xs) [";"] [])
+    | (usesDownto (untilKeywordIncEnd xs [";"] [])) = 
+        tokList2Width (untilKeywordIncEnd (skipDataType xs) [";"] [])
 
     | otherwise                             = extractWidth (tail xs)
 
