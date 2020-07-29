@@ -99,8 +99,11 @@ firstSemicolon (x:xs) n = if (x == ";") then n
 -- Returns -1 if no such token is found.
 firstDefaultAssignment :: [String] -> Int -> Int
 firstDefaultAssignment [] n = (-1)
-firstDefaultAssignment (x:xs) n = if (x == ":=") then n
-                                                 else firstDefaultAssignment xs (n+1)
+firstDefaultAssignment (x:xs) n 
+    | (x == ";") = (-1)
+    | otherwise = if (x == ":=") 
+                    then n
+                    else firstDefaultAssignment xs (n+1)
 
 
 -- Assume this function is fed by extractDeclaration, above, except outermost ('s & )'s
@@ -109,6 +112,7 @@ genericHasDefault :: [String] -> Bool
 genericHasDefault xs
     -- TODO: Try changing 4 to 6 and see if that breaks anything.
     | length xs <= 4                = False
+    -- | firstDefaultAssignment xs 0 == (-1) = False
     | firstSemicolon xs 0 == (-1)   = (firstDefaultAssignment xs 0) > 0
     | otherwise                     = (firstSemicolon xs 0) > (firstDefaultAssignment xs 0) 
                             
@@ -116,6 +120,7 @@ genericHasDefault xs
 portHasDefault :: [String] -> Bool
 portHasDefault xs 
     | length xs <= 7                = False
+    | firstDefaultAssignment xs 0 == (-1) = False
     | firstSemicolon xs 0 == (-1)   = (firstDefaultAssignment xs 0) > 0
     | otherwise                     = (firstSemicolon xs 0) > (firstDefaultAssignment xs 0) 
 
