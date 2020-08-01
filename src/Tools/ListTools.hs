@@ -1,6 +1,12 @@
 module Tools.ListTools where
 
 
+-- Define a version of tail that doesn't die just because you give it an empty list:
+tail' :: [a] -> [a]
+tail' [] = []
+tail' x = tail x
+
+
 skipN :: [a] -> Int -> [a]
 skipN [] _ = []
 skipN someList 0 = someList
@@ -28,4 +34,7 @@ lastN someList n
     | otherwise = lastN (tail someList) n
 
     
-
+-- This function repeats the tail function n times.
+repTail :: Int -> [String] -> [String]
+repTail 0 xs = xs
+repTail n xs = tail (repTail (n-1) xs)

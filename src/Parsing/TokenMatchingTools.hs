@@ -52,7 +52,7 @@ afterKeywordEarlyTerm los keywordList termList
     | los == [] = []
     | take (length termList) los == termList = []
     | take (length keywordList) los == keywordList = skipNTokens los (length keywordList)
-    | otherwise = afterKeyword (tail los) keywordList
+    | otherwise = afterKeywordEarlyTerm (tail los) keywordList termList
 
 
 -- EXCLUDES matching tokens at the beginning

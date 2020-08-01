@@ -195,19 +195,19 @@ removeClocks x = [i | i <- x, not (isClock (nomen i))]
 getPorts :: [String] -> [Information]
 getPorts los = [x | x <- portList] where
     portList = extractPorts los
-    
+
 
 declareConstants :: [String] -> [String]
 declareConstants [] = []
 declareConstants los = declareBatch constList where
-    genList = extractGenerics (tail (dropLast (extractDeclaration "generic" los)))
+    genList = extractGenerics (tail' (dropLast (extractDeclaration "generic" los)))
     constList = map convertGen2Const genList
 
 
 declareSignals :: [String] -> [String]
 declareSignals [] = []
 declareSignals los = declareBatch sigList where
-    portList = extractPorts (generateComponentDec los)
+    portList = extractPorts los
     rawSignals = map convertPort2Sig portList
     clockList = extractClocks rawSignals
     resetList = extractResets rawSignals
@@ -226,6 +226,7 @@ resetStimSignals los = resetBatch stimSigs where
 generateTestbench :: [String] -> [String]
 generateTestbench los = 
     (commentBlock ["Testbench for " ++ (getEntityName los)]) ++ 
+    --(map show (extractPorts (extractDeclaration "port" los))) ++ 
     ["library ieee;"] ++
     ["use ieee.std_logic_1164.all;"] ++
     ["use ieee.numeric_std.all;"] ++
@@ -250,7 +251,9 @@ generateTestbench los =
     (commentBlock ["Boiler Plate"]) ++ 
     ["CLOCK_PROCESS: process"] ++
     ["begin"] ++
-    ["    if sim_done /= '1' then"] ++
+    ["    if sim_done = '1' then"] ++
+    ["        wait;"] ++
+    ["    else"] ++ 
     ["        wait for clk_per/2;"] ++
     ["        clk <= not clk;"] ++
     ["    end if;"] ++
@@ -276,7 +279,7 @@ generateTestbench los =
     (generatePortMap "UUT" los) ++ 
     [""] ++
     [""] ++
-    ["end architecture behavioral_" ++ (getEntityName los) ++ ";"] ++ 
+    ["end architecture behavioral_" ++ (getEntityName los) ++ "_tb;"] ++ 
     [""] ++
     [""] 
 

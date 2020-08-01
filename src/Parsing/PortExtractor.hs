@@ -67,6 +67,8 @@ testTokens =   ["entity", "entity_name", "is",
                 "other_val", ":", "std_logic", ":=", "'1'", ")", ";",
                 "port", "(", "clk", ":", "in", "std_logic", ";",
                 "rst", ":", "in", "std_logic", ":=", "'0'", ";",
+                "p", ":", "out", "std_logic_vector", "(", "width", "-", "1", "downto", "0", ")", ";",
+                "r", ":", "out", "std_logic_vector", "(", "width", "-", "1", "downto", "0", ")", ";",
                 "q", ":", "out", "std_logic_vector", "(", "width", "-", "1", "downto", "0", ")", ")", ";",
                 "end", "entity_name", ";",
                 "architecture", "behavioral", "of", "entity_name", "is",
@@ -125,12 +127,6 @@ portHasDefault xs
     | otherwise                     = (firstSemicolon xs 0) > (firstDefaultAssignment xs 0) 
 
 
--- This function repeats the tail function n times.
-repTail :: Int -> [String] -> [String]
-repTail 0 xs = xs
-repTail n xs = tail (repTail (n-1) xs)
-
-
 -- This function assumes the head of the list is the name of a declaration,
 -- either generic or port. This function will locate the semicolon, and 
 -- remove everything up to and including the semicolon. If the semicolon is
@@ -181,41 +177,75 @@ inferDatatype (oneTok:moreTokens)
     | containsSubstr oneTok "bit"           = Bit
     | containsSubstr oneTok "integer"       = resolveConstrainedness moreTokens
     | otherwise                             = error "Unrecognized datatype"
- 
 
-is1Thru9 :: Char -> Bool
-is1Thru9 c = elem c ['0'..'9']
+
+is0Thru9 :: Char -> Bool
+is0Thru9 c = elem c ['0'..'9']
 
 
 tokenContainsInt :: String -> Bool
 tokenContainsInt ""                         = False
 tokenContainsInt s
     | (length s) < 1                        = False
-    | (s !! 0) == '-' && is1Thru9 (s !! 1)  = True
-    | is1Thru9 (s !! 0)                     = True
+    | (s !! 0) == '-' && is0Thru9 (s !! 1)  = True
+    | is0Thru9 (s !! 0)                     = True
     | otherwise                             = False
 
 
-extractUpper :: [String] -> Integer
-extractUpper xs
-    | (xs !! 1) == "downto"                 = read (xs !! 0)
-    | (xs !! 1) == "to"                     = read (xs !! 2)
-    | otherwise                             = error "xs !! 1 MUST equal to or downto!!!"
+-- This function starts at opening paren, and searches until "downto".
+-- Excludes paren and "downto":
+findParenToDownto :: [String] -> [String]
+findParenToDownto los = afterKeyword (untilKeyword los ["downto"] []) ["("]
 
 
-extractLower :: [String] -> Integer
-extractLower xs
-    | (xs !! 1) == "downto"                 = read (xs !! 2)
-    | (xs !! 1) == "to"                     = read (xs !! 0)
-    | otherwise                             = error "xs !! 1 MUST equal to or downto!!!"
+-- This function starts at "to" and continues to the closing paren.
+-- Excludes "to" and paren.
+findToToParen :: [String] -> [String]
+findToToParen los = afterKeyword (untilKeyword los [")"] []) ["to"]
+
+
+-- NOTE: This function fails when last token is not a semicolon.
+extractWidthExpression :: [String] -> [String]
+extractWidthExpression [] = []
+extractWidthExpression xs
+    | (usesTo xs)                           = findToToParen xs
+    | (usesDownto xs)                       = findParenToDownto xs
+    | otherwise                             = extractWidthExpression (tail xs)
+
+
+startsWithNum :: String -> Bool
+startsWithNum s = elem (head s) ['0'..'9']
+
+
+-- This function decides whether a string is a variable (or port, signal, generic, etc.)
+-- soley on whether the first character in the string is a letter. 
+-- This function will break if you feed it a hex literal, but since nobody uses hex literals
+-- to define vector widths in VHDL, I'm not worried about it. 
+isVariable :: String -> Bool
+isVariable s = not (startsWithNum s)
+
+
+-- This drops the last token in a list if that token is an operator that is allowed in range expressions.
+-- The purpose for doing this is so that if you have:
+--      w - 1
+-- and the 1 is stripped off, the - will be stripped off as well. 
+dropLastTokIfOp :: [String] -> [String]
+dropLastTokIfOp [] = []
+dropLastTokIfOp los
+    | (isRangeOperator (last los)) = dropLast los
+    | otherwise = los
 
 
 extractWidthVariable :: [String] -> String
-extractWidthVariable xs
-    | (xs !! 1) == "downto"                 = xs !! 0
-    | (xs !! 1) == "to"                     = xs !! 2
-    | otherwise                             = error "xs !! 1 MUST equal to or downto!!!"
-
+extractWidthVariable [] = "baloney"
+extractWidthVariable los = 
+    if (length (extractWidthExpression los)) > 0 
+        --then (intercalate " " (extractWidthExpression los))
+        then (head (extractWidthExpression los))
+        else "this line failed" 
+    --intercalate " " 
+        --(dropLastTokIfOp [s | s <- (extractWidthExpression los), (Parsing.PortExtractor.isVariable s) || (isRangeOperator s)])
+    
 
 usesTo :: [String] -> Bool
 usesTo los = elem "to" (untilKeywordIncEnd los [";"] [])
@@ -266,12 +296,18 @@ isRangeOperator s = elem s rangeOperatorList
 
 -- Returns True if a list of strings is all numbers or range operators.
 -- Returns False otherwise. 
-allNumericOrOpToks :: [String] -> Bool
-allNumericOrOpToks [] = True
-allNumericOrOpToks los
-    | (not (isRangeOperator (head los))) && (not (is1Thru9 (head (head los)))) = False
-    | otherwise = allNumericOrOpToks (tail los)
+-- allNumericOrOpToks :: [String] -> Bool
+-- allNumericOrOpToks [] = True
+-- allNumericOrOpToks los
+    -- | (not (isRangeOperator (head los))) && (not (is0Thru9 (head (head los)))) = False
+    -- | otherwise = allNumericOrOpToks (tail los)
 
+
+terminateOnMinus :: [String] -> [String]
+terminateOnMinus [] = []
+terminateOnMinus los
+    | (head los) == "-" = []
+    | otherwise = [head los] ++ terminateOnMinus (tail los)
 
 -- This function drops tokens until it encounters an opening parenthesis. 
 -- Then it builds a list until closing parenthesis is found. 
@@ -283,7 +319,7 @@ extractWidthTo' (x:xs)
     | (x == "(") = 
         if (usesTo (x:xs))
             then dropLast (skipN (untilClosingParen (x:xs) 0) 3)
-            else tail (untilKeyword (x:xs) ["downto"] [])
+            else tail (terminateOnMinus (untilKeyword (x:xs) ["downto"] []))
     | (x == ";") = []
     | otherwise = extractWidthTo' xs
 
@@ -297,8 +333,8 @@ containsParens (x:xs)
  
 
 tokList2Width :: [String] -> Width
-tokList2Width los = Soft (intercalate " " (extractWidthTo' los))
-
+tokList2Width [] = Soft "Soft, Soft Baloney" -- TODO: Delete this line. Delete all baloney references
+tokList2Width los = Soft (extractWidthVariable los)
 
 skipDataType :: [String] -> [String]
 skipDataType los = afterAny los 
@@ -325,15 +361,19 @@ extractWidth xs
     | otherwise                             = extractWidth (tail xs)
 
 
+-- Note: This breaks under this condition:
+-- extractPortDefault  (tokenize ["r : out std_logic_vector := (others => '1')))))))))))))))))))))));"])
 extractPortDefault :: [String] -> DefaultValue
 extractPortDefault xs
-    | genericHasDefault xs                  = Specified (xs !! 5)
+    | portHasDefault xs                     = Specified (xs !! 5)
     | otherwise                             = Unspecified
 
 
+-- Note: This breaks under this condition:
+-- extractGenericDefault  (tokenize ["r : out std_logic_vector := (others => '1')))))))))))))))))))))));"])
 extractGenericDefault :: [String] -> DefaultValue
 extractGenericDefault xs
-    | portHasDefault xs                     = Specified (xs !! 4)
+    | genericHasDefault xs                  = Specified (xs !! 4)
     | otherwise                             = Unspecified
 
 
@@ -369,11 +409,12 @@ extractPorts x
                                 }] ++ extractPorts (remove1Declaration x) 
 
 
+-- TODO: Replace nameIsInList with elem
 nameIsInList :: String -> [String] -> Bool
 nameIsInList _ []           = False
 nameIsInList name (x:xs)    = if (name == x) then True
                               else nameIsInList name xs
-                           
+
 
 isPort :: String -> [String] -> Bool
 isPort name tokList = nameIsInList name $ extractDeclaration "port" tokList
