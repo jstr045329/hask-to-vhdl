@@ -110,8 +110,11 @@ generatePortMap instName los
     | otherwise = [instName, ": ", modName] ++ genMap ++ portMap 
         where
             modName = getEntityName los
-            entChunk = skipNTokens (stopAtEnd (afterKeyword los ["entity"])) 4
-            genMap = genDec2Map entChunk
+            --entChunk = skipNTokens (stopAtEnd (afterKeyword los ["entity"])) 4
+            entChunk = stopAtEnd (afterKeyword los ["entity"])
+            genMap = (if (elem "generic" los)
+                        then (genDec2Map entChunk)
+                        else [])
             portMap = portDec2Map entChunk
 
 
