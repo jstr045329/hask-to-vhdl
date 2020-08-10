@@ -246,6 +246,7 @@ generateTestbench los =
     [""] ++
     ["constant clk_per : time := 10 ns;"] ++
     ["signal sim_done : std_logic := '0';"] ++
+    ["signal test_stage : integer := 0;"] ++
     [""] ++
     [""] ++
     ["begin"] ++
