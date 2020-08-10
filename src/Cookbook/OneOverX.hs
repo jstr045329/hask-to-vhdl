@@ -50,7 +50,6 @@ shouldXStop x tinyX tinyY bigX bigY xGrowthRate
     | otherwise = False
 
 
---generateOneChunk :: (Integral a, Data.Bits.Bits a, Integral b) => b -> a -> a -> [String]
 generateOneChunk :: Integer -> Integer -> Integer -> [String]
 generateOneChunk n slope bias = 
     [(elseClause n) ++ "if x > " ++ (int2Str bias 64) ++ " then"] ++ 
@@ -79,14 +78,11 @@ makeBias :: (Data.Bits.Bits a, Integral a) => a -> a
 makeBias x = oneOverX x 
 
 
---generateOneOverXPkg' :: (Integral a, Ord a, Data.Bits.Bits a, Integral a1, Data.Bits.Bits a1, Real b) => 
---    a1 -> a -> a -> a -> b -> a -> a -> t -> [String]
 generateOneOverXPkg' :: Integer -> Integer -> Integer -> Integer -> Integer -> Integer -> Integer -> [String]
 generateOneOverXPkg' n x deltaX tinyX tinyY bigX bigY 
     | ((x == 0) && (deltaX == 0)) = error "You did not imply division by 0 and an infinite loop at the same time. Nope. I didn't see that. See what? Nothing, exactly."
     | (x == 0) = generateOneOverXPkg' n (x + deltaX) deltaX tinyX tinyY bigX bigY
     | (x > bigX) = []
-    -- | ((1/x) > tinyY) = []
     | (x > tinyX) =
         (generateOneChunk n (makeSlope x (x+deltaX)) (makeBias x)) ++
         (generateOneOverXPkg' (n + 1) (x + deltaX) deltaX tinyX tinyY bigX bigY)
