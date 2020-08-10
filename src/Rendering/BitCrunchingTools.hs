@@ -6,6 +6,7 @@ module Rendering.BitCrunchingTools (
     , incrementBitString
     , decreaseBitString
     , increaseBitString
+    , multiplyBitStrings
     ) where
 import Rendering.ZeroPad
 import Data.Bits
@@ -48,7 +49,6 @@ int2Str' x
                 else '1'
 
 
---int2Str :: (Num a, Integral a, Ord a, Bits a) => a -> Int -> String
 int2Str :: Integer -> Int -> String
 int2Str n w = rightJustifyBitString (int2Str' n) w 
 

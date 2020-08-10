@@ -50,58 +50,48 @@ shouldXStop x tinyX tinyY bigX bigY xGrowthRate
     | otherwise = False
 
 
-generateOneChunk :: Integer -> Integer -> Integer -> [String]
-generateOneChunk n slope bias = 
-    [(elseClause n) ++ "if x > " ++ (int2Str bias 64) ++ " then"] ++ 
+generateOneChunk :: Integer -> Integer -> Integer -> Integer -> [String]
+generateOneChunk n xThresh slope bias = 
+    [(elseClause n) ++ "if x > " ++ wrapInParens (int2Str xThresh 64) ++ " then"] ++ 
     [(tab 1) ++ "bias := " ++ wrapInParens (int2Str bias 64) ++ ";"] ++ 
-    [(tab 1) ++ "slope := " ++ wrapInParens (int2Str bias 64) ++ ";"] ++ 
-    [(tab 1) ++ "prod := slope * bias;" ++ ";"] ++ 
-    [(tab 1) ++ "y := " ++ (int2Str bias 64) ++ " - prod(127 downto 64);"]
+    [(tab 1) ++ "slope := " ++ wrapInParens (int2Str slope 64) ++ ";"] ++ 
+    [(tab 1) ++ "prod := slope * bias;"] ++ 
+    [(tab 1) ++ "y := bias - prod(127 downto 64);"] ++ 
+    ["", ""] 
     
     -- TODO: Write a function in BitCrunchingTools that performs multiplacation on binary strings
 
--- We need a function that performs 1/x, but regards x as fixed point, having 32 bits of integer and 
--- 32 bits of fractional. 
-oneOverX' :: (Integral a, Floating b) => a -> b
-oneOverX' x = (2**32) / (fromIntegral x)
+makeSlope :: (Data.Bits.Bits a, Integral a) => Double -> Double -> a
+makeSlope x0 x1 = abs(floor((((2**32)/x1) - ((2**32)/x0)) / (x1 - x0)))
 
 
-oneOverX :: (Integral a) => a -> a
-oneOverX x = floor(oneOverX' x)
+makeBias :: (Data.Bits.Bits a, Integral a) => Double -> a
+makeBias x = floor((2**32)/x)
 
 
-makeSlope :: (Data.Bits.Bits a, Integral a) => a -> a -> a
-makeSlope x0 x1 = quot ((oneOverX x1) - (oneOverX x0)) (x1 - x0)
+makeXThresh :: (Data.Bits.Bits a, Integral a) => Double -> a
+makeXThresh x = floor((2**32) * x)
 
 
-makeBias :: (Data.Bits.Bits a, Integral a) => a -> a
-makeBias x = oneOverX x 
+xExpGrowthRate :: Double
+xExpGrowthRate = 1.12
 
 
-generateOneOverXPkg' :: Integer -> Integer -> Integer -> Integer -> Integer -> Integer -> Integer -> [String]
-generateOneOverXPkg' n x deltaX tinyX tinyY bigX bigY 
+makeDeltaX :: Double -> Double
+makeDeltaX x = x * xExpGrowthRate
+
+
+generateOneOverXPkg' :: Integer -> Double -> Double -> Double -> Double -> Double -> Double -> Integer -> [String]
+generateOneOverXPkg' n x deltaX tinyX tinyY bigX bigY numRows
     | ((x == 0) && (deltaX == 0)) = error "You did not imply division by 0 and an infinite loop at the same time. Nope. I didn't see that. See what? Nothing, exactly."
-    | (x == 0) = generateOneOverXPkg' n (x + deltaX) deltaX tinyX tinyY bigX bigY
-    | (x > bigX) = []
-    | (x > tinyX) =
-        (generateOneChunk n (makeSlope x (x+deltaX)) (makeBias x)) ++
-        (generateOneOverXPkg' (n + 1) (x + deltaX) deltaX tinyX tinyY bigX bigY)
+    | (x == 0) = generateOneOverXPkg' n (x + deltaX) deltaX tinyX tinyY bigX bigY numRows
+    | (n > numRows) = []
+    | otherwise =
+        (generateOneOverXPkg' (n + 1) (makeDeltaX x) deltaX tinyX tinyY bigX bigY numRows) ++ 
+        (generateOneChunk (numRows-n) (makeXThresh x) (makeSlope x (x+deltaX)) (makeBias x))
         
-    | otherwise = generateOneOverXPkg' n (x + deltaX) deltaX tinyX tinyY bigX bigY
+-- TODO: Right now, the upper 64 bits of y are guaranteed to be 0's for the topmost if branches. Fix that.   
     
     
     
     
-    
-    
-    
-    
--- TODO: PICK UP HERE: Work towards this:
-
--- TODO: Figure out how to generate 1 line such that monotonically decreasing output is guaranteed.
-
--- The interface I ultimately want to use is something like this:
---generateOneOverXPkg :: (Fractional a, Ord a, Show a, Num a) => a -> a -> a -> a -> a -> a -> a -> a
---generateOneOverXPkg tinyX tinyY bigX bigY numRows nStages desiredError
-
-
