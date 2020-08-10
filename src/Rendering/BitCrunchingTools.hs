@@ -20,7 +20,8 @@ char2Int '0' = 0
 char2Int _ = 1
 
 
-str2Int :: (Num a) => String -> a
+--str2Int :: (Num a) => String -> a
+str2Int :: String -> Integer
 str2Int "" = 0
 str2Int s = ((2 ^ ((length s) - 1)) * char2Int (head s)) + str2Int (tail s)
 
@@ -47,8 +48,13 @@ int2Str' x
                 else '1'
 
 
-int2Str :: (Num a, Integral a, Ord a, Bits a) => a -> Int -> String
+--int2Str :: (Num a, Integral a, Ord a, Bits a) => a -> Int -> String
+int2Str :: Integer -> Int -> String
 int2Str n w = rightJustifyBitString (int2Str' n) w 
+
+
+multiplyBitStrings :: String -> String -> String
+multiplyBitStrings a b = int2Str ((str2Int a) * (str2Int b)) ((length a) + (length b))
 
 
 decrementBitString :: String -> String
