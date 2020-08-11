@@ -4,9 +4,13 @@
 -- binary representation possible. The reason for that is so that you 
 -- can do >/< comparisons with the output and get correct answers. 
 --
--- At this time, this module assumes 32 bits integer, 32 bits fractional. 
+-- At this time, this module assumes 32 bits integer, 64 bits fractional. 
 -- If someone wants to volunteer to generalize this to M bits integer and N bits, 
 -- fractional, the community will be most grateful.
+--
+-- Note that if you generate too many rows, the topmost rows of your if statement
+-- are guaranteed to return all 0's. If you want the capability of producing all 0 
+-- output, you want the topmost row to do that. Anything beyond that is superfluous. 
 module Cookbook.OneOverX where 
 import Rendering.BitCrunchingTools
 import Rendering.WrapInParens
@@ -52,25 +56,25 @@ shouldXStop x tinyX tinyY bigX bigY xGrowthRate
 
 generateOneChunk :: Integer -> Integer -> Integer -> Integer -> [String]
 generateOneChunk n xThresh slope bias = 
-    [(elseClause n) ++ "if x > " ++ wrapInParens (int2Str xThresh 64) ++ " then"] ++ 
-    [(tab 1) ++ "bias := " ++ wrapInParens (int2Str bias 64) ++ ";"] ++ 
-    [(tab 1) ++ "slope := " ++ wrapInParens (int2Str slope 64) ++ ";"] ++ 
-    [(tab 1) ++ "prod := slope * bias;"] ++ 
-    [(tab 1) ++ "y := bias - prod(127 downto 64);"] ++ 
+    [(elseClause n) ++ "if x > " ++ wrapInParens (int2Str xThresh 128) ++ " then"] ++ 
+    [(tab 1) ++ "delta := x - " ++ wrapInParens (int2Str xThresh 128) ++ ";"] ++
+    [(tab 1) ++ "slope := " ++ wrapInParens (int2Str slope 128) ++ ";"] ++ 
+    [(tab 1) ++ "bias := " ++ wrapInParens (int2Str bias 128) ++ ";"] ++ 
+    [(tab 1) ++ "prod := slope * delta;"] ++ 
+    [(tab 1) ++ "y := bias - prod(255 downto 128);"] ++ 
     ["", ""] 
     
-    -- TODO: Write a function in BitCrunchingTools that performs multiplacation on binary strings
 
 makeSlope :: (Data.Bits.Bits a, Integral a) => Double -> Double -> a
-makeSlope x0 x1 = abs(floor((((2**32)/x1) - ((2**32)/x0)) / (x1 - x0)))
+makeSlope x0 x1 = abs(floor((((2**64)/x1) - ((2**64)/x0)) / (x1 - x0)))
 
 
 makeBias :: (Data.Bits.Bits a, Integral a) => Double -> a
-makeBias x = floor((2**32)/x)
+makeBias x = floor((2**64)/x)
 
 
 makeXThresh :: (Data.Bits.Bits a, Integral a) => Double -> a
-makeXThresh x = floor((2**32) * x)
+makeXThresh x = floor((2**96) * x)
 
 
 xExpGrowthRate :: Double
@@ -81,17 +85,14 @@ makeDeltaX :: Double -> Double
 makeDeltaX x = x * xExpGrowthRate
 
 
-generateOneOverXPkg' :: Integer -> Double -> Double -> Double -> Double -> Double -> Double -> Integer -> [String]
-generateOneOverXPkg' n x deltaX tinyX tinyY bigX bigY numRows
+generateOneOverXIfStmt :: Integer -> Double -> Double -> Integer -> [String]
+generateOneOverXIfStmt n x deltaX numRows
     | ((x == 0) && (deltaX == 0)) = error "You did not imply division by 0 and an infinite loop at the same time. Nope. I didn't see that. See what? Nothing, exactly."
-    | (x == 0) = generateOneOverXPkg' n (x + deltaX) deltaX tinyX tinyY bigX bigY numRows
+    | (x == 0) = generateOneOverXIfStmt n (x + deltaX) deltaX numRows
     | (n > numRows) = []
     | otherwise =
-        (generateOneOverXPkg' (n + 1) (makeDeltaX x) deltaX tinyX tinyY bigX bigY numRows) ++ 
+        (generateOneOverXIfStmt (n + 1) (makeDeltaX x) deltaX numRows) ++ 
         (generateOneChunk (numRows-n) (makeXThresh x) (makeSlope x (x+deltaX)) (makeBias x))
         
--- TODO: Right now, the upper 64 bits of y are guaranteed to be 0's for the topmost if branches. Fix that.   
-    
-    
-    
-    
+-- TODO: PICK UP HERE: Write a module that breaks the generated lines up into many small functions, 
+-- then pipelines them. 
