@@ -54,6 +54,16 @@ procedure strobe_falling(
     signal en : inout std_logic
     );
 
+-- Determine if a signal is a 0 or 1 (i.e. not U, X, etc.)
+function demand_0_or_1(
+    x : std_logic
+    ) return std_logic;
+
+-- Throw an error if a signal is not 0 or 1. 
+procedure freak_out(
+    signal x : in unsigned
+    );
+
 end package VhdSimToolsPkg ;
 
 
@@ -120,6 +130,31 @@ begin
     wait until falling_edge(clk);
 end strobe_falling;
 
+
+function demand_0_or_1(
+    x : std_logic
+    ) return std_logic is
+begin
+    if x = '0' then 
+        return '1';
+    elsif x = '1' then 
+        return '1';
+    else
+        return '0';
+    end if;
+end function;
+
+-- Throw an error if a signal is not 0 or 1. 
+procedure freak_out(
+    signal x : in unsigned
+    ) is
+begin
+    for i in 0 to x'left loop
+        if demand_0_or_1(x(i)) = '0' then 
+            report "bad value" severity error;
+        end if;
+    end loop;
+end procedure;
 
 end package body VhdSimToolsPkg ;
 

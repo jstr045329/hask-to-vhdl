@@ -189,10 +189,181 @@ component detectFallingEdge is
     );  
 end component detectFallingEdge ;
 
+----------------------------------------------------------------------------------------------------
+--                                       Sticky Bits
+----------------------------------------------------------------------------------------------------
+component StickyWarning is 
+    generic( 
+        -- counter_width and clks_high specify how long soft_sticky stays asserted.
+        -- hard_sticky stays asserted until hardware reset. 
+        counter_width : integer := 8; 
+        clks_high : integer := 128
+    ); 
+    port(
+        clk : in std_logic;
+        rst : in std_logic;
+        en : in std_logic;
+        trigger : in std_logic;
+        soft_sticky : out std_logic;
+        hard_sticky : out std_logic
+    ); 
+end component;
+
+----------------------------------------------------------------------------------------------------
+--                             Perform Arithmetic on std_logic_vector's
+----------------------------------------------------------------------------------------------------
+-- Treat std_logic_vector as unsigned, add 1, and cast back to std_logic_vector.
+function incrementSlv (
+    x : std_logic_vector;
+    w : integer
+    ) return std_logic_vector;
+
+
+-- Treat std_logic_vector as unsigned, subtract 1, and cast back to std_logic_vector.
+function decrementSlv (
+    x : std_logic_vector;
+    w : integer
+    ) return std_logic_vector;
+
+
+-- Treat std_logic_vector as unsigned, add 1, and cast back to std_logic_vector.
+-- Do not allow overflow.
+function incrementSlvSaturating (
+    x : std_logic_vector;
+    w : integer
+    ) return std_logic_vector;
+
+
+-- Treat std_logic_vector as unsigned, subtract 1, and cast back to std_logic_vector.
+-- Do not allow underflow.
+function decrementSlvSaturating (
+    x : std_logic_vector;
+    w : integer
+    ) return std_logic_vector;
+
+
+-- Calculate x - y
+-- 1) Regards x as unsigned, 
+-- 2) Converts y to unsigned, 
+-- 3) Calculates x - y,
+-- 4) Casts result back to std_logic_vector.
+function subtractFromSlv(
+    x : std_logic_vector;
+    w : integer;
+    y : integer) return std_logic_vector;
+
+
+function subtractFromSlv(
+    x : unsigned;
+    w : integer;
+    y : integer) return std_logic_vector;
+
+-- Regard std_logic_vector as unsigned, and set LSB to 1. 
+function setSlvToOne(
+    w : integer
+    ) return std_logic_vector;
+
 
 end package VhdSynthToolsPkg ;
 
 
+----------------------------------------------------------------------------------------------------
+--                                        Package Body
+----------------------------------------------------------------------------------------------------
 package body VhdSynthToolsPkg is
+
+----------------------------------------------------------------------------------------------------
+--                             Perform Arithmetic on std_logic_vector's
+----------------------------------------------------------------------------------------------------
+
+-- This function treats a std_logic_vector as unsigned, adds 1, then casts it back to std_logic_vector.
+-- w is the width of x.
+function incrementSlv (
+    x : std_logic_vector;
+    w : integer
+    ) return std_logic_vector is
+begin
+    return std_logic_vector(to_unsigned(to_integer(unsigned(x)) + 1, w));
+end function;
+
+
+-- This function treats a std_logic_vector as unsigned, subtracts 1, then casts it back to std_logic_vector.
+-- w is the width of x.
+function decrementSlv (
+    x : std_logic_vector;
+    w : integer
+    ) return std_logic_vector is
+begin
+    return std_logic_vector(to_unsigned(to_integer(unsigned(x)) - 1, w));
+end function;
+
+-- This function treats a std_logic_vector as unsigned, adds 1, then casts it back to std_logic_vector.
+-- w is the width of x.
+-- This version does not allow x to overflow. 
+function incrementSlvSaturating (
+    x : std_logic_vector;
+    w : integer
+    ) return std_logic_vector is
+begin
+    if to_integer(unsigned(x)) = (2**w)-1 then 
+        return x;
+    else
+        return std_logic_vector(to_unsigned(to_integer(unsigned(x)) + 1, w));
+    end if;
+end function;
+
+
+-- This function treats a std_logic_vector as unsigned, subtracts 1, then casts it back to std_logic_vector.
+-- w is the width of x.
+-- This version does not allow x to underflow. 
+function decrementSlvSaturating (
+    x : std_logic_vector;
+    w : integer
+    ) return std_logic_vector is
+begin
+    if to_integer(unsigned(x)) = 0 then 
+        return x;
+    else
+        return std_logic_vector(to_unsigned(to_integer(unsigned(x)) - 1, w));
+    end if;
+end function;
+
+
+-- TODO: Create versions of x-y for addition, and then saturating versions. 
+
+-- Calculate x - y
+-- 1) Regards x as unsigned, 
+-- 2) Converts y to unsigned, 
+-- 3) Calculates x - y,
+-- 4) Casts result back to std_logic_vector.
+function subtractFromSlv(
+    x : std_logic_vector;
+    w : integer;
+    y : integer) return std_logic_vector is
+variable tmp0 : integer;
+variable tmp1 : unsigned(w-1 downto 0);
+begin
+    tmp0 := to_integer(unsigned(x));
+    tmp1 := tmp0 - to_unsigned(y, w);
+    return std_logic_vector(tmp1);
+end function;
+
+
+function subtractFromSlv(
+    x : unsigned;
+    w : integer;
+    y : integer) return std_logic_vector is
+begin
+    return subtractFromSlv(std_logic_vector(x), w, y);
+end function;
+
+-- Regard std_logic_vector as unsigned, and set LSB to 1. 
+function setSlvToOne(
+    w : integer
+    ) return std_logic_vector is 
+begin
+    return std_logic_vector(to_unsigned(1, w));
+end function;
+
 end package body VhdSynthToolsPkg ;
 
