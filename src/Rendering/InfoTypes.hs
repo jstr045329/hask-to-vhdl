@@ -538,19 +538,19 @@ easyOutUnsigned nm w c = Port {
 --        Port Versions of Clk & Rst
 --------------------------------------------------
 easyClk :: Information
-easyClk = easyInSl "i_clk_p" []
+easyClk = easyInSl "clk" []
 
 
 easyClkF :: Int -> Information
-easyClkF f = easyInSl ("i_clk_" ++ show f ++ "_p") [show f ++ " MHz clock"]
+easyClkF f = easyInSl ("clk_" ++ show f ++ "") [show f ++ " MHz clock"]
 
 
 easyRst :: Information
-easyRst = easyInSl "i_rst_p" []
+easyRst = easyInSl "rst" []
 
 
 easyRstN :: Information
-easyRstN = negativePortAssertionLevel (easyInSl "i_rst_n" [])
+easyRstN = negativePortAssertionLevel (easyInSl "rst_n" [])
 
 
 --------------------------------------------------
