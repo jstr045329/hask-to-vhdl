@@ -38,15 +38,15 @@ vanillaSettings myModName = Settings {
 
 
 entityHeader :: [String] -> Settings -> [String]
-entityHeader _ settings =   ["entity "] ++ [modName settings] ++ [" is"]
+entityHeader _ settings =   ["entity " ++ (modName settings) ++ " is"]
 
 
 entityFooter :: [String] -> Settings -> [String]
-entityFooter _ settings = ["end "] ++ [modName settings] ++ [";"]
+entityFooter _ settings = ["end " ++ (modName settings) ++ ";"]
 
 
 architectureHeader :: [String] -> Settings -> [String]
-architectureHeader _ settings = ["architecture behavioral of "] ++ [modName settings] ++ [" is"]
+architectureHeader _ settings = ["architecture behavioral_" ++ (modName settings) ++ " of " ++ (modName settings) ++ " is"]
 
 
 architectureFooter :: [String] -> Settings -> [String]
@@ -86,28 +86,48 @@ wrapPortSection [] = []
 wrapPortSection los = ["port ("] ++ (zipTab los) ++ [");"]
 
 
+ensureBlankLines :: [String] -> [String]
+ensureBlankLines [] = ["", ""]
+ensureBlankLines los = los
+
+
 populateEntityTemplate :: [String] -> [String] -> [String] -> [String] -> Settings -> [String]
 populateEntityTemplate genericDecs portDecs signalDecs logic settings =
+    ["library IEEE;"] ++ 
+    ["use IEEE.std_logic_1164.ALL;"] ++ 
+    ["use IEEE.numeric_std.ALL;"] ++ 
+    [""] ++ 
+    [""] ++ 
     (entityHeader [] settings) ++
     (zipTab (wrapGenericSection (skipLastSemicolon genericDecs))) ++ 
     (zipTab (wrapPortSection (skipLastSemicolon portDecs))) ++ 
     (entityFooter [] settings) ++ 
+    [""] ++ 
+    [""] ++ 
     (architectureHeader [] settings) ++ 
     (zipTab signalDecs) ++ 
     ["begin"] ++ 
     (zipTab logic) ++ 
-    (architectureFooter [] settings)
+    [""] ++ 
+    [""] ++ 
+    (architectureFooter [] settings) ++
+    [""]
 
 
 populatePackageTemplate :: String -> [String] -> [String] -> [String]
 populatePackageTemplate nm declarationLines bodyLines =
+    ["library IEEE;"] ++ 
+    ["use IEEE.std_logic_1164.ALL;"] ++ 
+    ["use IEEE.numeric_std.ALL;"] ++ 
+    [""] ++ 
+    [""] ++ 
     [ "package " ++ nm ++ " is"] ++
-    declarationLines ++ 
+    (ensureBlankLines declarationLines) ++ 
     [ "end package " ++ nm ++ ";"] ++
     [ ""
     , ""
     , "package body " ++ nm ++ " is"] ++
-    bodyLines ++
+    (ensureBlankLines bodyLines) ++
     [ "end package body " ++ nm ++ ";"]
 
 

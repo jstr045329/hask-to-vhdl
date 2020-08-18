@@ -4,6 +4,9 @@ module Tools.StringTools (
     , toLower
     , endsInNumbers
     , findNumberIdx
+    , skipFirstChars
+    , replaceSubStr
+    , doubleBackslashes
     ) where
 import qualified Data.Char as DC
 import Tools.LogicTools
@@ -45,5 +48,38 @@ findNumberGuts s n
 -- If string does not end in numbers, returns length of string
 findNumberIdx :: String -> Int
 findNumberIdx s = (length s) - (findNumberGuts s 1) + 1
+
+
+skipFirstChars :: String -> Int -> String 
+skipFirstChars "" _ = ""
+skipFirstChars s 0 = s
+skipFirstChars s n = skipFirstChars (tail s) (n-1)
+
+
+-- Replaces first occurrence only:
+replaceSubStr :: String -> String -> String -> String
+replaceSubStr "" _ _ = ""
+replaceSubStr _ "" _ = ""
+replaceSubStr thing2Change thing2Delete thing2Insert
+    | thing2Change == "" = ""
+    | thing2Delete == "" = thing2Change
+    | (take (length thing2Delete) thing2Change == thing2Delete) =
+        thing2Insert ++ (skipFirstChars thing2Change (length thing2Delete))
+    | otherwise = [head thing2Change] ++ (replaceSubStr (tail thing2Change) thing2Delete thing2Insert)
+
+
+doubleBackslashes :: String -> String
+doubleBackslashes "" = ""
+doubleBackslashes s
+    | (head s == '\\') = ['\\', '\\'] ++ (doubleBackslashes (tail s))
+    | otherwise = [head s] ++ (doubleBackslashes (tail s))
+
+
+
+
+
+
+
+
 
 
