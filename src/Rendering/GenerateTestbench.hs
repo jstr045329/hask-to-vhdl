@@ -269,11 +269,16 @@ generateTestbench los =
     ["STIM_PROCESS: process"] ++
     ["begin"] ++
     (zipTab (resetStimSignals los)) ++ 
-    ["    wait for clk_per*10;"] ++
+    ["    sync_wait_rising(clk, 10);"] ++
     -- Invert all resets
     -- Typically use exactly one in practice. 
     (map (\oneRst -> "    " ++ (nomen oneRst) ++ " <= not " ++ (nomen oneRst) ++ ";")
          (extractResets (Rendering.GenerateTestbench.getPorts los))) ++ 
+    ["    sync_wait_rising(clk, 10);"] ++
+    [""] ++
+    [""] ++
+    ["    sync_wait_rising(clk, 100);"] ++
+    ["    sim_done <= '1';"] ++
     ["    wait;"] ++
     ["end process;"] ++
     [""] ++
