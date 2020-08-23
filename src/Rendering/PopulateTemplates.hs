@@ -50,7 +50,7 @@ architectureHeader _ settings = ["architecture behavioral_" ++ (modName settings
 
 
 architectureFooter :: [String] -> Settings -> [String]
-architectureFooter _ _ = ["end behavioral;"]
+architectureFooter _ mySettings = ["end behavioral_" ++ (modName mySettings) ++ ";"]
 
 
 getMsb :: Width -> String
