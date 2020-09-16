@@ -210,6 +210,14 @@ component StickyWarning is
 end component;
 
 ----------------------------------------------------------------------------------------------------
+--                                  Convert Boolean to std_logic
+----------------------------------------------------------------------------------------------------
+function bool2SL(
+    x : boolean
+    ) return std_logic;
+
+
+----------------------------------------------------------------------------------------------------
 --                             Perform Arithmetic on std_logic_vector's
 ----------------------------------------------------------------------------------------------------
 -- Treat std_logic_vector as unsigned, add 1, and cast back to std_logic_vector.
@@ -271,6 +279,21 @@ end package VhdSynthToolsPkg ;
 --                                        Package Body
 ----------------------------------------------------------------------------------------------------
 package body VhdSynthToolsPkg is
+
+----------------------------------------------------------------------------------------------------
+--                                  Convert Boolean to std_logic
+----------------------------------------------------------------------------------------------------
+function bool2SL(
+    x : boolean
+    ) return std_logic is 
+begin 
+    if x then 
+        return '1';
+    else
+        return '0';
+    end if;
+end function;
+
 
 ----------------------------------------------------------------------------------------------------
 --                             Perform Arithmetic on std_logic_vector's
