@@ -1,8 +1,8 @@
 """This function generates a pipelined minimum function"""
-NUM_INPUTS = 256
+NUM_INPUTS = 16
 INPUTS_PER_INTERMEDIATE = 4
 TEMPLATE_FILE = "../VhdTemplates/MinFunctionTemplate.vhd"
-RESULTS_FILE = "./MinFunction_%04d.vhd"
+RESULTS_FILE = "../VhdLibs/MinFunction_%04d.vhd"
 from numpy import ceil
 
 
@@ -223,9 +223,15 @@ def main():
             y.append("o_latency <= %d;" % latency)
         elif "<drive_output_here>" in line:
             y.append("o_min <= " + new_signal_names[-1] + ";")
+        elif "<num_inputs_here>" in line:
+            print("found num inputs")
+            print("old line: ", line)
+            line = line.replace("<num_inputs_here>", "%04d" % NUM_INPUTS)
+            print("new line: ", line)
+            y.append(line)
         else:
             y.append(line)
-            
+    print(TEMPLATE_FILE)
 
     # Write output lines to results file:
     with open(RESULTS_FILE % NUM_INPUTS, 'w') as f:
