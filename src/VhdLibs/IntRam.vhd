@@ -6,6 +6,8 @@ use IEEE.numeric_std.ALL;
 entity IntRam is
     generic(
         addr_width : integer := 8;
+        rangeLo : integer := -2147483648;
+        rangeHi : integer := 2147483647;
         use_rising_edge : std_logic := '1';
         use_sync_reset : std_logic := '1';
         rst_level : std_logic := '1' -- 0 for asserted low, 1 for asserted high
@@ -14,9 +16,9 @@ entity IntRam is
         clk : in std_logic;
         rst : in std_logic;
         we : in std_logic;
-        addr : in integer range 0 to 2**addr_width-1;
-        din : in integer;
-        dout : out integer
+        addr : in integer range 0 to (2**addr_width)-1;
+        din : in integer range rangeLo to rangeHi;
+        dout : out integer range rangeLo to rangeHi
     );
 end entity IntRam;
 

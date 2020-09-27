@@ -22,20 +22,38 @@ architecture behavioral_sl of delayChainStdLogic is
     signal my_chain : t_my_chain;
 begin
 
-process(clk)
-begin
-    if rising_edge(clk) then
-        if rst = '1' then
-            my_chain <= (others => '0');
-        else
-            if en = '1' then
-                my_chain <= d & my_chain(0 to n-2);
+N_EQUALS_1_CASE: if n = 1 generate
+    process(clk)
+    begin
+        if rising_edge(clk) then
+            if rst = '1' then
+                q <= '0';
+            else
+                if en = '1' then
+                    q <= d;
+                end if;
             end if;
         end if;
-    end if;
-end process;
+    end process;
+end generate;
 
-q <= my_chain(n-1);
+N_GREATER_THAN_1_CASE: if n > 1 generate
+    process(clk)
+    begin
+        if rising_edge(clk) then
+            if rst = '1' then
+                my_chain <= (others => '0');
+            else
+                if en = '1' then
+                    my_chain <= d & my_chain(0 to n-2);
+                end if;
+            end if;
+        end if;
+    end process;
+
+    q <= my_chain(n-1);
+    
+end generate;
 
 end behavioral_sl;            
 
