@@ -1,7 +1,7 @@
 """This script generates a one-hot clock enable process."""
 
-PERIOD_IN_CLKS = 4
-OUTPUT_TAPS = [0, 1, 2, 3,]
+PERIOD_IN_CLKS = 8
+OUTPUT_TAPS = list(range(PERIOD_IN_CLKS))
 NAME_STUB = "s_soft_enable_%d"
 
 
@@ -16,11 +16,15 @@ def makeSignalNames():
 
 
 def declareSignals():
-    return ["signal %s : std_logic;" % s for s in makeSignalNames()]
+    return ["signal %s : std_logic;" % s for s in makeSignalNames()] + \
+        ["signal s_enable_counter : integer;", 
+         "signal s_enable_other_enables : std_logic;"]
 
 
 def resetSignals():
-    return ["%s <= '0';" % s for s in makeSignalNames()]
+    return ["%s <= '0';" % s for s in makeSignalNames()] + \
+        ["s_enable_other_enables <= '0';",
+         "s_enable_counter <= 0;"]
 
 
 def tab(n=1):

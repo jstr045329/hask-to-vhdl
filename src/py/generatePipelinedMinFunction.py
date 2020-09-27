@@ -1,5 +1,5 @@
 """This function generates a pipelined minimum function"""
-NUM_INPUTS = 16
+NUM_INPUTS = 64
 INPUTS_PER_INTERMEDIATE = 4
 TEMPLATE_FILE = "../VhdTemplates/MinFunctionTemplate.vhd"
 RESULTS_FILE = "../VhdLibs/MinFunction_%04d.vhd"
@@ -224,14 +224,14 @@ def main():
         elif "<drive_output_here>" in line:
             y.append("o_min <= " + new_signal_names[-1] + ";")
         elif "<num_inputs_here>" in line:
-            print("found num inputs")
-            print("old line: ", line)
+            #print("found num inputs")
+            #print("old line: ", line)
             line = line.replace("<num_inputs_here>", "%04d" % NUM_INPUTS)
-            print("new line: ", line)
+            #print("new line: ", line)
             y.append(line)
         else:
             y.append(line)
-    print(TEMPLATE_FILE)
+    #print(TEMPLATE_FILE)
 
     # Write output lines to results file:
     with open(RESULTS_FILE % NUM_INPUTS, 'w') as f:

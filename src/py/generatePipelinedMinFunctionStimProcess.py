@@ -1,7 +1,7 @@
 """This script generates a stim process for MinFunction_xxxx_tb.vhd.
 Note this script doesn't generate the entire process - just the signal stim part."""
-NUM_INPUTS = 16
-NUM_EXPERIMENTS = 20
+NUM_INPUTS = 64
+NUM_EXPERIMENTS = 128
 BITS_PER_NUMBER = 20
 from secrets import randbits
 
