@@ -11,6 +11,8 @@ import qualified Data.ByteString.Unsafe as B
 import Foreign.Ptr (castPtr)
 import Tools.StringTools
 import Data.List
+import Text.Printf
+import Rendering.InfoNameTools
 
 
 ----------------------------------------------------------------------------------------------------
@@ -49,6 +51,7 @@ data DataType =           StdLogic
                         | UnconstrainedInt
                         | ConstrainedInt Int Int
                         | Record String [Information]
+                        | UserDefinedDataType String 
                           deriving (Eq, Show)
 
 
@@ -289,6 +292,7 @@ datatypeToStr (Record s infoList) _ =
         (map (\x -> ("    " ++ (declareOneThing x))) infoList)) ++
     "end record " ++ s ++ ";"
 
+datatypeToStr (UserDefinedDataType s) _ = s
 ----------------------------------------------------------------------------------------------------
 --                                  Convert Datatype to String
 -- Chapter II: Handle cases of WidthNotSpecified, WidthNotMeaningful
@@ -646,27 +650,6 @@ extractStub s
 
 
 ----------------------------------------------------------------------------------------------------
---                                     Convert Port to Signal
-----------------------------------------------------------------------------------------------------
-portToSig :: [Information] -> [(Information, Information)]
-portToSig [] = []
-portToSig (x:xs) = [(onePort, oneSignal)] ++ portToSig xs where
-    onePort = x
-    oneSignal = VhdSig {
-                      nomen = nomen2SigName (nomen x)
-                    , dataType = dataType x
-                    , width = width x
-                    , sDefault = sDefault x
-                    , sReset = makeResetVal (dataType x)
-                    , clocked = clocked x
-                    , comments = if (direction x == In)
-                                        then ["Driven by " ++ (nomen x)]
-                                        else ["Drives " ++ (nomen x)]
-                    , assertionLevel = assertionLevel x
-                    }
-
-
-----------------------------------------------------------------------------------------------------
 --                 Functions that Reset Sigs/Ports, Assign Defaults, etc.
 ----------------------------------------------------------------------------------------------------
 -- Reset a batch of signals:
@@ -754,16 +737,64 @@ convertGen2Const p =
             }
 
 
-convertPort2Sig :: Information -> Information
-convertPort2Sig p = 
-    VhdSig  {   nomen = nomen p
+----------------------------------------------------------------------------------------------------
+--                                     Convert Port to Signal
+----------------------------------------------------------------------------------------------------
+port2Sig :: Information -> Information
+port2Sig p = 
+    VhdSig  {   nomen = portName2SigName(nomen p) 0
             ,   dataType = dataType p
             ,   width = width p
             ,   sDefault = sDefault p
             ,   sReset = sReset p
             ,   clocked = clocked p
-            ,   comments = comments p
+            ,   comments = (if (direction p == Out)
+                                        then ["Driven by " ++ (nomen p)]
+                                        else ["Drives " ++ (nomen p)]) ++ (comments p)
             ,   assertionLevel = assertionLevel p
             }
 
+
+batchPortToSig :: [Information] -> [(Information, Information)]
+batchPortToSig [] = []
+batchPortToSig (x:xs) = [(onePort, oneSignal)] ++ batchPortToSig xs where
+    onePort = x
+    oneSignal = port2Sig x
+
+
+mapPortToSig :: [Information] -> [(Information, Information)]
+mapPortToSig [] = []
+mapPortToSig (x:xs) = [(onePort, oneSignal)] ++ mapPortToSig xs where
+    onePort = x
+    oneSignal = VhdSig {
+                      nomen = nomen2SigName (nomen x)
+                    , dataType = dataType x
+                    , width = width x
+                    , sDefault = sDefault x
+                    , sReset = makeResetVal (dataType x)
+                    , clocked = clocked x
+                    , comments = if (direction x == In)
+                                        then ["Driven by " ++ (nomen x)]
+                                        else ["Drives " ++ (nomen x)]
+                    , assertionLevel = assertionLevel x
+                    }
+
+
+-- This function takes an input port and creates an infinite list of signals 
+-- with the same name stub. 
+endlessSignals :: Information -> [Information]
+endlessSignals someInput = 
+    [VhdSig {
+                nomen = (nomen someInput) ++ (signalSuffix n)
+            ,   dataType = dataType someInput
+            ,   width = width someInput
+            ,   sDefault = sDefault someInput
+            ,   sReset = sReset someInput
+            ,   clocked = clocked someInput
+            ,   comments = (if (direction someInput == In)
+                                then ["Driven by " ++ (nomen someInput)]
+                                else ["Drives " ++ (nomen someInput)]) ++ (comments someInput)
+            ,   assertionLevel = assertionLevel someInput}
+            
+            | n <- [0..]]
 
