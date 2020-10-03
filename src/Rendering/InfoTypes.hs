@@ -15,9 +15,9 @@ import Text.Printf
 import Rendering.InfoNameTools
 
 
-----------------------------------------------------------------------------------------------------
---                           Data Types for Ports, Signals & Generics
-----------------------------------------------------------------------------------------------------
+------------------------------------------------------------------------------------------------------------------------
+--                                    Data Types for Ports, Signals and Generics
+------------------------------------------------------------------------------------------------------------------------
 data Direction =          In
                         | Out 
                         | InOut
@@ -170,6 +170,12 @@ instance Hashable Information where
         (show sDef)
 
 
+
+------------------------------------------------------------------------------------------------------------------------
+--                                     Check What Information Is By Constructor
+--
+-- See InfoNameTools.hs for tools that determine what information is by its name.
+------------------------------------------------------------------------------------------------------------------------
 isPort :: Information -> Bool
 isPort (Port _ _ _ _ _ _ _ _ _) = True
 isPort _ = False
@@ -216,7 +222,11 @@ isLiteral :: Information -> Bool
 isLiteral (Literal _ _ _ _) = True
 isLiteral _ = False
 
-
+------------------------------------------------------------------------------------------------------------------------
+--                               Extract List of Information from List of Information
+--
+-- For example, extract only the inputs, only the signals, etc.
+------------------------------------------------------------------------------------------------------------------------
 getGenerics :: [Information] -> [Information]
 getGenerics iList = [x | x <- iList, isGeneric x]
 
@@ -253,6 +263,12 @@ getLiterals :: [Information] -> [Information]
 getLiterals iList = [x | x <- iList, isLiteral x]
 
 
+------------------------------------------------------------------------------------------------------------------------
+--                                   Lift Optional Assertion Value from Signal Map
+--
+-- Assertion levels are optional, so you may need a way to check whether assertion level was defined and, if so,
+-- to lift it from the fearsome monad.
+------------------------------------------------------------------------------------------------------------------------
 hasAssertion :: Maybe String -> Bool
 hasAssertion Nothing = False
 hasAssertion _ = True
@@ -263,15 +279,17 @@ liftAssertion Nothing = ""
 liftAssertion (Just s) = s
 
 
+------------------------------------------------------------------------------------------------------------------------
+--                                               Peek At Default Value
+------------------------------------------------------------------------------------------------------------------------
 default2Str :: DefaultValue -> String
 default2Str Unspecified = ""
 default2Str (Specified s) = " := " ++ s
 
 
-----------------------------------------------------------------------------------------------------
---                                  Convert Datatype to String
--- Chapter I: Nominal Cases
-----------------------------------------------------------------------------------------------------
+------------------------------------------------------------------------------------------------------------------------
+--                                            Convert Datatype to String
+------------------------------------------------------------------------------------------------------------------------
 datatypeToStr :: DataType -> Width -> String
 datatypeToStr StdLogic _ = "std_logic"
 datatypeToStr StdULogic _ = "std_ulogic"
@@ -291,12 +309,7 @@ datatypeToStr (Record s infoList) _ =
         "\n"
         (map (\x -> ("    " ++ (declareOneThing x))) infoList)) ++
     "end record " ++ s ++ ";"
-
 datatypeToStr (UserDefinedDataType s) _ = s
-----------------------------------------------------------------------------------------------------
---                                  Convert Datatype to String
--- Chapter II: Handle cases of WidthNotSpecified, WidthNotMeaningful
-----------------------------------------------------------------------------------------------------
 datatypeToStr StdLogicVector WidthNotSpecified = "std_logic_vector"
 datatypeToStr StdLogicVector WidthNotRelevant = "std_logic_vector"
 datatypeToStr StdULogicVector WidthNotSpecified = "std_ulogic_vector"
@@ -304,15 +317,12 @@ datatypeToStr StdULogicVector WidthNotRelevant = "std_ulogic_vector"
 datatypeToStr Signed WidthNotSpecified   = "signed"
 datatypeToStr Signed WidthNotRelevant   = "signed"
 datatypeToStr Unsigned WidthNotSpecified   = "unsigned"
-
-
-----------------------------------------------------------------------------------------------------
---                                  Convert Datatype to String
--- Chapter III: Error out on conditions that should never happen
-----------------------------------------------------------------------------------------------------
 datatypeToStr Bit _ = error "Do not use bit"
 
 
+------------------------------------------------------------------------------------------------------------------------
+--                                                Make A Reset Value
+------------------------------------------------------------------------------------------------------------------------
 makeResetVal :: DataType -> String
 makeResetVal StdLogic = "'0'"
 makeResetVal StdULogic = "'0'"
@@ -321,9 +331,9 @@ makeResetVal (ConstrainedInt a _) = show a
 makeResetVal _ = "(others => '0')"
 
 
-----------------------------------------------------------------------------------------------------
---                           Functions that Modify Assertion Levels
-----------------------------------------------------------------------------------------------------
+------------------------------------------------------------------------------------------------------------------------
+--                                          Set And Modify Assertion Levels
+------------------------------------------------------------------------------------------------------------------------
 invertAssertionLevel :: Maybe String -> Maybe String
 invertAssertionLevel Nothing = Nothing
 invertAssertionLevel (Just "'0'") = Just "'1'"
@@ -353,17 +363,18 @@ negativePortAssertionLevel p = Port {
     , assertionLevel = negativeAssertionLevel (assertionLevel p)
     }
 
---------------------------------------------------
---      Extract Assertion Level from Monad
---------------------------------------------------
+------------------------------------------------------------------------------------------------------------------------
+--                                          Lift Assertion Level From Monad
+------------------------------------------------------------------------------------------------------------------------
+-- TODO: Unify this with liftAssertion.
 liftAssertionLevel :: Maybe String -> String
 liftAssertionLevel Nothing = ""
 liftAssertionLevel (Just s) = s
 
 
-----------------------------------------------------------------------------------------------------
---       Functions that Make Signal/Port/Generic Creation Easier by Assuming Common Values
-----------------------------------------------------------------------------------------------------
+------------------------------------------------------------------------------------------------------------------------
+--                        Make Signal/Port/Generic Creation Easier by Assuming Common Values
+------------------------------------------------------------------------------------------------------------------------
 easySig :: String -> DataType -> Width -> [String] -> Information
 easySig nm dt (Hard w) c = VhdSig {
                             nomen = nm,
@@ -538,9 +549,10 @@ easyOutUnsigned nm w c = Port {
     , assertionLevel = Nothing
     }
 
---------------------------------------------------
---        Port Versions of Clk & Rst
---------------------------------------------------
+
+------------------------------------------------------------------------------------------------------------------------
+--                                           Port Versions of Clk and Rst
+------------------------------------------------------------------------------------------------------------------------
 easyClk :: Information
 easyClk = easyInSl "clk" []
 
@@ -557,9 +569,9 @@ easyRstN :: Information
 easyRstN = negativePortAssertionLevel (easyInSl "rst_n" [])
 
 
---------------------------------------------------
---       Signal Versions of Clk & Rst
---------------------------------------------------
+------------------------------------------------------------------------------------------------------------------------
+--                                          Signal Versions of Clk and Rst
+------------------------------------------------------------------------------------------------------------------------
 easyClkSig :: Information
 easyClkSig = easyUnclockedSL "s_clk_p"
 
@@ -576,15 +588,17 @@ easyRstSigN :: Information
 easyRstSigN = easyUnclockedSL "s_rst_n"
 
 
-----------------------------------------------------------------------------------------------------
---                 Functions that Exchange Information Between Ports & Signals
-----------------------------------------------------------------------------------------------------
+------------------------------------------------------------------------------------------------------------------------
+--                                  Exchange Information Between Ports and Signals
+--
 -- Converts names of this format:
 --      i_descriptive_name__d0000
 --      o_descriptive_name__d0000
 -- to names of this format:
 --      s_descriptive_name__d0000
+------------------------------------------------------------------------------------------------------------------------
 
+-- TODO: See if nomenNeedsUndy can be deleted:
 nomenNeedsUndy :: Char -> Bool
 nomenNeedsUndy 'i' = True
 nomenNeedsUndy 'o' = True
@@ -597,7 +611,11 @@ nomenCommando :: Char -> Bool
 nomenCommando c = not (nomenNeedsUndy c)
 
 
--- Use this to decide if a signal/port follows the naming convention:
+------------------------------------------------------------------------------------------------------------------------
+--                                  Decide If Signal/Port Follows Naming Convention
+------------------------------------------------------------------------------------------------------------------------
+
+-- TODO: Check if this is consistent with InfoNameTools.hs. If not, update. 
 nomenIsFormatted :: String -> Bool
 nomenIsFormatted s = startingLetter && firstUndy && lastUndy && dLocation && endNumber where
     exempt = nomenCommando (head s)
@@ -638,9 +656,11 @@ nomen2Generic :: String -> String
 nomen2Generic s = "g" ++ (tail s)
 
 
-----------------------------------------------------------------------------------------------------
---                                          Extract Stub
-----------------------------------------------------------------------------------------------------
+------------------------------------------------------------------------------------------------------------------------
+--                                                 Extract Name Stub
+------------------------------------------------------------------------------------------------------------------------
+
+-- TODO: Move to InfoNameTools.hs.
 extractStub :: String -> Maybe String
 extractStub s
     | not (nomenIsFormatted s) = Nothing
@@ -649,10 +669,10 @@ extractStub s
         numIdx = findNumberIdx s
 
 
-----------------------------------------------------------------------------------------------------
---                 Functions that Reset Sigs/Ports, Assign Defaults, etc.
-----------------------------------------------------------------------------------------------------
--- Reset a batch of signals:
+
+------------------------------------------------------------------------------------------------------------------------
+--                                          Assign Reset and Default Values
+------------------------------------------------------------------------------------------------------------------------
 resetBatch :: [Information] -> [String]
 resetBatch sigList = (map (\x -> (nomen x) ++ " <= " ++ (sReset x) ++ ";") sigList)
 
@@ -687,9 +707,9 @@ customResetVal x s = VhdSig {
             }
 
 
-----------------------------------------------------------------------------------------------------
---                           Functions that Declare Information Types
-----------------------------------------------------------------------------------------------------
+------------------------------------------------------------------------------------------------------------------------
+--                                             Declare Information Types
+------------------------------------------------------------------------------------------------------------------------
 declareOneThing :: Information -> String
 declareOneThing (Port nm dt w pDir sDef _ _ _ _) = 
     nm ++ " : " ++ (showDir pDir) ++ " " ++ (datatypeToStr dt w) ++ (default2Str sDef) ++ ";"
@@ -716,13 +736,13 @@ declareBatch :: [Information] -> [String]
 declareBatch sList = map declareWithKind sList
 
 
-
-
-
-
--- Extract the names from a list of Informations
--- The parameter is named sigList, but the list can be any combination of signals, ports, generics, constants, etc. 
+------------------------------------------------------------------------------------------------------------------------
+--                                     Extract Names from A List of Informations
+--
+-- The parameter is named sigList, but the list can be any combination of signals, ports, generics, constants, etc.
 -- If you pass any Literals into this, you will get an error (as well you should).
+--
+------------------------------------------------------------------------------------------------------------------------
 getNames :: [Information] -> [String]
 getNames sigList = map (\x -> nomen x) sigList
 
@@ -737,12 +757,27 @@ convertGen2Const p =
             }
 
 
-----------------------------------------------------------------------------------------------------
---                                     Convert Port to Signal
-----------------------------------------------------------------------------------------------------
+------------------------------------------------------------------------------------------------------------------------
+--                                              Convert Port to Signal
+------------------------------------------------------------------------------------------------------------------------
 port2Sig :: Information -> Information
 port2Sig p = 
     VhdSig  {   nomen = portName2SigName(nomen p) 0
+            ,   dataType = dataType p
+            ,   width = width p
+            ,   sDefault = sDefault p
+            ,   sReset = sReset p
+            ,   clocked = clocked p
+            ,   comments = (if (direction p == Out)
+                                        then ["Driven by " ++ (nomen p)]
+                                        else ["Drives " ++ (nomen p)]) ++ (comments p)
+            ,   assertionLevel = assertionLevel p
+            }
+
+
+port2SigN :: Information -> Integer -> Information
+port2SigN p n = 
+    VhdSig  {   nomen = portName2SigName(nomen p) n
             ,   dataType = dataType p
             ,   width = width p
             ,   sDefault = sDefault p
@@ -779,9 +814,13 @@ mapPortToSig (x:xs) = [(onePort, oneSignal)] ++ mapPortToSig xs where
                     , assertionLevel = assertionLevel x
                     }
 
-
--- This function takes an input port and creates an infinite list of signals 
--- with the same name stub. 
+------------------------------------------------------------------------------------------------------------------------
+--                                          Create Infinite List of Signals
+--
+-- This function takes an input port and creates an infinite list of signals with the same name stub. See 
+-- assignSignalChainWithInput in Assignment.hs to assign the signals. This list is more useful for declaring the 
+-- signals.
+------------------------------------------------------------------------------------------------------------------------
 endlessSignals :: Information -> [Information]
 endlessSignals someInput = 
     [VhdSig {
@@ -794,7 +833,7 @@ endlessSignals someInput =
             ,   comments = (if (direction someInput == In)
                                 then ["Driven by " ++ (nomen someInput)]
                                 else ["Drives " ++ (nomen someInput)]) ++ (comments someInput)
-            ,   assertionLevel = assertionLevel someInput}
-            
-            | n <- [0..]]
+            ,   assertionLevel = assertionLevel someInput}            
+        
+        | n <- [0..]]
 
