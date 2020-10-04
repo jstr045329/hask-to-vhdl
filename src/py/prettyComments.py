@@ -2,12 +2,24 @@
 """This script takes command line arguments, puts them in a box, and prints the resulting 
 comment block to the console"""
 import sys
-COMMENT_MARKER = "--"
 LINE_LENGTH = 120
 LINE_MARGIN = 10
-DEMARCATION = '-' * LINE_LENGTH
-ARGV_START_NUM = 1
 TITLE_END = "endtitle"
+DEFAULT_LANGUAGE = "hs"
+
+
+comment_markers = {
+    "bash": "#",
+    "c": "//",
+    "cpp": "//",
+    "c++": "//",
+    "hs": "--",
+    "java": "//",
+    "py": "#",
+    "tcl": "#",
+    "ver": "//", # short for verilog
+    "vhd": "--",
+    }
 
 
 def centerStr(s):
@@ -16,38 +28,64 @@ def centerStr(s):
 
 
 def main():
-    words = sys.argv[ARGV_START_NUM:]
+    if len(sys.argv) < 2:
+        return
+    if (sys.argv[1] in comment_markers.keys()):
+        language = sys.argv[1]
+        comment_marker = comment_markers[language]
+        argv_start_num = 2
+    else:
+        comment_marker = comment_markers[DEFAULT_LANGUAGE]
+        argv_start_num = 1
+        
+    num_dashes = LINE_LENGTH - len(comment_marker)
+    demarcation = comment_marker + ('-' * num_dashes)
+    
+    words = sys.argv[argv_start_num:]
     y = []
-    y.append(DEMARCATION)
+    y.append(demarcation)
     s = " "
     scrapingTitle = True
     title = ""
+    linesWritten = 0
     for oneWord in words:
-        if oneWord.lower()   == TITLE_END:
+        if oneWord.lower() == TITLE_END:
             scrapingTitle = False
-            y.append(COMMENT_MARKER + centerStr(title))
-            y.append(COMMENT_MARKER)
+            y.append(comment_marker + centerStr(title))
             title = ""
         
         elif scrapingTitle:
             title += oneWord + " "
             
         elif len(s) > LINE_LENGTH - LINE_MARGIN:
-            y.append(COMMENT_MARKER + s)
+            if linesWritten == 0:
+                y.append(comment_marker)
+            y.append(comment_marker + s)
+            print(s)
+            print(linesWritten)
             s = " " + oneWord + " "
+            linesWritten += 1
+            
+            
         else:
             s += oneWord + " "
     
     if len(title) > 0:
-        y.append(COMMENT_MARKER + centerStr(title))
+        y.append(comment_marker + centerStr(title))
     
-    if len(s) > 0:
-        y.append(COMMENT_MARKER + s)
+    if len(s.split()) > 0:
+        # If s is just a space, don't append a new line for that.
+        y.append(comment_marker + s)
     
-    y.append(DEMARCATION)
+    if linesWritten > 0:
+        y.append(comment_marker)
+        
+    y.append(demarcation)
     
+    print("")
     for line in y:
         print(line)
+    print("")
 
 
 if __name__ == "__main__":
