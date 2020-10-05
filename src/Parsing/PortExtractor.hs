@@ -176,7 +176,7 @@ inferDatatype (oneTok:moreTokens)
     | containsSubstr oneTok "signed"        = Signed
     | containsSubstr oneTok "bit"           = Bit
     | containsSubstr oneTok "integer"       = resolveConstrainedness moreTokens
-    | otherwise                             = error "Unrecognized datatype"
+    | otherwise                             = UserDefinedDataType oneTok
 
 
 is0Thru9 :: Char -> Bool
