@@ -78,25 +78,14 @@ signalSuffix n = printf signalSuffixFormatStr n
 
 
 ------------------------------------------------------------------------------------------------------------------------
---                                         Convert Input Name to Signal Name
---
--- If a port name starts with the prefix i_ or o_, this function replaces the prefix with the signal prefix s_. If
--- the name has no such prefix, this function simply prepends it with s_. In all cases, the signal suffix is appended
--- at the end.
-------------------------------------------------------------------------------------------------------------------------
-portName2SigName :: String -> Integer -> String 
-portName2SigName s n
-    | ((take 2 s) == "i_") = "s_" ++ (tail (tail s)) ++ (signalSuffix n)
-    | ((take 2 s) == "o_") = "s_" ++ (tail (tail s)) ++ (signalSuffix n)
-    | otherwise = "s_" ++ s ++ (signalSuffix n)
-
-
-------------------------------------------------------------------------------------------------------------------------
 --                                                 Parse An Integer
 ------------------------------------------------------------------------------------------------------------------------
 readInt :: String -> Integer 
 readInt s = read s 
 
+
+readInt' :: String -> Int
+readInt' s = (read s) :: Int
 
 ------------------------------------------------------------------------------------------------------------------------
 --                                          Test If Characters Are Numbers
@@ -133,6 +122,9 @@ nameEndsWithNumber s
 
 ------------------------------------------------------------------------------------------------------------------------
 --                                 Extract Name Stub from Port, Signal, or Variable
+--
+-- extractMiddle is the brains, but you're probably better off calling extractNameStub.
+--
 ------------------------------------------------------------------------------------------------------------------------
 extractMiddle :: String -> String 
 extractMiddle s
@@ -148,4 +140,72 @@ extractNameStub someName
     | ((length (splitName someName)) == 0) = ""
     | ((length (splitName someName)) == 1) = someName
     | otherwise = extractMiddle someName
+
+
+------------------------------------------------------------------------------------------------------------------------
+--                                        Check If Name Ends With Two Numbers
+--
+-- This function returns True if a signal or port is in this format: s_someNameStub_0000_0000. False otherwise. The
+-- two numbders at the end do not need to be 4 digits, but they do need to be free of letters and special characters
+-- that aren't underscores. While you can technically sprinkle underscores freely into the number regions, doing
+-- so will make those separate numbers as far as this function is concerned. Technically, this function returns True
+-- if a name ends with 2 or more numbers, so additional numbers will not throw it off. For example, s_someNameStub_1_2_3
+-- will return True. s_someNameStub_46 will return False, as will s_hillary.
+--
+------------------------------------------------------------------------------------------------------------------------
+nameEndsWithTwoNumbers :: String -> Bool
+nameEndsWithTwoNumbers "" = False
+nameEndsWithTwoNumbers s
+    | ((length tokList) < 3) = False
+    | otherwise = ((allCharsAreNumbers secondToLast) && (allCharsAreNumbers lastLast)) where 
+    tokList = splitName s
+    listLen = length tokList
+    secondToLast = tokList !! (listLen-2)
+    lastLast = tokList !! (listLen-1)
+
+
+------------------------------------------------------------------------------------------------------------------------
+--                                       Extract Last Two Numbers From A Name
+--
+-- This convention is used to indicate (signal_number, layer_number) in trees of tuples, which in turn are useful
+-- for pipelining functions.
+--
+------------------------------------------------------------------------------------------------------------------------
+extractLastTwoNumbers :: String -> Maybe (Int, Int)
+extractLastTwoNumbers s
+    | (not (nameEndsWithTwoNumbers s)) = Nothing
+    | otherwise = Just (x0, x1) where
+        tokList = splitName s
+        listLen = length tokList
+        x0 = readInt' (tokList !! (listLen-2))
+        x1 = readInt' (tokList !! (listLen-1))
+
+
+------------------------------------------------------------------------------------------------------------------------
+--                                         Convert Input Name to Signal Name
+--
+-- If a port name starts with the prefix i_ or o_, this function replaces the prefix with the signal prefix s_. If
+-- the name has no such prefix, this function simply prepends it with s_. In all cases, the signal suffix is appended
+-- at the end. Note this is a lossy convertion so if you want to convert a signal to a port, you need to know Input or 
+-- Output. 
+------------------------------------------------------------------------------------------------------------------------
+portName2SigName :: String -> Integer -> String 
+portName2SigName s n
+    | ((take 2 s) == "i_") = "s_" ++ (tail (tail s)) ++ (signalSuffix n)
+    | ((take 2 s) == "o_") = "s_" ++ (tail (tail s)) ++ (signalSuffix n)
+    | otherwise = "s_" ++ s ++ (signalSuffix n)
+
+
+------------------------------------------------------------------------------------------------------------------------
+--                                         Convert Signal Name To Input Name
+------------------------------------------------------------------------------------------------------------------------
+sigName2InputName :: String -> String 
+sigName2InputName s = "i_" ++ (extractNameStub s)
+
+
+------------------------------------------------------------------------------------------------------------------------
+--                                        Convert Signal Name to Output Name
+------------------------------------------------------------------------------------------------------------------------
+sigName2OutputName :: String -> String 
+sigName2OutputName s = "o_" ++ (extractNameStub s)
 
