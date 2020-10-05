@@ -12,21 +12,21 @@ registerPorts clkIn rstIn portList =
 
     -- Reset the signals:
     (map (\oneSig -> (tab 3) ++ (nomen oneSig) ++ " <= " ++ (sReset oneSig) ++ ";")
-         (map (\(_, oneSig) -> oneSig) (portToSig portList))) ++ 
+         (map (\(_, oneSig) -> oneSig) (mapPortToSig portList))) ++ 
 
     -- Reset the output ports:
     (map (\(onePort, oneSig) -> (tab 3) ++ (nomen onePort) ++ " <= " ++ (sReset oneSig) ++ ";")
-         (portToSig [p | p <- portList, direction p == Out])) ++
+         (mapPortToSig [p | p <- portList, direction p == Out])) ++
 
     [(tab 2) ++ "else"] ++ 
 
     -- Register the inputs:
     (map (\(onePort, oneSig) -> (tab 3) ++ (nomen oneSig) ++ " <= " ++ (nomen onePort) ++ ";")
-         (portToSig [p | p <- portList, direction p == In])) ++
+         (mapPortToSig [p | p <- portList, direction p == In])) ++
 
     -- Register the outputs:
     (map (\(onePort, oneSig) -> (tab 3) ++ (nomen onePort) ++ " <= " ++ (nomen oneSig) ++ ";")
-         (portToSig [p | p <- portList, direction p == Out])) ++ 
+         (mapPortToSig [p | p <- portList, direction p == Out])) ++ 
 
     [(tab 2) ++ "end if;"] ++ 
     [(tab 1) ++ "end if;"] ++ 
