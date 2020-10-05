@@ -19,5 +19,5 @@ mapPorts2SimilarNames portList
     | portList == [] = []
     | otherwise = [mapOnePort onePort oneSig] ++ mapPorts2SimilarNames (tail portList) where
         onePort = head portList
-        oneSig = convertPort2Sig onePort
+        oneSig = port2Sig onePort
 
