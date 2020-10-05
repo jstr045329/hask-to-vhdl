@@ -40,22 +40,12 @@ begin
     if rising_edge(clk) then 
         if rst = '1' then
 """
-# Then reset the signals 
-
-            # s_enable_counter <= 0;
-            # s_soft_enable_0 <= '0';
-            # s_soft_enable_1 <= '0';
-            # s_soft_enable_2 <= '0';
-            # s_soft_enable_3 <= '0';
-            # s_enable_other_enables <= '0';
         
 cycle_0_chunk = ["""if s_enable_counter = %d then""",
 """    s_enable_counter <= 0;""",
-"""    s_soft_enable_0 <= '1';""",
 """    s_enable_other_enables <= '1';""",
 """else""",
 """    s_enable_counter <= s_enable_counter + 1;""",
-"""    s_soft_enable_0 <= '0';""",
 """end if;""",
 "",]
 
