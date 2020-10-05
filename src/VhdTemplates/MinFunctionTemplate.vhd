@@ -3,7 +3,7 @@ use IEEE.std_logic_1164.ALL;
 use IEEE.numeric_std.ALL;
 
 
-entity MinFunction is
+entity MinFunction_<num_inputs_here> is
     generic (
         -- Only use i_distance_xx when an input is smaller than this:
         max_integer : integer := (2**30)-2
@@ -16,15 +16,12 @@ entity MinFunction is
         o_min : out integer;
         o_latency : out integer
     );
-end MinFunction;
+end MinFunction_<num_inputs_here>;
 
 
-architecture behavioral_MinFunction of MinFunction is
-
+architecture behavioral_MinFunction_<num_inputs_here> of MinFunction_<num_inputs_here> is
 
 <signals_here>
-
-signal s_smallest_value : integer; 
 
 begin
 
@@ -46,5 +43,4 @@ end process;
 <drive_output_here>
 <latency_here>
 
-end behavioral_MinFunction;
-
+end behavioral_MinFunction_<num_inputs_here>;
