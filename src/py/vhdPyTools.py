@@ -84,6 +84,17 @@ def comma(i, vectorLength):
     return "," if i < (vectorLength-1) else ""
 
 
+def vectorClosingParen(i, vectorLength):
+    return ")" if i >= (vectorLength-1) else ""
+
+
+def semicolon(i, vectorLength):
+    return ";" if i >= (vectorLength-1) else ""
+
+
+def spaceInVector(i, vectorLength):
+    return " " if i < (vectorLength-1) else ""
+
 def enforceOneLineEnding(s):
     """Ensures that a string contains exactly 1 line ending character at the end."""
     if len(s) == 0:
