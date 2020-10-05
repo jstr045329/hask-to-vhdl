@@ -20,7 +20,11 @@ dropLast someList
     | otherwise = [head someList] ++ (dropLast (tail someList))
 
 
--- TODO: replace calls to this with calls to StringTools.joinStringsWithCommas
+------------------------------------------------------------------------------------------------------------------------
+--                                            TODO: Delete This Function
+--
+-- Replace calls to this with calls to StringTools.joinStringsWithCommas
+------------------------------------------------------------------------------------------------------------------------
 joinWithCommas :: [String] -> String
 joinWithCommas [] = ""
 joinWithCommas tokList
@@ -28,6 +32,9 @@ joinWithCommas tokList
     | otherwise = (head tokList) ++ ", " ++ (joinWithCommas (tail tokList))
 
 
+------------------------------------------------------------------------------------------------------------------------
+--                                          Take The Last N Items In A List
+------------------------------------------------------------------------------------------------------------------------
 lastN :: [a] -> Int -> [a]
 lastN _ 0 = []
 lastN someList n
@@ -50,3 +57,4 @@ flattenShallow :: [[a]] -> [a]
 flattenShallow [[]] = []
 flattenShallow [] = []
 flattenShallow listOfLists = (head listOfLists) ++ (flattenShallow (tail listOfLists))
+
