@@ -211,7 +211,7 @@ declareSignals :: [String] -> [String]
 declareSignals [] = []
 declareSignals los = declareBatch sigList where
     portList = extractPorts los
-    rawSignals = map convertPort2Sig portList
+    rawSignals = map port2Sig portList
     clockList = extractClocks rawSignals
     resetList = extractResets rawSignals
     otherSigs = removeClocks (removeResets rawSignals)
@@ -223,7 +223,7 @@ resetStimSignals [] = []
 resetStimSignals los = resetBatch stimSigs where
     portList = removeClocks (removeResets (extractPorts los))
     inputList = [x | x <- portList, Rendering.InfoTypes.isInput x]
-    stimSigs = map convertPort2Sig inputList
+    stimSigs = map port2Sig inputList
 
 
 generateTestbench :: [String] -> [String]
@@ -248,6 +248,7 @@ generateTestbench los =
     ["constant clk_per : time := 10 ns;"] ++
     ["signal sim_done : std_logic := '0';"] ++
     ["signal test_stage : integer := 0;"] ++
+    ["signal s_clock_cycle_count : integer := 0;"] ++ 
     [""] ++
     [""] ++
     ["begin"] ++
@@ -265,10 +266,20 @@ generateTestbench los =
     ["end process;"] ++
     [""] ++
     [""] ++
+    (commentBlock ["Count Clock Cycles"]) ++ 
+    ["CLOCK_CYCLE_COUNTER: process(clk)"] ++
+    ["begin"] ++
+    ["    if rising_edge(clk) then "] ++
+    ["        s_clock_cycle_count <= s_clock_cycle_count + 1;"] ++
+    ["    end if;"] ++
+    ["end process;"] ++
+    [""] ++
+    [""] ++
     (commentBlock ["Stim Process"]) ++ 
     ["STIM_PROCESS: process"] ++
     ["begin"] ++
     (zipTab (resetStimSignals los)) ++ 
+    ["    test_stage <= 0;"] ++ 
     ["    sync_wait_rising(clk, 10);"] ++
     -- Invert all resets
     -- Typically use exactly one in practice. 
@@ -277,6 +288,8 @@ generateTestbench los =
     ["    sync_wait_rising(clk, 10);"] ++
     [""] ++
     [""] ++
+    ["    -- Test ends here:"] ++ 
+    ["    test_stage <= test_stage + 1;"] ++ 
     ["    sync_wait_rising(clk, 100);"] ++
     ["    sim_done <= '1';"] ++
     ["    wait;"] ++
