@@ -4,7 +4,7 @@ cabal-version: 1.12
 --
 -- see: https://github.com/sol/hpack
 --
--- hash: ca3ea8c92889b810895b36217002f7448b28aff2cc290aa414c63f5b76ae1bf0
+-- hash: e2bd2728304bfb17e69785b36a85b84cf92635fc8d705048539cc759d3cb4c4c
 
 name:           hask-to-vhd
 version:        0.1.0.0
@@ -27,33 +27,43 @@ source-repository head
 
 library
   exposed-modules:
+      Cookbook.BlankEntity
+      Cookbook.BlankPackage
+      Cookbook.FastComponent
       Cookbook.OneOverX
       Cookbook.ShiftRegister
+      Cookbook.TestbenchWiz
       Modification.AssignmentAligner
       Parsing.EntityReport
       Parsing.ExtractEntity
       Parsing.GuaranteeWhitespace
+      Parsing.InfoNameAnalyzer
       Parsing.PortExtractor
       Parsing.SensitivityScanner
+      Parsing.TestModule
       Parsing.TokenMatchingTools
       Rendering.Assignment
       Rendering.BitCountingTools
       Rendering.BitCrunchingTools
       Rendering.ClkRst
       Rendering.Clock
+      Rendering.CodeGenerationParameters
       Rendering.CommentTools
+      Rendering.Concatenations
       Rendering.Condition
       Rendering.Count1s
       Rendering.DeclareGenerics
       Rendering.DeclarePorts
       Rendering.DeclareSignals
       Rendering.ElseClause
+      Rendering.Entity
       Rendering.FilterUnique
+      Rendering.FiniteStateMachine
       Rendering.Function
       Rendering.GenerateTestbench
       Rendering.GlueSigNames
       Rendering.GlueStatements
-      Rendering.InfoNames
+      Rendering.InfoNameTools
       Rendering.InfoTypes
       Rendering.IntToBin
       Rendering.Literals
@@ -65,11 +75,15 @@ library
       Rendering.Process
       Rendering.ProcessFile
       Rendering.RegGateOutputPack
+      Rendering.RegisteredFunction
       Rendering.RegisteredGates
       Rendering.RegisterPorts
       Rendering.RenderPorts
       Rendering.SemicolonTools
       Rendering.SetRenderingTools
+      Rendering.ShortRandomSequence
+      Rendering.StateUpdate
+      Rendering.VectorSubRange
       Rendering.VhdLibraries
       Rendering.VhdMath
       Rendering.WrapInParens
@@ -91,6 +105,7 @@ library
     , base >=4.7 && <5
     , bytestring >=0.10 && <1
     , hashable >=1.2 && <2
+    , split >0.2 && <1
     , tasty >=1.2 && <2
     , text >=1.2 && <2
     , unique
@@ -110,6 +125,7 @@ executable hask-to-vhd-exe
     , bytestring >=0.10 && <1
     , hashable >=1.2 && <2
     , hask-to-vhd
+    , split >0.2 && <1
     , tasty >=1.2 && <2
     , text >=1.2 && <2
     , unique
@@ -128,6 +144,7 @@ test-suite hask-to-vhd-test
     , bytestring >=0.10 && <1
     , hashable >=1.2 && <2
     , hask-to-vhd
+    , split >0.2 && <1
     , tasty >=1.2 && <2
     , text >=1.2 && <2
     , unique
