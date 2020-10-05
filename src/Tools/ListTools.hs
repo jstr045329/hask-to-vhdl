@@ -20,6 +20,7 @@ dropLast someList
     | otherwise = [head someList] ++ (dropLast (tail someList))
 
 
+-- TODO: replace calls to this with calls to StringTools.joinStringsWithCommas
 joinWithCommas :: [String] -> String
 joinWithCommas [] = ""
 joinWithCommas tokList
@@ -33,8 +34,19 @@ lastN someList n
     | length someList <= n = someList
     | otherwise = lastN (tail someList) n
 
-    
--- This function repeats the tail function n times.
+------------------------------------------------------------------------------------------------------------------------
+--                                            TODO: Delete This Function
+-- For new functions, use skipN (above).
+------------------------------------------------------------------------------------------------------------------------
 repTail :: Int -> [String] -> [String]
 repTail 0 xs = xs
 repTail n xs = tail (repTail (n-1) xs)
+
+
+------------------------------------------------------------------------------------------------------------------------
+--                                      Flatten a List of Lists to Just A List
+------------------------------------------------------------------------------------------------------------------------
+flattenShallow :: [[a]] -> [a]
+flattenShallow [[]] = []
+flattenShallow [] = []
+flattenShallow listOfLists = (head listOfLists) ++ (flattenShallow (tail listOfLists))

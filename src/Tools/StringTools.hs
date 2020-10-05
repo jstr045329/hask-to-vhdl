@@ -9,9 +9,12 @@ module Tools.StringTools (
     , doubleBackslashes
     , allLowercase
     , allUppercase
+    , joinStringsWithCommas
+    , joinStringsWithUnderscores
     ) where
 import qualified Data.Char as DC
 import Tools.LogicTools
+-- import Tools.ListTools
 
 
 ------------------------------------------------------------------------------------------------------------------------
@@ -130,4 +133,24 @@ doubleBackslashes "" = ""
 doubleBackslashes s
     | (head s == '\\') = ['\\', '\\'] ++ (doubleBackslashes (tail s))
     | otherwise = [head s] ++ (doubleBackslashes (tail s))
+
+
+------------------------------------------------------------------------------------------------------------------------
+--                                             Join Strings With Commas
+------------------------------------------------------------------------------------------------------------------------
+joinStringsWithCommas :: [String] -> String
+joinStringsWithCommas [] = ""
+joinStringsWithCommas los
+    | ((length los) == 1) = head los
+    | otherwise = (head los) ++ ", " ++ (joinStringsWithCommas (tail los))
+
+
+------------------------------------------------------------------------------------------------------------------------
+--                                           Join Strings With Underscores
+------------------------------------------------------------------------------------------------------------------------
+joinStringsWithUnderscores :: [String] -> String 
+joinStringsWithUnderscores [] = ""
+joinStringsWithUnderscores los
+    | ((length los) == 1) = head los
+    | otherwise = (head los) ++ "_" ++ (joinStringsWithUnderscores (tail los))
 

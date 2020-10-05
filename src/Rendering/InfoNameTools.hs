@@ -2,6 +2,8 @@ module Rendering.InfoNameTools where
 import Data.List.Split
 import Tools.LogicTools
 import Text.Printf
+import Tools.StringTools
+import Tools.ListTools
 
 
 ------------------------------------------------------------------------------------------------------------------------
@@ -15,6 +17,7 @@ splitName s = splitOn "_" s
 --                                   Determine What An Information Is By Its Name
 --
 -- This function checks if the first token in a signal name (when split on underscores) matches target.
+-- See InfoTypes.hs for tools that check what Information is by its type constructor.
 ------------------------------------------------------------------------------------------------------------------------
 matchInfoPrefix :: String -> String -> Bool 
 matchInfoPrefix someString target = ((head (splitName someString)) == target)
@@ -34,6 +37,31 @@ nameIsSignal s = matchInfoPrefix s "s"
 
 nameIsVariable :: String -> Bool
 nameIsVariable s = matchInfoPrefix s "v"
+
+
+nameIsConstant :: String -> Bool 
+nameIsConstant s = allUppercase s
+
+
+------------------------------------------------------------------------------------------------------------------------
+--                                     All Possible Prefix Letters In One String
+--
+-- If you add anything to this list, be sure to give it a descriptive name in the Determine What An Information Is...
+-- section above.
+--
+------------------------------------------------------------------------------------------------------------------------
+prefixLetters :: String 
+prefixLetters = "iosv"
+
+
+------------------------------------------------------------------------------------------------------------------------
+--                                        Check If Name Has Any Valid Prefix
+------------------------------------------------------------------------------------------------------------------------
+nameHasPrefix :: String -> Bool
+nameHasPrefix someName
+    | ((length (splitName someName)) < 2) = False
+    | otherwise = logicalOr boolList where
+    boolList = map (\oneTarget -> matchInfoPrefix someName [oneTarget]) prefixLetters
 
 
 ------------------------------------------------------------------------------------------------------------------------
@@ -92,4 +120,32 @@ getNumberFromString :: String -> Maybe Integer
 getNumberFromString s
     | (allCharsAreNumbers (last (splitName s))) = Just (readInt (last (splitName s)))
     | otherwise = Nothing
+
+
+------------------------------------------------------------------------------------------------------------------------
+--                                          Check If Name Ends In A Number
+------------------------------------------------------------------------------------------------------------------------
+nameEndsWithNumber :: String -> Bool
+nameEndsWithNumber s
+    | ((getNumberFromString s) == Nothing) = False
+    | otherwise = True
+
+
+------------------------------------------------------------------------------------------------------------------------
+--                                 Extract Name Stub from Port, Signal, or Variable
+------------------------------------------------------------------------------------------------------------------------
+extractMiddle :: String -> String 
+extractMiddle s
+    | ((nameHasPrefix s) && (nameEndsWithNumber s)) = joinStringsWithUnderscores (tail (dropLast (splitName s)))
+    | (nameHasPrefix s) = joinStringsWithUnderscores (tail (splitName s))
+    | (nameEndsWithNumber s) = joinStringsWithUnderscores (dropLast (splitName s))
+    | otherwise = s
+
+
+extractNameStub :: String -> String
+extractNameStub "" = ""
+extractNameStub someName
+    | ((length (splitName someName)) == 0) = ""
+    | ((length (splitName someName)) == 1) = someName
+    | otherwise = extractMiddle someName
 
