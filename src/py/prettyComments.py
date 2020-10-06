@@ -2,6 +2,7 @@
 """This script takes command line arguments, puts them in a box, and prints the resulting 
 comment block to the console"""
 import sys
+import pyperclip
 LINE_LENGTH = 120
 LINE_MARGIN = 10
 TITLE_END = "endtitle"
@@ -61,8 +62,6 @@ def main():
             if linesWritten == 0:
                 y.append(comment_marker)
             y.append(comment_marker + s)
-            print(s)
-            print(linesWritten)
             s = " " + oneWord + " "
             linesWritten += 1
             
@@ -86,6 +85,14 @@ def main():
     for line in y:
         print(line)
     print("")
+
+    resultStr = ""
+    for line in y:
+        resultStr += line
+        resultStr += "\n"
+    # pyperclip.copy('Copy to clipboard')
+    print("\nCopied to clipboard\n\n")
+    pyperclip.copy(resultStr)
 
 
 if __name__ == "__main__":
