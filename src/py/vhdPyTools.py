@@ -53,8 +53,8 @@ def machineGeneratedFileWarning(pyScriptName, comments=[]):
 def ieeeHeader():
     y = []
     y.append("library IEEE;")
-    y.append("use IEEE.std_logic_1164.ALL;")
-    y.append("use IEEE.numeric_std.ALL;")
+    y.append("use IEEE.std_logic_1164.all;")
+    y.append("use IEEE.numeric_std.all;")
     y.append("")
     y.append("")
     return y
