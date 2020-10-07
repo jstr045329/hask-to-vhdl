@@ -145,6 +145,20 @@ isLayer0 (_, x) = (x == 0)
 
 
 ------------------------------------------------------------------------------------------------------------------------
+--                                          Extract Layer Number From Tuple 
+------------------------------------------------------------------------------------------------------------------------
+getLayerNum :: (Int, Int) -> Int
+getLayerNum (_, x) = x
+
+
+------------------------------------------------------------------------------------------------------------------------
+--                                         Extract Signal Number From Tuple 
+------------------------------------------------------------------------------------------------------------------------
+getSignalNum :: (Int, Int) -> Int
+getSignalNum (x, _) = x
+
+
+------------------------------------------------------------------------------------------------------------------------
 --                                       Make outList for consumeChunkOfInputs
 --
 -- This function takes the list of tuples from makeTupleTree and turns it into the output list. The only tuples that
@@ -156,3 +170,4 @@ makeOutputList [] = []
 makeOutputList listOfLists = newResults ++ anyRecursion where 
     newResults = [oneTup | oneTup <- (head listOfLists), not (isLayer0 oneTup)]
     anyRecursion = makeOutputList (tail listOfLists)
+
