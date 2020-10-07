@@ -2,9 +2,7 @@
 --                                 Many Input Definitions For Basic Logic Functions 
 --
 -- This module contains definitions for basic logic functions 1) using prefix functional notation (as opposed to 
--- infix operator notation) and 2) with most inputs optional. Note that NAND and NOR are restricted to 2 inputs for 
--- a reason. (They are not like AND and OR where you can reverse the associativity and get the same result.) Therefore 
--- make sure the ()'s used in NAND and NOR definitions are the way you want. At the time of this writing (2020), 
+-- infix operator notation) and 2) with most inputs optional. At the time of this writing (2020), 
 -- Xilinx LUTs are 6-input. I defined these functions with up to 8 inputs so that the library could grow with the 
 -- technology for a few years, but it might be necessary at some point to define greater numbers of inputs in order 
 -- to make use of additional LUT inputs. You should only use as many inputs as your device can accept in a single 
@@ -34,13 +32,13 @@ package PrefixFunctions is
 
 function and_function(
     x0 : std_logic;
-    x1 : std_logic := '0';
-    x2 : std_logic := '0';
-    x3 : std_logic := '0';
-    x4 : std_logic := '0';
-    x5 : std_logic := '0';
-    x6 : std_logic := '0';
-    x7 : std_logic := '0'
+    x1 : std_logic := '1';
+    x2 : std_logic := '1';
+    x3 : std_logic := '1';
+    x4 : std_logic := '1';
+    x5 : std_logic := '1';
+    x6 : std_logic := '1';
+    x7 : std_logic := '1'
     ) return std_logic;
 
 
@@ -58,13 +56,13 @@ function or_function(
 
 function nand_function(
     x0 : std_logic;
-    x1 : std_logic := '0';
-    x2 : std_logic := '0';
-    x3 : std_logic := '0';
-    x4 : std_logic := '0';
-    x5 : std_logic := '0';
-    x6 : std_logic := '0';
-    x7 : std_logic := '0'
+    x1 : std_logic := '1';
+    x2 : std_logic := '1';
+    x3 : std_logic := '1';
+    x4 : std_logic := '1';
+    x5 : std_logic := '1';
+    x6 : std_logic := '1';
+    x7 : std_logic := '1'
     ) return std_logic;
 
 
@@ -99,13 +97,13 @@ package body PrefixFunctions is
 
 function and_function(
     x0 : std_logic;
-    x1 : std_logic := '0';
-    x2 : std_logic := '0';
-    x3 : std_logic := '0';
-    x4 : std_logic := '0';
-    x5 : std_logic := '0';
-    x6 : std_logic := '0';
-    x7 : std_logic := '0'
+    x1 : std_logic := '1';
+    x2 : std_logic := '1';
+    x3 : std_logic := '1';
+    x4 : std_logic := '1';
+    x5 : std_logic := '1';
+    x6 : std_logic := '1';
+    x7 : std_logic := '1'
     ) return std_logic is 
 begin 
     return x0 and x1 and x2 and x3 and x4 and x5 and x6 and x7;
@@ -129,16 +127,16 @@ end function;
 
 function nand_function(
     x0 : std_logic;
-    x1 : std_logic := '0';
-    x2 : std_logic := '0';
-    x3 : std_logic := '0';
-    x4 : std_logic := '0';
-    x5 : std_logic := '0';
-    x6 : std_logic := '0';
-    x7 : std_logic := '0'
+    x1 : std_logic := '1';
+    x2 : std_logic := '1';
+    x3 : std_logic := '1';
+    x4 : std_logic := '1';
+    x5 : std_logic := '1';
+    x6 : std_logic := '1';
+    x7 : std_logic := '1'
     ) return std_logic is 
 begin 
-    return ((x0 nand x1) nand (x2 nand x3)) nand ((x4 nand x5) nand (x6 nand x7));
+    return not (x0 and x1 and x2 and x3 and x4 and x5 and x6 and x7);
 end function;
 
 
@@ -153,7 +151,7 @@ function nor_function(
     x7 : std_logic := '0'
     ) return std_logic is 
 begin 
-    return ((x0 nor x1) nor (x2 nor x3)) nor ((x4 nor x5) nor (x6 nor x7));
+    return not (x0 or x1 or x2 or x3 or x4 or x5 or x6 or x7);
 end function;
 
 
