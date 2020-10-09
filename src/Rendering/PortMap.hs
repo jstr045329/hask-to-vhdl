@@ -40,6 +40,5 @@ renderPortMap pMap =
     [(tab 1) ++ ");"] ++
     ["",""]
     
--- PICK UP HERE: Write a module for rendering functions, 
--- and another for procedures
+-- TODO: Write a module for rendering function calls, and another for procedure calls
 

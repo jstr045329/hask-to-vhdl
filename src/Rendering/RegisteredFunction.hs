@@ -102,19 +102,21 @@ heterogenousSignals numInputs exampleSigList = results where
 heterogenousCode' :: Int -> [String] -> [Information] -> [(Int, Int)] -> [(Int, Int)] -> Int -> [String]
 heterogenousCode' _ [] _ _ _ _ = []
 heterogenousCode' _ _ [] _ _ _ = []
-heterogenousCode' numInputs funcNameList exampleSigList inputList outputList layerNum =
-    layer0List ++ (consumeChunkOfInputs funcName nameStub inputList' outputList') ++ anyRecursion where 
-    layer0List = 
-        if (layerNum == 0)
-            then (registerInputs numInputs nameStub)
-            else []
-    nameStub = nomen (head exampleSigList)
-    inputList' = take (findLayerChange inputList) inputList
-    outputList' = take (findLayerChange outputList) outputList
-    inputList'' = skipN inputList (findLayerChange inputList) 
-    outputList'' = skipN outputList (findLayerChange outputList) 
-    funcName = head funcNameList
-    anyRecursion = heterogenousCode' numInputs (tail funcNameList) (tail exampleSigList) inputList'' outputList'' (layerNum+1)
+heterogenousCode' numInputs funcNameList exampleSigList inputList outputList layerNum
+    | ((length exampleSigList) == 1) = []
+    | otherwise = layer0List ++ (heteroChunkOfInputs funcName nameStubSrc nameStubDest inputList' outputList') ++ anyRecursion where 
+        layer0List = 
+            if (layerNum == 0)
+                then (registerInputs numInputs nameStubSrc)
+                else []
+        nameStubSrc = nomen (exampleSigList !! 0)
+        nameStubDest = nomen (exampleSigList !! 1)
+        inputList' = take (findLayerChange inputList) inputList
+        outputList' = take (findLayerChange outputList) outputList
+        inputList'' = skipN inputList (findLayerChange inputList) 
+        outputList'' = skipN outputList (findLayerChange outputList) 
+        funcName = head funcNameList
+        anyRecursion = heterogenousCode' numInputs (tail funcNameList) (tail exampleSigList) inputList'' outputList'' (layerNum+1)
 
 
 heterogenousCode :: Int -> [String] -> [Information] -> [String]
@@ -126,46 +128,4 @@ heterogenousCode numInputs funcNameList exampleSigList =
     inputList = makeInList tupTree
     outputList = makeOutputList tupTree
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
--- TODO: Write bindings for vhd libs. 
-
--- TODO: search for PICK UP HERE and delete the others. 
-
--- TODO: Put a recipe in cookbook that uses this an unclocked version of these techniques
--- to make fanout trees. For instance:
---      x1 <= not x0;
---      x2 <= not x0;
---      ...
---      xN <= not x0;
--- Then repeat for x1-xN, until desired outputs are reached. 
--- Automatically generate synth'preserve attributes and stuff like that.
-
-
-
+-- TODO: Figure out why last thing sometimes doesn't happen in homogenousCode.

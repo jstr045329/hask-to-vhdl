@@ -67,7 +67,11 @@ tupleToSignalName nameStub (a, b) = printf "s_%s_%06d_%06d" nameStub a b
 
 
 ------------------------------------------------------------------------------------------------------------------------
---                                       Map One Chunk of Inputs to One Output
+--                                Map One Chunk Of Inputs To One Output - Homo Style
+--
+-- This version accepts only 1 name stub, because the function being applied is homogenous. Get your head out of
+-- the toilet, you pervert.
+--
 ------------------------------------------------------------------------------------------------------------------------
 mapChunkOfInputsToOneOutput :: String -> String -> [(Int, Int)] -> (Int, Int) -> String
 mapChunkOfInputsToOneOutput _ _ [] _ = []
@@ -76,6 +80,21 @@ mapChunkOfInputsToOneOutput funcName nameStub inputList oneOutput =
         rawParamList = [tupleToSignalName nameStub oneTup | oneTup <- inputList]
         paramList = joinStringsWithCommas rawParamList
         outputStr = tupleToSignalName nameStub oneOutput
+
+
+------------------------------------------------------------------------------------------------------------------------
+--                               Map One Chunk Of Inputs To One Output - Hetero Style
+--
+-- This version accepts 2 name stubs, because the function being applied is heterogenous.
+--
+------------------------------------------------------------------------------------------------------------------------
+heteroChunkOfInputsToOneOutput :: String -> String -> String -> [(Int, Int)] -> (Int, Int) -> String
+heteroChunkOfInputsToOneOutput _ _ _ [] _ = []
+heteroChunkOfInputsToOneOutput funcName nameStubSrc nameStubDest inputList oneOutput = 
+    outputStr ++ " <= " ++ funcName ++ "(" ++ paramList ++ ");" where 
+        rawParamList = [tupleToSignalName nameStubSrc oneTup | oneTup <- inputList]
+        paramList = joinStringsWithCommas rawParamList
+        outputStr = tupleToSignalName nameStubDest oneOutput
 
 
 ------------------------------------------------------------------------------------------------------------------------
@@ -120,6 +139,24 @@ consumeChunkOfInputs funcName nameStub inputList outputList =
         if ((length inputList) <= lutInputsRecommended)
             then []
             else consumeChunkOfInputs funcName nameStub (skipN inputList stopNum) (tail outputList)
+
+
+------------------------------------------------------------------------------------------------------------------------
+--                               Consume Chunk of Inputs With Heterogenous Name Stubs
+--
+-- This version is like the (homo) one above, but accepts different name stubs for input and output lists.
+--
+------------------------------------------------------------------------------------------------------------------------
+heteroChunkOfInputs :: String -> String -> String -> [(Int, Int)] -> [(Int, Int)] ->  [String]
+heteroChunkOfInputs _ _ _ [] _ = []
+heteroChunkOfInputs funcName nameStubSrc nameStubDest inputList outputList =
+    [oneAssignment] ++ anyRecursion where 
+    stopNum = min lutInputsRecommended (findLayerChange inputList)
+    oneAssignment = heteroChunkOfInputsToOneOutput funcName nameStubSrc nameStubDest (take stopNum inputList) (head outputList)
+    anyRecursion = 
+        if ((length inputList) <= lutInputsRecommended)
+            then []
+            else heteroChunkOfInputs funcName nameStubSrc nameStubDest (skipN inputList stopNum) (tail outputList)
 
 
 ------------------------------------------------------------------------------------------------------------------------
