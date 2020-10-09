@@ -53,6 +53,17 @@ assignBatch aList = map assignment2Str aList
 
 
 ------------------------------------------------------------------------------------------------------------------------
+--                                     Generate Signals For Infinite Delay Chain 
+--
+-- This function is useful for declaring the signals assigned by assignSignalChainWithInput (below); or any other 
+-- time you might need the signal maps themselves. 
+--
+------------------------------------------------------------------------------------------------------------------------
+generateSignalChainWithInput :: Information -> [Information]
+generateSignalChainWithInput someInput = [port2SigN someInput n | n <- [0..]]
+
+
+------------------------------------------------------------------------------------------------------------------------
 --                                 Take Some Information and Drive A Signal With It
 --
 -- Takes some input and generates this pattern:
@@ -83,6 +94,8 @@ assignOneSignalInChain someInput n = Assignment (port2SigN someInput n) (port2Si
 --      ...
 -- See endlessSignals in InfoTypes.hs to generate the list of signals. This list is more useful 
 -- for assigning the signals. 
+--
+-- To declare the signals that are used in this function, call generateSignalChainWithInput (above).
 ------------------------------------------------------------------------------------------------------------------------
 assignSignalChainWithInput :: Information -> [Assignment]
 assignSignalChainWithInput someInput = [assignOneSignalInChain someInput i | i <- [0..]]
