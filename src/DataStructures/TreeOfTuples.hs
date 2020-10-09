@@ -137,9 +137,6 @@ consumeChunkOfInputs funcName nameStub inputList outputList =
     stopNum = min lutInputsRecommended (findLayerChange inputList)
     oneAssignment = mapChunkOfInputsToOneOutput funcName nameStub (take stopNum inputList) (head outputList)
     anyRecursion = consumeChunkOfInputs funcName nameStub (skipN inputList stopNum) (tail outputList)
-        -- if ((length inputList) <= lutInputsRecommended)
-            -- then []
-            -- else consumeChunkOfInputs funcName nameStub (skipN inputList stopNum) (tail outputList)
 
 
 ------------------------------------------------------------------------------------------------------------------------
