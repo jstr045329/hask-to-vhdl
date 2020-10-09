@@ -14,7 +14,6 @@ module Tools.StringTools (
     ) where
 import qualified Data.Char as DC
 import Tools.LogicTools
--- import Tools.ListTools
 
 
 ------------------------------------------------------------------------------------------------------------------------
