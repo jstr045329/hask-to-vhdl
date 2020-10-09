@@ -128,4 +128,3 @@ heterogenousCode numInputs funcNameList exampleSigList =
     inputList = makeInList tupTree
     outputList = makeOutputList tupTree
 
--- TODO: Figure out why last thing sometimes doesn't happen in homogenousCode.

@@ -131,14 +131,15 @@ findLayerChange tupList = findLayerChange' tupList 0 0
 ------------------------------------------------------------------------------------------------------------------------
 consumeChunkOfInputs :: String -> String -> [(Int, Int)] -> [(Int, Int)] ->  [String]
 consumeChunkOfInputs _ _ [] _ = []
+consumeChunkOfInputs _ _ _ [] = []
 consumeChunkOfInputs funcName nameStub inputList outputList =
     [oneAssignment] ++ anyRecursion where 
     stopNum = min lutInputsRecommended (findLayerChange inputList)
     oneAssignment = mapChunkOfInputsToOneOutput funcName nameStub (take stopNum inputList) (head outputList)
-    anyRecursion = 
-        if ((length inputList) <= lutInputsRecommended)
-            then []
-            else consumeChunkOfInputs funcName nameStub (skipN inputList stopNum) (tail outputList)
+    anyRecursion = consumeChunkOfInputs funcName nameStub (skipN inputList stopNum) (tail outputList)
+        -- if ((length inputList) <= lutInputsRecommended)
+            -- then []
+            -- else consumeChunkOfInputs funcName nameStub (skipN inputList stopNum) (tail outputList)
 
 
 ------------------------------------------------------------------------------------------------------------------------
@@ -163,7 +164,7 @@ heteroChunkOfInputs funcName nameStubSrc nameStubDest inputList outputList =
 --                                       Make inList for consumeChunkOfInputs
 --
 -- This function takes the list of tuples from makeTupleTree and turns it into the intput list. The only tuple that
--- should not be an input is the final output.
+-- should not be an input is the final output. Also works for heteroChunkOfInputs.
 --
 ------------------------------------------------------------------------------------------------------------------------
 makeInList :: [[(Int, Int)]] -> [(Int, Int)]
@@ -199,7 +200,7 @@ getSignalNum (x, _) = x
 --                                       Make outList for consumeChunkOfInputs
 --
 -- This function takes the list of tuples from makeTupleTree and turns it into the output list. The only tuples that
--- should not be outputs are layer 0.
+-- should not be outputs are layer 0. Also works for heteroChunkOfInputs.
 --
 ------------------------------------------------------------------------------------------------------------------------
 makeOutputList :: [[(Int, Int)]] -> [(Int, Int)]
