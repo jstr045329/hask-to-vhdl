@@ -47,6 +47,9 @@ signal s_member : std_logic;
 
 begin
 
+------------------------------------------------------------------------------------------------------------------------
+--                                                Rising Edge Version 
+------------------------------------------------------------------------------------------------------------------------
 RISING_CLOCK_GENERATE: if clk_edge = '1' generate 
     CLOCK_RISING_DRIVER: process(clk)
     begin
@@ -68,6 +71,9 @@ RISING_CLOCK_GENERATE: if clk_edge = '1' generate
     end process;
 end generate;
 
+------------------------------------------------------------------------------------------------------------------------
+--                                               Falling Edge Version 
+------------------------------------------------------------------------------------------------------------------------
 FALLING_CLOCK_GENERATE: if clk_edge = '0' generate
     CLOCK_FALLING_DRIVER: process(clk)
     begin
@@ -89,6 +95,11 @@ FALLING_CLOCK_GENERATE: if clk_edge = '0' generate
     end process;
 end generate;
 
+
+------------------------------------------------------------------------------------------------------------------------
+--                                                   Drive Outputs 
+------------------------------------------------------------------------------------------------------------------------
+o_member <= s_member;
 
 end behavioral_OneSetBit;
 

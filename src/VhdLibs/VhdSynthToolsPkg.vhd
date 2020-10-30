@@ -276,6 +276,111 @@ function setSlvToOne(
     ) return std_logic_vector;
 
 
+------------------------------------------------------------------------------------------------------------------------
+--                                     Convert std_logic to Integer, With Reset 
+------------------------------------------------------------------------------------------------------------------------
+function sl2IntRstP(
+    x : std_logic;
+    some_reset : std_logic
+    ) return integer;
+
+
+function sl2IntRstN(
+    x : std_logic;
+    some_reset : std_logic
+    ) return integer;
+
+
+------------------------------------------------------------------------------------------------------------------------
+--                                      Convert Unsigned to Integer, With Reset 
+------------------------------------------------------------------------------------------------------------------------
+function unsigned2IntRstP(
+    x : unsigned;
+    some_reset : std_logic
+    ) return integer;
+
+
+function unsigned2IntRstN(
+    x : unsigned;
+    some_reset : std_logic
+    ) return integer;
+
+
+------------------------------------------------------------------------------------------------------------------------
+--                                       Convert Signed to Integer, With Reset 
+------------------------------------------------------------------------------------------------------------------------
+function signed2IntRstP(
+    x : signed;
+    some_reset : std_logic
+    ) return integer;
+
+
+function signed2IntRstN(
+    x : signed;
+    some_reset : std_logic
+    ) return integer;
+
+
+------------------------------------------------------------------------------------------------------------------------
+--                                  Convert std_logic_vector to Integer, With Reset 
+--
+-- Assumes unsigned. 
+--
+------------------------------------------------------------------------------------------------------------------------
+function slv2IntRstP(
+    x : std_logic_vector;
+    some_reset : std_logic
+    ) return integer;
+
+
+function slv2IntRstN(
+    x : std_logic_vector;
+    some_reset : std_logic
+    ) return integer;
+
+
+------------------------------------------------------------------------------------------------------------------------
+--                                       Overloaded Definitions of slv2IntRstX 
+--
+-- These functions allow you to use the same function name whether you are passing in std_logic, signed, or unsigned. 
+--
+------------------------------------------------------------------------------------------------------------------------
+function slv2IntRstP(
+    x : std_logic;
+    some_reset : std_logic
+    ) return integer;
+
+
+function slv2IntRstP(
+    x : unsigned;
+    some_reset : std_logic
+    ) return integer;
+
+
+function slv2IntRstP(
+    x : signed;
+    some_reset : std_logic
+    ) return integer;
+
+
+function slv2IntRstN(
+    x : std_logic;
+    some_reset : std_logic
+    ) return integer;
+
+
+function slv2IntRstN(
+    x : unsigned;
+    some_reset : std_logic
+    ) return integer;
+
+
+function slv2IntRstN(
+    x : signed;
+    some_reset : std_logic
+    ) return integer;
+
+
 end package VhdSynthToolsPkg ;
 
 
@@ -402,6 +507,190 @@ function setSlvToOne(
 begin
     return std_logic_vector(to_unsigned(1, w));
 end function;
+
+
+------------------------------------------------------------------------------------------------------------------------
+--                                     Convert std_logic to Integer, With Reset 
+------------------------------------------------------------------------------------------------------------------------
+function sl2IntRstP(
+    x : std_logic;
+    some_reset : std_logic
+    ) return integer is 
+begin 
+    if some_reset = '1' then 
+        return 0;
+    elsif x = '1' then 
+        return 1;
+    else 
+        return 0;
+    end if;
+end function;
+
+
+function sl2IntRstN(
+    x : std_logic;
+    some_reset : std_logic
+    ) return integer is 
+begin 
+    if some_reset = '0' then 
+        return 0;
+    elsif x = '1' then 
+        return 1;
+    else 
+        return 0;
+    end if;
+end function;
+
+
+------------------------------------------------------------------------------------------------------------------------
+--                                      Convert Unsigned to Integer, With Reset 
+------------------------------------------------------------------------------------------------------------------------
+function unsigned2IntRstP(
+    x : unsigned;
+    some_reset : std_logic
+    ) return integer is 
+begin 
+    if some_reset = '1' then 
+        return 0;
+    else
+        return to_integer(x);
+    end if;
+end function;
+
+
+function unsigned2IntRstN(
+    x : unsigned;
+    some_reset : std_logic
+    ) return integer is 
+begin 
+    if some_reset = '0' then 
+        return 0;
+    else
+        return to_integer(x);
+    end if;
+end function;
+
+
+------------------------------------------------------------------------------------------------------------------------
+--                                       Convert Signed to Integer, With Reset 
+------------------------------------------------------------------------------------------------------------------------
+function signed2IntRstP(
+    x : signed;
+    some_reset : std_logic
+    ) return integer is 
+begin 
+    if some_reset = '1' then 
+        return 0;
+    else
+        return to_integer(x);
+    end if;
+end function;
+
+
+function signed2IntRstN(
+    x : signed;
+    some_reset : std_logic
+    ) return integer is 
+begin 
+    if some_reset = '0' then 
+        return 0;
+    else
+        return to_integer(x);
+    end if;
+end function;
+
+
+------------------------------------------------------------------------------------------------------------------------
+--                                  Convert std_logic_vector to Integer, With Reset 
+--
+-- Assumes unsigned. 
+--
+------------------------------------------------------------------------------------------------------------------------
+function slv2IntRstP(
+    x : std_logic_vector;
+    some_reset : std_logic
+    ) return integer is 
+begin 
+    if some_reset = '1' then 
+        return 0;
+    else
+        return to_integer(unsigned(x));
+    end if;
+end function;
+
+
+function slv2IntRstN(
+    x : std_logic_vector;
+    some_reset : std_logic
+    ) return integer is 
+begin 
+    if some_reset = '0' then 
+        return 0;
+    else
+        return to_integer(unsigned(x));
+    end if;
+end function;
+
+
+------------------------------------------------------------------------------------------------------------------------
+--                                       Overloaded Definitions of slv2IntRstX 
+--
+-- These functions allow you to use the same function name whether you are passing in std_logic, signed, or unsigned. 
+--
+------------------------------------------------------------------------------------------------------------------------
+function slv2IntRstP(
+    x : std_logic;
+    some_reset : std_logic
+    ) return integer is
+begin 
+    return sl2IntRstP(x, some_reset);
+end function;
+
+
+function slv2IntRstP(
+    x : unsigned;
+    some_reset : std_logic
+    ) return integer is
+begin 
+    return unsigned2IntRstP(x, some_reset);
+end function;
+
+
+function slv2IntRstP(
+    x : signed;
+    some_reset : std_logic
+    ) return integer is
+begin 
+    return signed2IntRstP(x, some_reset);
+end function;
+
+
+function slv2IntRstN(
+    x : std_logic;
+    some_reset : std_logic
+    ) return integer is
+begin 
+    return sl2IntRstN(x, some_reset);
+end function;
+
+
+function slv2IntRstN(
+    x : unsigned;
+    some_reset : std_logic
+    ) return integer is
+begin 
+    return unsigned2IntRstN(x, some_reset);
+end function;
+
+
+function slv2IntRstN(
+    x : signed;
+    some_reset : std_logic
+    ) return integer is
+begin 
+    return signed2IntRstN(x, some_reset);
+end function;
+
 
 end package body VhdSynthToolsPkg ;
 

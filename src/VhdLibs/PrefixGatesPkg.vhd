@@ -7,25 +7,25 @@ use work.VhdSynthToolsPkg.all;
 package PrefixGatesPkg is
 
 
-function prefix_and (
+function b2SL_And (
     x0 : boolean
     ) return std_logic;
 
 
-function prefix_and (
+function b2SL_And (
     x0 : boolean; 
     x1 : boolean    
     ) return std_logic;
 
 
-function prefix_and (
+function b2SL_And (
     x0 : boolean; 
     x1 : boolean; 
     x2 : boolean    
     ) return std_logic;
 
 
-function prefix_and (
+function b2SL_And (
     x0 : boolean; 
     x1 : boolean; 
     x2 : boolean; 
@@ -33,7 +33,7 @@ function prefix_and (
     ) return std_logic;
 
 
-function prefix_and (
+function b2SL_And (
     x0 : boolean; 
     x1 : boolean; 
     x2 : boolean; 
@@ -42,7 +42,7 @@ function prefix_and (
     ) return std_logic;
 
 
-function prefix_and (
+function b2SL_And (
     x0 : boolean; 
     x1 : boolean; 
     x2 : boolean; 
@@ -52,7 +52,7 @@ function prefix_and (
     ) return std_logic;
 
 
-function prefix_and (
+function b2SL_And (
     x0 : boolean; 
     x1 : boolean; 
     x2 : boolean; 
@@ -63,7 +63,7 @@ function prefix_and (
     ) return std_logic;
 
 
-function prefix_and (
+function b2SL_And (
     x0 : boolean; 
     x1 : boolean; 
     x2 : boolean; 
@@ -75,25 +75,25 @@ function prefix_and (
     ) return std_logic;
 
 
-function prefix_and (
+function b2SL_And (
     x0 : boolean    
     ) return boolean;
 
 
-function prefix_and (
+function b2SL_And (
     x0 : boolean; 
     x1 : boolean
     ) return boolean;
 
 
-function prefix_and (
+function b2SL_And (
     x0 : boolean; 
     x1 : boolean; 
     x2 : boolean    
     ) return boolean;
 
 
-function prefix_and (
+function b2SL_And (
     x0 : boolean; 
     x1 : boolean; 
     x2 : boolean; 
@@ -101,7 +101,7 @@ function prefix_and (
     ) return boolean;
 
 
-function prefix_and (
+function b2SL_And (
     x0 : boolean; 
     x1 : boolean; 
     x2 : boolean; 
@@ -110,7 +110,7 @@ function prefix_and (
     ) return boolean;
 
 
-function prefix_and (
+function b2SL_And (
     x0 : boolean; 
     x1 : boolean; 
     x2 : boolean; 
@@ -120,7 +120,7 @@ function prefix_and (
     ) return boolean;
 
 
-function prefix_and (
+function b2SL_And (
     x0 : boolean; 
     x1 : boolean; 
     x2 : boolean; 
@@ -131,7 +131,7 @@ function prefix_and (
     ) return boolean;
 
 
-function prefix_and (
+function b2SL_And (
     x0 : boolean; 
     x1 : boolean; 
     x2 : boolean; 
@@ -143,25 +143,25 @@ function prefix_and (
     ) return boolean;
 
 
-function prefix_or (
+function b2SL_Or (
     x0 : boolean
     ) return std_logic;
 
 
-function prefix_or (
+function b2SL_Or (
     x0 : boolean; 
     x1 : boolean    
     ) return std_logic;
 
 
-function prefix_or (
+function b2SL_Or (
     x0 : boolean; 
     x1 : boolean; 
     x2 : boolean    
     ) return std_logic;
 
 
-function prefix_or (
+function b2SL_Or (
     x0 : boolean; 
     x1 : boolean; 
     x2 : boolean; 
@@ -169,7 +169,7 @@ function prefix_or (
     ) return std_logic;
 
 
-function prefix_or (
+function b2SL_Or (
     x0 : boolean; 
     x1 : boolean; 
     x2 : boolean; 
@@ -178,7 +178,7 @@ function prefix_or (
     ) return std_logic;
 
 
-function prefix_or (
+function b2SL_Or (
     x0 : boolean; 
     x1 : boolean; 
     x2 : boolean; 
@@ -188,7 +188,7 @@ function prefix_or (
     ) return std_logic;
 
 
-function prefix_or (
+function b2SL_Or (
     x0 : boolean; 
     x1 : boolean; 
     x2 : boolean; 
@@ -199,7 +199,7 @@ function prefix_or (
     ) return std_logic;
 
 
-function prefix_or (
+function b2SL_Or (
     x0 : boolean; 
     x1 : boolean; 
     x2 : boolean; 
@@ -211,25 +211,25 @@ function prefix_or (
     ) return std_logic;
 
 
-function prefix_or (
+function b2SL_Or (
     x0 : boolean    
     ) return boolean;
 
 
-function prefix_or (
+function b2SL_Or (
     x0 : boolean; 
     x1 : boolean
     ) return boolean;
 
 
-function prefix_or (
+function b2SL_Or (
     x0 : boolean; 
     x1 : boolean; 
     x2 : boolean    
     ) return boolean;
 
 
-function prefix_or (
+function b2SL_Or (
     x0 : boolean; 
     x1 : boolean; 
     x2 : boolean; 
@@ -237,7 +237,7 @@ function prefix_or (
     ) return boolean;
 
 
-function prefix_or (
+function b2SL_Or (
     x0 : boolean; 
     x1 : boolean; 
     x2 : boolean; 
@@ -246,7 +246,7 @@ function prefix_or (
     ) return boolean;
 
 
-function prefix_or (
+function b2SL_Or (
     x0 : boolean; 
     x1 : boolean; 
     x2 : boolean; 
@@ -256,7 +256,7 @@ function prefix_or (
     ) return boolean;
 
 
-function prefix_or (
+function b2SL_Or (
     x0 : boolean; 
     x1 : boolean; 
     x2 : boolean; 
@@ -267,7 +267,7 @@ function prefix_or (
     ) return boolean;
 
 
-function prefix_or (
+function b2SL_Or (
     x0 : boolean; 
     x1 : boolean; 
     x2 : boolean; 
@@ -284,7 +284,7 @@ end package PrefixGatesPkg;
 
 package body PrefixGatesPkg is
 
-function prefix_and (
+function b2SL_And (
     x0 : boolean
     ) return std_logic is 
 begin 
@@ -292,7 +292,7 @@ begin
 end function;
 
 
-function prefix_and (
+function b2SL_And (
     x0 : boolean; 
     x1 : boolean    
     ) return std_logic is 
@@ -301,7 +301,7 @@ begin
 end function;
 
 
-function prefix_and (
+function b2SL_And (
     x0 : boolean; 
     x1 : boolean; 
     x2 : boolean    
@@ -311,7 +311,7 @@ begin
 end function;
 
 
-function prefix_and (
+function b2SL_And (
     x0 : boolean; 
     x1 : boolean; 
     x2 : boolean; 
@@ -322,7 +322,7 @@ begin
 end function;
 
 
-function prefix_and (
+function b2SL_And (
     x0 : boolean; 
     x1 : boolean; 
     x2 : boolean; 
@@ -334,7 +334,7 @@ begin
 end function;
 
 
-function prefix_and (
+function b2SL_And (
     x0 : boolean; 
     x1 : boolean; 
     x2 : boolean; 
@@ -347,7 +347,7 @@ begin
 end function;
 
 
-function prefix_and (
+function b2SL_And (
     x0 : boolean; 
     x1 : boolean; 
     x2 : boolean; 
@@ -361,7 +361,7 @@ begin
 end function;
 
 
-function prefix_and (
+function b2SL_And (
     x0 : boolean; 
     x1 : boolean; 
     x2 : boolean; 
@@ -376,7 +376,7 @@ begin
 end function;
 
 
-function prefix_and (
+function b2SL_And (
     x0 : boolean    
     ) return boolean is 
 begin 
@@ -384,37 +384,37 @@ begin
 end function;
 
 
-function prefix_and (
+function b2SL_And (
     x0 : boolean; 
     x1 : boolean
     ) return boolean is 
 begin 
-    return sl2Bool(prefix_and(x0, x1));
+    return sl2Bool(b2SL_And(x0, x1));
 end function;
 
 
-function prefix_and (
+function b2SL_And (
     x0 : boolean; 
     x1 : boolean; 
     x2 : boolean    
     ) return boolean is 
 begin 
-    return sl2Bool(prefix_and(x0, x1, x2));
+    return sl2Bool(b2SL_And(x0, x1, x2));
 end function;
 
 
-function prefix_and (
+function b2SL_And (
     x0 : boolean; 
     x1 : boolean; 
     x2 : boolean; 
     x3 : boolean    
     ) return boolean is 
 begin 
-    return sl2Bool(prefix_and(x0, x1, x2, x3));
+    return sl2Bool(b2SL_And(x0, x1, x2, x3));
 end function;
 
 
-function prefix_and (
+function b2SL_And (
     x0 : boolean; 
     x1 : boolean; 
     x2 : boolean; 
@@ -422,11 +422,11 @@ function prefix_and (
     x4 : boolean    
     ) return boolean is 
 begin 
-    return sl2Bool(prefix_and(x0, x1, x2, x3, x4));
+    return sl2Bool(b2SL_And(x0, x1, x2, x3, x4));
 end function;
 
 
-function prefix_and (
+function b2SL_And (
     x0 : boolean; 
     x1 : boolean; 
     x2 : boolean; 
@@ -435,11 +435,11 @@ function prefix_and (
     x5 : boolean    
     ) return boolean is 
 begin 
-    return sl2Bool(prefix_and(x0, x1, x2, x3, x4, x5));
+    return sl2Bool(b2SL_And(x0, x1, x2, x3, x4, x5));
 end function;
 
 
-function prefix_and (
+function b2SL_And (
     x0 : boolean; 
     x1 : boolean; 
     x2 : boolean; 
@@ -449,11 +449,11 @@ function prefix_and (
     x6 : boolean    
     ) return boolean is 
 begin 
-    return sl2Bool(prefix_and(x0, x1, x2, x3, x4, x5, x6));
+    return sl2Bool(b2SL_And(x0, x1, x2, x3, x4, x5, x6));
 end function;
 
 
-function prefix_and (
+function b2SL_And (
     x0 : boolean; 
     x1 : boolean; 
     x2 : boolean; 
@@ -464,11 +464,11 @@ function prefix_and (
     x7 : boolean    
     ) return boolean is 
 begin 
-    return sl2Bool(prefix_and(x0, x1, x2, x3, x4, x5, x6, x7));
+    return sl2Bool(b2SL_And(x0, x1, x2, x3, x4, x5, x6, x7));
 end function;
 
 
-function prefix_or (
+function b2SL_Or (
     x0 : boolean
     ) return std_logic is 
 begin 
@@ -476,7 +476,7 @@ begin
 end function;
 
 
-function prefix_or (
+function b2SL_Or (
     x0 : boolean; 
     x1 : boolean    
     ) return std_logic is 
@@ -485,7 +485,7 @@ begin
 end function;
 
 
-function prefix_or (
+function b2SL_Or (
     x0 : boolean; 
     x1 : boolean; 
     x2 : boolean    
@@ -495,7 +495,7 @@ begin
 end function;
 
 
-function prefix_or (
+function b2SL_Or (
     x0 : boolean; 
     x1 : boolean; 
     x2 : boolean; 
@@ -506,7 +506,7 @@ begin
 end function;
 
 
-function prefix_or (
+function b2SL_Or (
     x0 : boolean; 
     x1 : boolean; 
     x2 : boolean; 
@@ -518,7 +518,7 @@ begin
 end function;
 
 
-function prefix_or (
+function b2SL_Or (
     x0 : boolean; 
     x1 : boolean; 
     x2 : boolean; 
@@ -531,7 +531,7 @@ begin
 end function;
 
 
-function prefix_or (
+function b2SL_Or (
     x0 : boolean; 
     x1 : boolean; 
     x2 : boolean; 
@@ -545,7 +545,7 @@ begin
 end function;
 
 
-function prefix_or (
+function b2SL_Or (
     x0 : boolean; 
     x1 : boolean; 
     x2 : boolean; 
@@ -560,7 +560,7 @@ begin
 end function;
 
 
-function prefix_or (
+function b2SL_Or (
     x0 : boolean    
     ) return boolean is 
 begin 
@@ -568,37 +568,37 @@ begin
 end function;
 
 
-function prefix_or (
+function b2SL_Or (
     x0 : boolean; 
     x1 : boolean
     ) return boolean is 
 begin 
-    return sl2Bool(prefix_or(x0, x1));
+    return sl2Bool(b2SL_Or(x0, x1));
 end function;
 
 
-function prefix_or (
+function b2SL_Or (
     x0 : boolean; 
     x1 : boolean; 
     x2 : boolean    
     ) return boolean is 
 begin 
-    return sl2Bool(prefix_or(x0, x1, x2));
+    return sl2Bool(b2SL_Or(x0, x1, x2));
 end function;
 
 
-function prefix_or (
+function b2SL_Or (
     x0 : boolean; 
     x1 : boolean; 
     x2 : boolean; 
     x3 : boolean    
     ) return boolean is 
 begin 
-    return sl2Bool(prefix_or(x0, x1, x2, x3));
+    return sl2Bool(b2SL_Or(x0, x1, x2, x3));
 end function;
 
 
-function prefix_or (
+function b2SL_Or (
     x0 : boolean; 
     x1 : boolean; 
     x2 : boolean; 
@@ -606,11 +606,11 @@ function prefix_or (
     x4 : boolean    
     ) return boolean is 
 begin 
-    return sl2Bool(prefix_or(x0, x1, x2, x3, x4));
+    return sl2Bool(b2SL_Or(x0, x1, x2, x3, x4));
 end function;
 
 
-function prefix_or (
+function b2SL_Or (
     x0 : boolean; 
     x1 : boolean; 
     x2 : boolean; 
@@ -619,11 +619,11 @@ function prefix_or (
     x5 : boolean    
     ) return boolean is 
 begin 
-    return sl2Bool(prefix_or(x0, x1, x2, x3, x4, x5));
+    return sl2Bool(b2SL_Or(x0, x1, x2, x3, x4, x5));
 end function;
 
 
-function prefix_or (
+function b2SL_Or (
     x0 : boolean; 
     x1 : boolean; 
     x2 : boolean; 
@@ -633,11 +633,11 @@ function prefix_or (
     x6 : boolean    
     ) return boolean is 
 begin 
-    return sl2Bool(prefix_or(x0, x1, x2, x3, x4, x5, x6));
+    return sl2Bool(b2SL_Or(x0, x1, x2, x3, x4, x5, x6));
 end function;
 
 
-function prefix_or (
+function b2SL_Or (
     x0 : boolean; 
     x1 : boolean; 
     x2 : boolean; 
@@ -648,7 +648,7 @@ function prefix_or (
     x7 : boolean    
     ) return boolean is 
 begin 
-    return sl2Bool(prefix_or(x0, x1, x2, x3, x4, x5, x6, x7));
+    return sl2Bool(b2SL_Or(x0, x1, x2, x3, x4, x5, x6, x7));
 end function;
 
 
