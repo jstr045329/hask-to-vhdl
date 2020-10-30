@@ -240,6 +240,7 @@ FALLING_EDGE_VERSION: if clk_edge = '0' generate
 end generate;
 
 
+-- Likewise for every other process in here.
 COLLISION_WARNING_DRIVER: process(clk)
 begin
     if rising_edge(clk) then 
@@ -5960,6 +5961,10 @@ begin
     end if;
 end process;
 
+------------------------------------------------------------------------------------------------------------------------
+--                                                   Drive Outputs 
+------------------------------------------------------------------------------------------------------------------------
+o_collision_warning <= s_collision_warning;
 
 end behavioral_PowerSet_0016_0016;
 
