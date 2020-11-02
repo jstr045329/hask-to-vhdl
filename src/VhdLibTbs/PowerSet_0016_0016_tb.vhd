@@ -119,6 +119,69 @@ begin
     rst <= not rst;
     sync_wait_rising(clk, 10);
 
+    --------------------------------------------------------------------------------------------------------------------
+    --                                                 Test Stage 1 
+    -- Add every number to every set, 1 at a time. 
+    --------------------------------------------------------------------------------------------------------------------
+    test_stage <= 1;
+    for i in 0 to 15 loop 
+        for j in 0 to 15 loop 
+            s_set_num_1_000000 <= i;
+            s_bit_num_1_000000 <= j;
+            strobe_rising(clk, s_add_000000);
+        end loop;
+    end loop;
+
+    --------------------------------------------------------------------------------------------------------------------
+    --                                                 Test Stage 2 
+    -- Remove every number from every set, 1 at a time. 
+    --------------------------------------------------------------------------------------------------------------------
+    test_stage <= 2;
+    for i in 0 to 15 loop 
+        for j in 0 to 15 loop 
+            s_set_num_1_000000 <= i;
+            s_bit_num_1_000000 <= j;
+            strobe_rising(clk, s_rem_000000);
+        end loop;
+    end loop;
+
+    ------------------------------------------------------------------------------------------------------------------------
+    --                                                   Test Stage 3 
+    -- Test unions between sets. 
+    ------------------------------------------------------------------------------------------------------------------------
+    sync_wait_rising(clk, 10);
+    test_stage <= 3;
+    s_set_num_1_000000 <= 0;
+    
+    for i in 0 to 10 loop 
+        s_bit_num_1_000000 <= i;
+        strobe_rising(clk, s_add_000000);
+    end loop;
+    
+    s_set_num_1_000000 <= 1;
+    for i in 5 to 15 loop 
+        s_bit_num_1_000000 <= i;
+        strobe_rising(clk, s_add_000000);
+    end loop;
+    
+    sync_wait_rising(clk, 10);
+    s_set_num_1_000000 <= 0;
+    s_set_num_2_000000 <= 1;
+    s_dest_num_000000 <= 2;
+    strobe_rising(clk, s_union_000000);
+    
+    ------------------------------------------------------------------------------------------------------------------------
+    --                                                   Test Stage 4 
+    -- Test intersections between sets. 
+    ------------------------------------------------------------------------------------------------------------------------
+    sync_wait_rising(clk, 10);
+    test_stage <= 4;
+    s_set_num_1_000000 <= 0;
+    s_set_num_2_000000 <= 1;
+    s_dest_num_000000 <= 3;
+    strobe_rising(clk, s_intersection_000000);
+
+
     -- Test ends here:
     test_stage <= test_stage + 1;
     sync_wait_rising(clk, 100);
@@ -175,5 +238,4 @@ UUT: PowerSet_0016_0016
 
 
 end architecture behavioral_PowerSet_0016_0016_tb;
-
 
