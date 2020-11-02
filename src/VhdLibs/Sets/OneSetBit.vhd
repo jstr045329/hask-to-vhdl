@@ -62,10 +62,18 @@ RISING_CLOCK_GENERATE: if clk_edge = '1' generate
                         s_member <= '1';
                     elsif i_rem = '1' then 
                         s_member <= '0';
-                    elsif i_we = '1' then 
-                        s_member <= i_din;
                     end if;
+                elsif i_we = '1' then 
+                    s_member <= i_din;
                 end if;
+                
+                -- if i_we = '1' then 
+                    -- report "write enable was 1" severity error;
+                -- end if;
+                
+                -- if i_din = '1' then
+                    -- report "data in was 1" severity error;
+                -- end if;
             end if;
         end if;
     end process;
