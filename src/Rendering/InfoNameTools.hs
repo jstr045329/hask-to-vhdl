@@ -189,10 +189,15 @@ extractLastTwoNumbers s
 -- at the end. Note this is a lossy convertion so if you want to convert a signal to a port, you need to know Input or 
 -- Output. 
 ------------------------------------------------------------------------------------------------------------------------
+namesToLeaveAlone :: [String]
+namesToLeaveAlone = ["clk", "clk_p", "clk_n", "rst", "rst_p", "rst_n"]
+
+
 portName2SigName :: String -> Integer -> String 
 portName2SigName s n
     | ((take 2 s) == "i_") = "s_" ++ (tail (tail s)) ++ (signalSuffix n)
     | ((take 2 s) == "o_") = "s_" ++ (tail (tail s)) ++ (signalSuffix n)
+    | (elem s namesToLeaveAlone) = s
     | otherwise = "s_" ++ s ++ (signalSuffix n)
 
 

@@ -17,4 +17,3 @@ filterUnique someList
 intersection' :: [Information] -> [Information] -> [Information]
 intersection' a b = [x | x <- (filterUnique (a ++ b)), elem x (fromList a), elem x (fromList b)]
 
-

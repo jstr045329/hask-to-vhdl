@@ -1,10 +1,10 @@
 module Rendering.Procedure where
 import Rendering.InfoTypes
-import Rendering.VhdMath
 import Rendering.Assignment
 import Tools.WhiteSpaceTools
 
 
+-- TODO: If there is no (good) reason to keep this file, delete it.
 data Procedure = ProcedureDef {
       pNomen :: String
     , pInputs :: [Information]

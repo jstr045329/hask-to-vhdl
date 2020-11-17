@@ -1,277 +1,117 @@
+------------------------------------------------------------------------------------------------------------------------
+--                                                      Process 
+--
+-- This module represents and renders process statements. 
+--
+-- Note that at this time, inferred latches are intentionally not supported. 
+------------------------------------------------------------------------------------------------------------------------
 module Rendering.Process where
 import Rendering.Assignment
 import Rendering.Condition
 import Rendering.InfoTypes
-import Rendering.VhdMath
-import Tools.ListTools
-import Tools.WhiteSpaceTools
-import Rendering.SemicolonTools
 import Rendering.FilterUnique
-import Rendering.SetRenderingTools
-
-
-data ClkEdge = Rising | Falling deriving (Eq, Show)
+import Rendering.Statement
+import Rendering.ProjectParameters
+import Tools.WhiteSpaceTools
+import Data.List
 
 
 data Process = Process {
-          pNomen :: String
+          procNomen :: String
         , pClk :: Information
         , pRst :: Information
-        , syncronousReset :: Bool
-        , clkEdge :: ClkEdge
         , sensitivityList :: [Information]
-        , inputSignals :: [Information]
+        , procInputs :: [Information]
         , variables :: [Information]
-        , internalState :: [Information]
-        , outputSignals :: [Information]
-        , assignments :: [(Condition, [Assignment], [Assignment])]
+        
+        -- The internalState list should ONLY contain informations that are ALREADY both in the procInputs and procOutputSignals lists.
+        -- Note that variables have memory, so internalState is normally only for signals. 
+        -- If VHDL is pre-2008, then anything in internalState must be a signal, since outputs cannot be read.
+        , internalState :: [Information] 
+        , procOutputSignals :: [Information]
+        , isClocked :: Bool
+        , sequentialCode :: [SequentialStatement]
         } deriving (Eq, Show)
 
 
--- Generates the header for a process, with optional name:
-processHeader :: String -> [Information] -> String
-processHeader "" sigList = "process(" ++ (joinWithCommas (Prelude.map (\x -> nomen x) sigList)) ++ ")"
-processHeader pName sigList = pName ++ ": " ++ (processHeader "" sigList)
+------------------------------------------------------------------------------------------------------------------------
+--                                           Render Sequential Assignments 
+------------------------------------------------------------------------------------------------------------------------
+-- renderProcBusinessLogic :: Process -> [String]
+-- renderProcBusinessLogic oneProc = 
+    -- map 
+
+------------------------------------------------------------------------------------------------------------------------
+--                                              Render Sensitivity List 
+------------------------------------------------------------------------------------------------------------------------
+
+-- Return a List of Strings containing the reset name if reset is asyncronous. 
+-- Return a blank list otherwise. 
+syncRst2Str :: Process -> ProjectParameters -> [String]
+syncRst2Str oneProc projParams =
+    if (elem (rstStyle projParams) [SyncPositive, SyncNegative])
+        then []
+        else [(nomen (pRst oneProc))]
 
 
-processFooter :: String -> [String]
-processFooter "" = ["end process;"]
-processFooter s = ["end process " ++ s ++ ";"]
-
-
-ifClockEdge :: ClkEdge -> Information -> String
-ifClockEdge Rising someClk = "if rising_edge(" ++ (nomen someClk) ++ ") then"
-ifClockEdge Falling someClk = "if falling_edge(" ++ (nomen someClk) ++ ") then"
-
-
-endClockEdge :: [String]
-endClockEdge = ["end if;"]
-
-
-resetStructure :: Information -> [Information] -> [String]
-resetStructure rstSig sigList =
-    ["if " ++ (nomen rstSig) ++ " = " ++ (liftAssertion (assertionLevel rstSig)) ++ " then"] ++ 
-    (zipTab (resetBatch (filterUnique sigList))) ++ 
-    ["else"]
-
-
-endResetStructure :: [String]
-endResetStructure = ["end if;"]
-
-
-handleClockAndReset :: Process -> [String]
-handleClockAndReset p =
-    if (syncronousReset p)
-        then
-            [(ifClockEdge (clkEdge p) (pClk p))] ++ 
-            (zipTab (resetStructure (pRst p) ((internalState p) ++ (outputSignals p))))
-
+-- Generate a List of Strings representing senstivity list:
+sensitivityLOS :: Process -> ProjectParameters -> [String]
+sensitivityLOS oneProc projParams =
+    if (isClocked oneProc)
+        then ([(nomen (pClk oneProc))] ++ (syncRst2Str oneProc projParams))
         else 
-            (resetStructure (pRst p) ((internalState p) ++ (outputSignals p))) ++ 
-            [(tab 1) ++ (ifClockEdge (clkEdge p) (pClk p))]
+            map
+                nomen 
+                (filterUnique ([pRst oneProc] ++ (sensitivityList oneProc) ++ (procInputs oneProc)))
 
 
-endClockAndReset :: [String]
-endClockAndReset = [(tab 1) ++ "end if;", "end if;"]
+renderSensitivity :: Process -> ProjectParameters -> String
+renderSensitivity oneProc projParams = "(" ++ (intercalate ", " (sensitivityLOS oneProc projParams)) ++ ")"
 
 
-unpackElse :: [Assignment] -> [String]
-unpackElse [] = []
-unpackElse aList = assignBatch aList
+------------------------------------------------------------------------------------------------------------------------
+--                                               Render Process Header 
+------------------------------------------------------------------------------------------------------------------------
+renderProcessHeader :: Process -> String 
+renderProcessHeader oneProc = 
+    if (length (procNomen oneProc) > 0)
+        then ((procNomen oneProc) ++ ": process")
+        else "process"
 
 
-unpackOneCondition :: Condition -> [Assignment] -> [Assignment] -> [String]
-unpackOneCondition JustTrue aList _ = semiWrapBatch (assignBatch aList)
-unpackOneCondition c aListT aListF = 
-    ["if " ++ (cond2Str c) ++ " then"] ++ 
-    (zipTab (semiWrapBatch (assignBatch aListT))) ++
-    (if (length (unpackElse aListF) > 0)
-        then (["else"] ++ (semiWrapBatch (zipTab (unpackElse aListF))))
-        else []) ++ 
-    ["end if;"]
+------------------------------------------------------------------------------------------------------------------------
+--                                           Render First Line Of Process 
+------------------------------------------------------------------------------------------------------------------------
+renderProcessFirstLine :: Process -> ProjectParameters -> String 
+renderProcessFirstLine oneProc projParams = (renderProcessHeader oneProc) ++ (renderSensitivity oneProc projParams)
 
 
-unpackConditions :: [(Condition, [Assignment], [Assignment])] -> [String]
-unpackConditions [] = []
-unpackConditions cList =
-    (unpackOneCondition c aT aF) ++ unpackConditions (tail cList) where
-        (c, aT, aF) = head cList
+------------------------------------------------------------------------------------------------------------------------
+--                                       Render Clock and Reset If Statements 
+------------------------------------------------------------------------------------------------------------------------
+resetEverything :: Process -> [String]
+resetEverything oneProc = (resetBatch (filterUnique ((sensitivityList oneProc) ++ (procInputs oneProc) ++ (internalState oneProc))))
 
+renderClockAndResetIfStatements :: Process -> ProjectParameters -> [String]
+renderClockAndResetIfStatements oneProc projParams
+    | ((isClocked oneProc) && ((clkStyle projParams) == RisingEdge) && ((rstStyle projParams) == SyncPositive)) = 
+        ["if rising_edge(" ++ (nomen (pClk oneProc)) ++ ") then"] ++
+        [(tab 1) ++ "if " ++ (nomen (pRst oneProc)) ++ " = '1' then"] ++
+        (nZipTab 2 (resetEverything oneProc)) ++ 
+        [(tab 1) ++ "else"] ++
+        []
+    | otherwise = []
+        -- (zZipTab 2 (
+        
 
-renderProcess :: Process -> [String]
-renderProcess p = 
-    [(processHeader (pNomen p) (sensitivityList p))] ++
-    (declareBatch (variables p)) ++ 
-    ["begin"] ++ 
-    (zipTab ((handleClockAndReset p) ++ 
-                (zipTab (zipTab (unpackConditions (assignments p)))) ++
-                endClockAndReset)) ++ 
-    (processFooter (pNomen p))
+------------------------------------------------------------------------------------------------------------------------
+--                                                  Render Process 
+------------------------------------------------------------------------------------------------------------------------
+renderProcess :: Process -> ProjectParameters -> [String]
+renderProcess oneProc projParams =
+    [renderProcessFirstLine oneProc projParams] ++ 
+    ["begin"] ++
+    []
     
-
-
-inputsFromCondition :: Condition -> [Information]
-inputsFromCondition JustTrue = []
-inputsFromCondition (Not c) = inputsFromCondition c
-inputsFromCondition (JustInfo i) = [i]
-
-inputsFromCondition (Princess []) = []
-inputsFromCondition (Pauper []) = []
-inputsFromCondition (And []) = []
-inputsFromCondition (Or []) = []
-inputsFromCondition (Xor []) = []
-inputsFromCondition (Nand []) = []
-inputsFromCondition (Nor []) = []
-inputsFromCondition (Xnor []) = []
-
-inputsFromCondition (Princess cList) = union (inputsFromCondition (head cList)) (inputsFromCondition (Princess (tail cList)))
-inputsFromCondition (Pauper cList) = union (inputsFromCondition (head cList)) (inputsFromCondition (Pauper (tail cList)))
-inputsFromCondition (And cList) = union (inputsFromCondition (head cList)) (inputsFromCondition (And (tail cList)))
-inputsFromCondition (Or cList) = union (inputsFromCondition (head cList)) (inputsFromCondition (Or (tail cList)))
-inputsFromCondition (Xor cList) = union (inputsFromCondition (head cList)) (inputsFromCondition (Xor (tail cList)))
-inputsFromCondition (Nand cList) = union (inputsFromCondition (head cList)) (inputsFromCondition (Nand (tail cList)))
-inputsFromCondition (Nor cList) = union (inputsFromCondition (head cList)) (inputsFromCondition (Nor (tail cList)))
-inputsFromCondition (Xnor cList) = union (inputsFromCondition (head cList)) (inputsFromCondition (Xnor (tail cList)))
-inputsFromCondition (GreaterT i1 i2) = [i1, i2]
-inputsFromCondition (LesserT i1 i2) = [i1, i2]
-inputsFromCondition (EqualTo i1 i2) = [i1, i2]
-inputsFromCondition (GreaterTEq i1 i2) = [i1, i2]
-inputsFromCondition (LessTEq i1 i2) = [i1, i2]
-
-inputFromAssignment :: Assignment -> Information
-inputFromAssignment (Assignment _ i) = i
-
-
-outputFromAssignment :: Assignment -> Information
-outputFromAssignment (Assignment i _) = i
-
-
-getInputs' :: (Condition, [Assignment], [Assignment]) -> [Information]
-getInputs' (oneCondition, aList1, aList2) = 
-    union
-        ((Prelude.map inputFromAssignment aList1) ++ (Prelude.map inputFromAssignment aList2))
-        (inputsFromCondition oneCondition)
-
-
-getOutputs' :: (Condition, [Assignment], [Assignment]) -> [Information]
-getOutputs' (_, aList1, aList2) = filterUnique ((Prelude.map outputFromAssignment aList1) ++ (Prelude.map outputFromAssignment aList2))
-
-
-getInputs :: [(Condition, [Assignment], [Assignment])] -> [Information]
-getInputs [] = []
-getInputs someList 
-    | ((length someList) == 1) = getInputs' (head someList)
-    | otherwise = union (getInputs' (head someList)) (getInputs (tail someList))
-
-
-getOutputs :: [(Condition, [Assignment], [Assignment])] -> [Information]
-getOutputs [] = []
-getOutputs someList 
-    | ((length someList) == 1) = getOutputs' (head someList)
-    | otherwise = union (getOutputs' (head someList)) (getOutputs (tail someList))
-
-
-getState :: [(Condition, [Assignment], [Assignment])] -> [Information]
-getState someList = intersection'
-                        (getInputs someList)
-                        (getOutputs someList)
-
-
-easyProcess :: String -> [(Condition, [Assignment], [Assignment])] -> Process
-easyProcess nm aList = Process {
-      pNomen = nm
-    , pClk = easyClk
-    , pRst = easyRst
-    , syncronousReset = True
-    , clkEdge = Rising
-    , sensitivityList = [easyClk]
-    , inputSignals = getInputs aList
-    , variables = []
-    , internalState = getState aList
-    , outputSignals = getOutputs aList
-    , assignments = aList
-    }
-
-
-addSensitivity :: Process -> Information -> Process
-addSensitivity p i = Process {
-      pNomen = pNomen p
-    , pClk = pClk p
-    , pRst = pRst p
-    , syncronousReset = syncronousReset p
-    , clkEdge = clkEdge p
-    , sensitivityList = [i] ++ sensitivityList p
-    , inputSignals = inputSignals p
-    , variables = variables p
-    , internalState = internalState p
-    , outputSignals = outputSignals p
-    , assignments = assignments p
-    }
-
-
-makeFalling :: Process -> Process
-makeFalling p = Process {
-      pNomen = pNomen p
-    , pClk = pClk p
-    , pRst = pRst p
-    , syncronousReset = syncronousReset p
-    , clkEdge = Falling
-    , sensitivityList = sensitivityList p
-    , inputSignals = inputSignals p
-    , variables = variables p
-    , internalState = internalState p
-    , outputSignals = outputSignals p
-    , assignments = assignments p
-    }
-
-
-asyncReset :: Process -> Process
-asyncReset p = Process {
-      pNomen = pNomen p
-    , pClk = pClk p
-    , pRst = pRst p
-    , syncronousReset = False
-    , clkEdge = clkEdge p
-    , sensitivityList = sensitivityList p
-    , inputSignals = inputSignals p
-    , variables = variables p
-    , internalState = internalState p
-    , outputSignals = outputSignals p
-    , assignments = assignments p
-    }
-
-
-addAssignment :: Process -> (Condition, [Assignment], [Assignment]) -> Process
-addAssignment p newAssignment = Process {
-      pNomen = pNomen p
-    , pClk = pClk p
-    , pRst = pRst p
-    , syncronousReset = syncronousReset p
-    , clkEdge = clkEdge p
-    , sensitivityList = sensitivityList p
-    , inputSignals = getInputs ([newAssignment] ++ assignments p)
-    , variables = variables p
-    , internalState = getState ([newAssignment] ++ assignments p)
-    , outputSignals = getOutputs ([newAssignment] ++ assignments p)
-    , assignments = [newAssignment] ++ assignments p
-    }
-
-
--- Use this function as a template for modifying processes:
-modProcess p = Process {
-      pNomen = pNomen p
-    , pClk = pClk p
-    , pRst = pRst p
-    , syncronousReset = syncronousReset p
-    , clkEdge = clkEdge p
-    , sensitivityList = sensitivityList p
-    , inputSignals = inputSignals p
-    , variables = variables p
-    , internalState = internalState p
-    , outputSignals = outputSignals p
-    , assignments = assignments p
-    }
-
-
-
-
+    
+    

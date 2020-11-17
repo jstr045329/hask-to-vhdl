@@ -1,6 +1,5 @@
 module Rendering.Function where
 import Rendering.InfoTypes
-import Rendering.VhdMath
 import Rendering.Assignment
 import Tools.WhiteSpaceTools
 

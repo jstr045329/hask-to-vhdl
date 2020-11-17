@@ -31,7 +31,7 @@ oneLine gateName numInputs clk rst sigList results =
 
 
 inputsPerGate :: Int
-inputsPerGate = 3
+inputsPerGate = 6
 
 
 -- This function bites off up to 3 signals from the list of inputs, routes them to a 
@@ -44,8 +44,10 @@ regGateMap gateName clk rst sigList results
     | (length sigList) == 0 = []
     | (length sigList) == 1 = oneLine gateName 1 clk rst sigList results
     | (length sigList) == 2 = oneLine gateName 2 clk rst sigList results
-    | otherwise = (oneLine gateName 3 clk rst (take 3 sigList) results) ++ 
-                  (regGateMap gateName clk rst (skipN sigList 3) (tail results))
+    | (length sigList) == 3 = oneLine gateName 3 clk rst sigList results
+    | (length sigList) == 4 = oneLine gateName 4 clk rst sigList results
+    | otherwise = (oneLine gateName (fromIntegral inputsPerGate) clk rst (take inputsPerGate sigList) results) ++ 
+                  (regGateMap gateName clk rst (skipN sigList inputsPerGate) (tail results))
 
 -- We can free ourselves from needing to know the exact number of intermediate signals
 -- by creating an infinite sequence. Note that since this list is infinite, you cannot
@@ -75,6 +77,13 @@ zeroOrOne q
     | (approxEqual (fromIntegral (floor q)) q) = 0 
     | otherwise = 1
 
+
+-- TODO: Finish making all signals include ALL SIGNALS
+-- signalPyramid :: String -> [Information] -> [Information]
+-- signalPyramid _ [] = []
+-- signalPyramid nameStub inputList = 
+    -- numGatesThisLayer = numOutputs (length inputList)
+    -- newSigs = intermediateSigs nameStub numGatesThisLayer
 
 fullServiceRegGate :: String -> ClkRst -> [Information] -> Int -> RegGateOutputPack
 fullServiceRegGate _ _ [] _ = TerminateRegGate
@@ -130,7 +139,7 @@ norSigs clkRst inputList = fullServiceRegGate "nor" clkRst inputList 0
 
 
 ----------------------------------------------------------------------------------------------------
---                                Call This To Generated Code
+--                                Call This To Generate Code
 ----------------------------------------------------------------------------------------------------
 
 -- Pass a RegGateOutputPack into this function, and it will recursively glean 
@@ -138,5 +147,13 @@ norSigs clkRst inputList = fullServiceRegGate "nor" clkRst inputList 0
 renderFullService :: RegGateOutputPack -> [String]
 renderFullService TerminateRegGate = []
 renderFullService oneRegGate = (vhdLines oneRegGate) ++ renderFullService (nextLayer oneRegGate)
+
+
+-- TODO: PICK UP HERE: Taper list size down to 1
+declareFullService :: RegGateOutputPack -> [String]
+declareFullService someOutputPack =
+    declareBatch (allSignals someOutputPack)
+
+
 
 

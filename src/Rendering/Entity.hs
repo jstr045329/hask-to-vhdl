@@ -19,7 +19,6 @@ data Entity = Entity {
         ,   overallLatency :: Integer
         ,   latencyDatum :: Maybe Information
         ,   latencyRelevant :: Bool
+        ,   maxRecursionDepth :: Integer -- For recursive entities, choose a termination depth
     } deriving (Eq, Show)
-    
-    
-    
+

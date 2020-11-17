@@ -1783,3 +1783,574 @@ end generate;
 
 end behavioral_registeredXOR7;
         
+
+library ieee;
+use ieee.std_logic_1164.all;
+
+package RegisteredGatesPkg is 
+
+
+component registeredAND1 is
+    generic (
+        use_async_reset : std_logic := '1'
+    );
+    port (
+        clk : in std_logic;
+        reset_n : in std_logic;
+        a0 : in std_logic;
+        q : out std_logic
+    );
+end component registeredAND1;
+
+
+component registeredAND2 is
+    generic (
+        use_async_reset : std_logic := '1'
+    );
+    port (
+        clk : in std_logic;
+        reset_n : in std_logic;
+        a0 : in std_logic;
+        a1 : in std_logic;
+        q : out std_logic
+    );
+end component registeredAND2;
+
+
+component registeredAND3 is
+    generic (
+        use_async_reset : std_logic := '1'
+    );
+    port (
+        clk : in std_logic;
+        reset_n : in std_logic;
+        a0 : in std_logic;
+        a1 : in std_logic;
+        a2 : in std_logic;
+        q : out std_logic
+    );
+end component registeredAND3;
+
+
+component registeredAND4 is
+    generic (
+        use_async_reset : std_logic := '1'
+    );
+    port (
+        clk : in std_logic;
+        reset_n : in std_logic;
+        a0 : in std_logic;
+        a1 : in std_logic;
+        a2 : in std_logic;
+        a3 : in std_logic;
+        q : out std_logic
+    );
+end component registeredAND4;
+
+
+component registeredAND5 is
+    generic (
+        use_async_reset : std_logic := '1'
+    );
+    port (
+        clk : in std_logic;
+        reset_n : in std_logic;
+        a0 : in std_logic;
+        a1 : in std_logic;
+        a2 : in std_logic;
+        a3 : in std_logic;
+        a4 : in std_logic;
+        q : out std_logic
+    );
+end component registeredAND5;
+
+
+component registeredAND6 is
+    generic (
+        use_async_reset : std_logic := '1'
+    );
+    port (
+        clk : in std_logic;
+        reset_n : in std_logic;
+        a0 : in std_logic;
+        a1 : in std_logic;
+        a2 : in std_logic;
+        a3 : in std_logic;
+        a4 : in std_logic;
+        a5 : in std_logic;
+        q : out std_logic
+    );
+end component registeredAND6;
+
+
+component registeredAND7 is
+    generic (
+        use_async_reset : std_logic := '1'
+    );
+    port (
+        clk : in std_logic;
+        reset_n : in std_logic;
+        a0 : in std_logic;
+        a1 : in std_logic;
+        a2 : in std_logic;
+        a3 : in std_logic;
+        a4 : in std_logic;
+        a5 : in std_logic;
+        a6 : in std_logic;
+        q : out std_logic
+    );
+end component registeredAND7;
+
+
+component registeredOR1 is
+    generic (
+        use_async_reset : std_logic := '1'
+    );
+    port (
+        clk : in std_logic;
+        reset_n : in std_logic;
+        a0 : in std_logic;
+        q : out std_logic
+    );
+end component registeredOR1;
+
+
+component registeredOR2 is
+    generic (
+        use_async_reset : std_logic := '1'
+    );
+    port (
+        clk : in std_logic;
+        reset_n : in std_logic;
+        a0 : in std_logic;
+        a1 : in std_logic;
+        q : out std_logic
+    );
+end component registeredOR2;
+
+
+component registeredOR3 is
+    generic (
+        use_async_reset : std_logic := '1'
+    );
+    port (
+        clk : in std_logic;
+        reset_n : in std_logic;
+        a0 : in std_logic;
+        a1 : in std_logic;
+        a2 : in std_logic;
+        q : out std_logic
+    );
+end component registeredOR3;
+
+
+component registeredOR4 is
+    generic (
+        use_async_reset : std_logic := '1'
+    );
+    port (
+        clk : in std_logic;
+        reset_n : in std_logic;
+        a0 : in std_logic;
+        a1 : in std_logic;
+        a2 : in std_logic;
+        a3 : in std_logic;
+        q : out std_logic
+    );
+end component registeredOR4;
+
+
+component registeredOR5 is
+    generic (
+        use_async_reset : std_logic := '1'
+    );
+    port (
+        clk : in std_logic;
+        reset_n : in std_logic;
+        a0 : in std_logic;
+        a1 : in std_logic;
+        a2 : in std_logic;
+        a3 : in std_logic;
+        a4 : in std_logic;
+        q : out std_logic
+    );
+end component registeredOR5;
+
+
+component registeredOR6 is
+    generic (
+        use_async_reset : std_logic := '1'
+    );
+    port (
+        clk : in std_logic;
+        reset_n : in std_logic;
+        a0 : in std_logic;
+        a1 : in std_logic;
+        a2 : in std_logic;
+        a3 : in std_logic;
+        a4 : in std_logic;
+        a5 : in std_logic;
+        q : out std_logic
+    );
+end component registeredOR6;
+
+
+component registeredOR7 is
+    generic (
+        use_async_reset : std_logic := '1'
+    );
+    port (
+        clk : in std_logic;
+        reset_n : in std_logic;
+        a0 : in std_logic;
+        a1 : in std_logic;
+        a2 : in std_logic;
+        a3 : in std_logic;
+        a4 : in std_logic;
+        a5 : in std_logic;
+        a6 : in std_logic;
+        q : out std_logic
+    );
+end component registeredOR7;
+
+
+component registeredNAND1 is
+    generic (
+        use_async_reset : std_logic := '1'
+    );
+    port (
+        clk : in std_logic;
+        reset_n : in std_logic;
+        a0 : in std_logic;
+        q : out std_logic
+    );
+end component registeredNAND1;
+
+
+component registeredNAND2 is
+    generic (
+        use_async_reset : std_logic := '1'
+    );
+    port (
+        clk : in std_logic;
+        reset_n : in std_logic;
+        a0 : in std_logic;
+        a1 : in std_logic;
+        q : out std_logic
+    );
+end component registeredNAND2;
+
+
+component registeredNAND3 is
+    generic (
+        use_async_reset : std_logic := '1'
+    );
+    port (
+        clk : in std_logic;
+        reset_n : in std_logic;
+        a0 : in std_logic;
+        a1 : in std_logic;
+        a2 : in std_logic;
+        q : out std_logic
+    );
+end component registeredNAND3;
+
+
+component registeredNAND4 is
+    generic (
+        use_async_reset : std_logic := '1'
+    );
+    port (
+        clk : in std_logic;
+        reset_n : in std_logic;
+        a0 : in std_logic;
+        a1 : in std_logic;
+        a2 : in std_logic;
+        a3 : in std_logic;
+        q : out std_logic
+    );
+end component registeredNAND4;
+
+
+component registeredNAND5 is
+    generic (
+        use_async_reset : std_logic := '1'
+    );
+    port (
+        clk : in std_logic;
+        reset_n : in std_logic;
+        a0 : in std_logic;
+        a1 : in std_logic;
+        a2 : in std_logic;
+        a3 : in std_logic;
+        a4 : in std_logic;
+        q : out std_logic
+    );
+end component registeredNAND5;
+
+
+component registeredNAND6 is
+    generic (
+        use_async_reset : std_logic := '1'
+    );
+    port (
+        clk : in std_logic;
+        reset_n : in std_logic;
+        a0 : in std_logic;
+        a1 : in std_logic;
+        a2 : in std_logic;
+        a3 : in std_logic;
+        a4 : in std_logic;
+        a5 : in std_logic;
+        q : out std_logic
+    );
+end component registeredNAND6;
+
+
+component registeredNAND7 is
+    generic (
+        use_async_reset : std_logic := '1'
+    );
+    port (
+        clk : in std_logic;
+        reset_n : in std_logic;
+        a0 : in std_logic;
+        a1 : in std_logic;
+        a2 : in std_logic;
+        a3 : in std_logic;
+        a4 : in std_logic;
+        a5 : in std_logic;
+        a6 : in std_logic;
+        q : out std_logic
+    );
+end component registeredNAND7;
+
+
+component registeredNOR1 is
+    generic (
+        use_async_reset : std_logic := '1'
+    );
+    port (
+        clk : in std_logic;
+        reset_n : in std_logic;
+        a0 : in std_logic;
+        q : out std_logic
+    );
+end component registeredNOR1;
+
+
+component registeredNOR2 is
+    generic (
+        use_async_reset : std_logic := '1'
+    );
+    port (
+        clk : in std_logic;
+        reset_n : in std_logic;
+        a0 : in std_logic;
+        a1 : in std_logic;
+        q : out std_logic
+    );
+end component registeredNOR2;
+
+
+component registeredNOR3 is
+    generic (
+        use_async_reset : std_logic := '1'
+    );
+    port (
+        clk : in std_logic;
+        reset_n : in std_logic;
+        a0 : in std_logic;
+        a1 : in std_logic;
+        a2 : in std_logic;
+        q : out std_logic
+    );
+end component registeredNOR3;
+
+
+component registeredNOR4 is
+    generic (
+        use_async_reset : std_logic := '1'
+    );
+    port (
+        clk : in std_logic;
+        reset_n : in std_logic;
+        a0 : in std_logic;
+        a1 : in std_logic;
+        a2 : in std_logic;
+        a3 : in std_logic;
+        q : out std_logic
+    );
+end component registeredNOR4;
+
+
+component registeredNOR5 is
+    generic (
+        use_async_reset : std_logic := '1'
+    );
+    port (
+        clk : in std_logic;
+        reset_n : in std_logic;
+        a0 : in std_logic;
+        a1 : in std_logic;
+        a2 : in std_logic;
+        a3 : in std_logic;
+        a4 : in std_logic;
+        q : out std_logic
+    );
+end component registeredNOR5;
+
+
+component registeredNOR6 is
+    generic (
+        use_async_reset : std_logic := '1'
+    );
+    port (
+        clk : in std_logic;
+        reset_n : in std_logic;
+        a0 : in std_logic;
+        a1 : in std_logic;
+        a2 : in std_logic;
+        a3 : in std_logic;
+        a4 : in std_logic;
+        a5 : in std_logic;
+        q : out std_logic
+    );
+end component registeredNOR6;
+
+
+component registeredNOR7 is
+    generic (
+        use_async_reset : std_logic := '1'
+    );
+    port (
+        clk : in std_logic;
+        reset_n : in std_logic;
+        a0 : in std_logic;
+        a1 : in std_logic;
+        a2 : in std_logic;
+        a3 : in std_logic;
+        a4 : in std_logic;
+        a5 : in std_logic;
+        a6 : in std_logic;
+        q : out std_logic
+    );
+end component registeredNOR7;
+
+
+component registeredXOR1 is
+    generic (
+        use_async_reset : std_logic := '1'
+    );
+    port (
+        clk : in std_logic;
+        reset_n : in std_logic;
+        a0 : in std_logic;
+        q : out std_logic
+    );
+end component registeredXOR1;
+
+
+component registeredXOR2 is
+    generic (
+        use_async_reset : std_logic := '1'
+    );
+    port (
+        clk : in std_logic;
+        reset_n : in std_logic;
+        a0 : in std_logic;
+        a1 : in std_logic;
+        q : out std_logic
+    );
+end component registeredXOR2;
+
+
+component registeredXOR3 is
+    generic (
+        use_async_reset : std_logic := '1'
+    );
+    port (
+        clk : in std_logic;
+        reset_n : in std_logic;
+        a0 : in std_logic;
+        a1 : in std_logic;
+        a2 : in std_logic;
+        q : out std_logic
+    );
+end component registeredXOR3;
+
+
+component registeredXOR4 is
+    generic (
+        use_async_reset : std_logic := '1'
+    );
+    port (
+        clk : in std_logic;
+        reset_n : in std_logic;
+        a0 : in std_logic;
+        a1 : in std_logic;
+        a2 : in std_logic;
+        a3 : in std_logic;
+        q : out std_logic
+    );
+end component registeredXOR4;
+
+
+component registeredXOR5 is
+    generic (
+        use_async_reset : std_logic := '1'
+    );
+    port (
+        clk : in std_logic;
+        reset_n : in std_logic;
+        a0 : in std_logic;
+        a1 : in std_logic;
+        a2 : in std_logic;
+        a3 : in std_logic;
+        a4 : in std_logic;
+        q : out std_logic
+    );
+end component registeredXOR5;
+
+
+component registeredXOR6 is
+    generic (
+        use_async_reset : std_logic := '1'
+    );
+    port (
+        clk : in std_logic;
+        reset_n : in std_logic;
+        a0 : in std_logic;
+        a1 : in std_logic;
+        a2 : in std_logic;
+        a3 : in std_logic;
+        a4 : in std_logic;
+        a5 : in std_logic;
+        q : out std_logic
+    );
+end component registeredXOR6;
+
+
+component registeredXOR7 is
+    generic (
+        use_async_reset : std_logic := '1'
+    );
+    port (
+        clk : in std_logic;
+        reset_n : in std_logic;
+        a0 : in std_logic;
+        a1 : in std_logic;
+        a2 : in std_logic;
+        a3 : in std_logic;
+        a4 : in std_logic;
+        a5 : in std_logic;
+        a6 : in std_logic;
+        q : out std_logic
+    );
+end component registeredXOR7;
+
+
+end package RegisteredGatesPkg;
+
+package body RegisteredGatesPkg is 
+end package body RegisteredGatesPkg;

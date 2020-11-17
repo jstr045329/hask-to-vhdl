@@ -3,7 +3,7 @@ import Tools.WhiteSpaceTools
 
 
 commentBlockWidth :: Int
-commentBlockWidth = 100
+commentBlockWidth = 120
 
 
 -- Make a line of dashes:

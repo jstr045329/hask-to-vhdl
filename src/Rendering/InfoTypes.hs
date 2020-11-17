@@ -814,26 +814,3 @@ mapPortToSig (x:xs) = [(onePort, oneSignal)] ++ mapPortToSig xs where
                     , assertionLevel = assertionLevel x
                     }
 
-------------------------------------------------------------------------------------------------------------------------
---                                          Create Infinite List of Signals
---
--- This function takes an input port and creates an infinite list of signals with the same name stub. See 
--- assignSignalChainWithInput in Assignment.hs to assign the signals. This list is more useful for declaring the 
--- signals.
-------------------------------------------------------------------------------------------------------------------------
-endlessSignals :: Information -> [Information]
-endlessSignals someInput = 
-    [VhdSig {
-                nomen = (nomen someInput) ++ (signalSuffix n)
-            ,   dataType = dataType someInput
-            ,   width = width someInput
-            ,   sDefault = sDefault someInput
-            ,   sReset = sReset someInput
-            ,   clocked = clocked someInput
-            ,   comments = (if (direction someInput == In)
-                                then ["Driven by " ++ (nomen someInput)]
-                                else ["Drives " ++ (nomen someInput)]) ++ (comments someInput)
-            ,   assertionLevel = assertionLevel someInput}            
-        
-        | n <- [0..]]
-

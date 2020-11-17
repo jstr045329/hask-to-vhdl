@@ -2,8 +2,8 @@
 --                                           Pipeline Arbitrary Functions
 --
 -- This module accepts a list of inputs and turns them into a registered pipeline, using an arbitrary combinational
--- function. The function must be overloaded to accept 1 to lutInputsMax inputs, where lutInputsMax is defined in 
--- CodeGenerationParameters.hs.
+-- function. The function must be overloaded to accept 1 to lutInputsRecommended inputs, where lutInputsRecommended 
+-- is defined in CodeGenerationParameters.hs.
 --
 ------------------------------------------------------------------------------------------------------------------------
 module Rendering.RegisteredFunction where
@@ -70,7 +70,7 @@ homogenousCode numInputs nameStub funcName =
 
 
 ------------------------------------------------------------------------------------------------------------------------
---                      One Function for Lowest Level, Some Other Function For All Other Levels
+--                                Pass In A List Of Function Names, One For Each Layer
 --
 -- The input lists are for 1) a list of function names for each signal and 2) an example signal for each layer. Name
 -- stubs are extract from example signals. Any numbers at the end of the example signal will be stripped off. The

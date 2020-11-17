@@ -226,10 +226,14 @@ resetStimSignals los = resetBatch stimSigs where
     stimSigs = map port2Sig inputList
 
 
+-- TODO: Change the way GenerateTestbench converts port names to signal names so that 
+-- UUT ports do not conform to s_..._000000 convention. Possibly write a separate function
+-- for testbench use.
+
+
 generateTestbench :: [String] -> [String]
 generateTestbench los = 
     (commentBlock ["Testbench for " ++ (getEntityName los)]) ++ 
-    --(map show (extractPorts (extractDeclaration "port" los))) ++ 
     ["library ieee;"] ++
     ["use ieee.std_logic_1164.all;"] ++
     ["use ieee.numeric_std.all;"] ++

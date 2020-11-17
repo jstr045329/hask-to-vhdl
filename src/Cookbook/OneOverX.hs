@@ -94,5 +94,4 @@ generateOneOverXIfStmt n x deltaX numRows
         (generateOneOverXIfStmt (n + 1) (makeDeltaX x) deltaX numRows) ++ 
         (generateOneChunk (numRows-n) (makeXThresh x) (makeSlope x (x+deltaX)) (makeBias x))
         
--- TODO: PICK UP HERE: Write a module that breaks the generated lines up into many small functions, 
--- then pipelines them. 
+-- TODO: Write a module that breaks the generated lines up into many small functions, then pipelines them. 

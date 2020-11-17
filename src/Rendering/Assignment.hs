@@ -92,7 +92,7 @@ assignOneSignalInChain someInput n = Assignment (port2SigN someInput n) (port2Si
 --      s_myInput_0001 <= s_myInput_0000;
 --      s_myInput_0002 <= s_myInput_0001;
 --      ...
--- See endlessSignals in InfoTypes.hs to generate the list of signals. This list is more useful 
+-- See endlessSignals in InfiniteSigList.hs to generate the list of signals. This list is more useful 
 -- for assigning the signals. 
 --
 -- To declare the signals that are used in this function, call generateSignalChainWithInput (above).

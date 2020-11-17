@@ -1,6 +1,5 @@
 module Rendering.PortMap where
 import Rendering.InfoTypes
-import Rendering.VhdMath
 import Rendering.Assignment
 import Tools.WhiteSpaceTools
 
@@ -9,7 +8,7 @@ data PortMap = PortMap {
       instNomen :: String
     , modName :: String
     , assignments :: [Assignment]
-    }
+    } deriving (Eq, Show)
 
 
 pMapColon :: String -> String
@@ -40,5 +39,3 @@ renderPortMap pMap =
     [(tab 1) ++ ");"] ++
     ["",""]
     
--- TODO: Write a module for rendering function calls, and another for procedure calls
-
