@@ -1,5 +1,4 @@
 module Parsing.SensitivityScanner where
-import Data.HashSet
 import Parsing.GuaranteeWhitespace
 import Parsing.TokenMatchingTools
 
