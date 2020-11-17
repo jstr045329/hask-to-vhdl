@@ -4,7 +4,7 @@ cabal-version: 1.12
 --
 -- see: https://github.com/sol/hpack
 --
--- hash: e2bd2728304bfb17e69785b36a85b84cf92635fc8d705048539cc759d3cb4c4c
+-- hash: 7cb9987dd0be7926343d1d4734133a8165fc5cd76296ea949d077d199284087f
 
 name:           hask-to-vhd
 version:        0.1.0.0
@@ -33,14 +33,13 @@ library
       Cookbook.OneOverX
       Cookbook.ShiftRegister
       Cookbook.TestbenchWiz
+      DataStructures.TreeOfTuples
       Modification.AssignmentAligner
       Parsing.EntityReport
       Parsing.ExtractEntity
       Parsing.GuaranteeWhitespace
-      Parsing.InfoNameAnalyzer
       Parsing.PortExtractor
       Parsing.SensitivityScanner
-      Parsing.TestModule
       Parsing.TokenMatchingTools
       Rendering.Assignment
       Rendering.BitCountingTools
@@ -63,32 +62,38 @@ library
       Rendering.GenerateTestbench
       Rendering.GlueSigNames
       Rendering.GlueStatements
+      Rendering.InfiniteSigList
       Rendering.InfoNameTools
       Rendering.InfoTypes
       Rendering.IntToBin
       Rendering.Literals
       Rendering.MajorityRules
+      Rendering.MonadTrial
       Rendering.Percentage
       Rendering.PopulateTemplates
       Rendering.PortMap
       Rendering.Procedure
       Rendering.Process
       Rendering.ProcessFile
+      Rendering.ProjectParameters
       Rendering.RegGateOutputPack
       Rendering.RegisteredFunction
       Rendering.RegisteredGates
       Rendering.RegisterPorts
+      Rendering.RenderedLines
       Rendering.RenderPorts
       Rendering.SemicolonTools
       Rendering.SetRenderingTools
       Rendering.ShortRandomSequence
+      Rendering.Statement
       Rendering.StateUpdate
       Rendering.VectorSubRange
       Rendering.VhdLibraries
-      Rendering.VhdMath
       Rendering.WrapInParens
       Rendering.ZeroPad
+      TestHsProjects.GenerateHashSet
       TestHsProjects.GenerateTestEntity
+      TestHsProjects.TestCondition
       Tools.ListTools
       Tools.LogicTools
       Tools.MathTools
