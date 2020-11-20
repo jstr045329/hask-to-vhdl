@@ -17,11 +17,9 @@ entity ArbSetLowLayerNode is
     port (
         clk : in std_logic;
         rst : in std_logic;
-        i_number_to_add : in std_logic_vector(NUMBER_WIDTH-1 downto 0);
+        i_din : in std_logic_vector(NUMBER_WIDTH-1 downto 0);
         i_add_enable : in std_logic; 
-        i_number_to_remove : in std_logic_vector(NUMBER_WIDTH-1 downto 0);
         i_remove_enable : in std_logic;
-        i_number_to_test : in std_logic_vector(NUMBER_WIDTH-1 downto 0); -- Test if some number is stored in this node.
         i_test_enable : in std_logic; -- Start the process of testing for equality
         i_predecessor_occupied : in std_logic;
         o_number_stored : out std_logic_vector(NUMBER_WIDTH-1 downto 0);
@@ -54,25 +52,24 @@ begin
             s_occupied_private <= '0';
             s_membership <= '0';
         else
-            -- Handle the case of adding a number:
-            if b2SL_And(i_predecessor_occupied = '1', s_occupied_private = '0', i_add_enable = '1') then 
-                s_number_stored <= i_number_to_add;
-                s_occupied_private <= '1';
-            end if;
             
-            -- Handle the case of removing a number:
-            if b2SL_And(s_occupied_private = '1', i_remove_enable = '1', s_number_stored = i_number_to_remove) then 
+            if b2SL_And(i_predecessor_occupied = '1', s_occupied_private = '0', i_add_enable = '1') then 
+                -- Handle the case of adding a number:
+                s_number_stored <= i_din;
+                s_occupied_private <= '1';
+                s_membership <= '0';
+            
+            elsif b2SL_And(s_occupied_private = '1', i_remove_enable = '1', s_number_stored = i_din) then 
+                -- Handle the case of removing a number:
                 s_number_stored <= (others => '0');
                 s_occupied_private <= '0';
+                s_membership <= '0';
+                
+            else 
+                -- Test For Equality:
+                s_membership <= s_occupied_private and i_test_enable and b2SL_And(s_number_stored = i_din);
             end if;
-            
-            -- Test For Equality:
-            s_membership <= s_occupied_private and i_test_enable and b2SL_And(s_number_stored = i_number_to_test);
-            
-            
-            if i_predecessor_occupied = '0' then 
-                s_occupied_private <= '0';
-            end if;
+
         end if;
     end if;
 end process;
