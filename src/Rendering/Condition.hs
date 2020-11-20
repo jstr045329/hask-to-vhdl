@@ -26,6 +26,7 @@ data Condition =
                     |   Nand [Condition]
                     |   Nor [Condition]
                     |   Xnor [Condition]
+                    |   TerminalElse
                         deriving (Eq, Show)
 
 
@@ -45,6 +46,7 @@ wrapOperator i1 i2 op = (nomen i1) ++ " " ++ op ++ " " ++ (nomen i2)
 ------------------------------------------------------------------------------------------------------------------------
 combineHelper :: [Condition] -> String -> String
 combineHelper [] _ = ""
+combineHelper [TerminalElse] _ = ""
 combineHelper cList gate
     | length cList == 1     = "bool2SL(" ++ (cond2Str (head cList)) ++ ")"
     | otherwise             = "(bool2SL(" ++ (cond2Str (head cList)) ++ ") " ++ gate ++ " " ++ (combineHelper (tail cList) gate) ++ ")"
@@ -128,4 +130,5 @@ cond2Str (Nor cList) = norConditions cList
 cond2Str (Xnor cList) = xnorConditions cList
 cond2Str (StdLogicHigh someSig) = (nomen someSig) ++ " = '1'"
 cond2Str (StdLogicLow someSig) = (nomen someSig) ++ " = '0'"
+cond2Str TerminalElse = ""
 

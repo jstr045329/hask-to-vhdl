@@ -27,14 +27,16 @@ num2RegGate gateName numInputs = "registered" ++ T.unpack(T.toUpper (T.pack gate
 --      registeredAND1 port map (clk, rst, a, x);
 oneLine :: String -> Integer -> Information -> Information -> [Information] -> [Information] -> [String]
 oneLine gateName numInputs clk rst sigList results = 
-    [(num2RegGate gateName numInputs) ++ " port map (" ++ (glue' clk rst sigList results) ++ ");\n"]
-
+    [instLabel ++ (num2RegGate gateName numInputs') ++ " port map (" ++ (glue' clk rst sigList results) ++ ");\n"] where 
+    numInputs' = (min numInputs (toInteger (length sigList)))
+    instLabel = "INST_" ++ (nomen (head results)) ++ ": "
+    
 
 inputsPerGate :: Int
 inputsPerGate = 6
 
 
--- This function bites off up to 3 signals from the list of inputs, routes them to a 
+-- This function bites off up to inputsPerGate signals from the list of inputs, routes them to a 
 -- component (such as registeredNOR3), takes 1 signal from the results list and routes
 -- it to the output of the component (in this example, a 3-input NOR gate), and recurses
 -- until all inputs have been consumed. 
@@ -47,7 +49,8 @@ regGateMap gateName clk rst sigList results
     | (length sigList) == 3 = oneLine gateName 3 clk rst sigList results
     | (length sigList) == 4 = oneLine gateName 4 clk rst sigList results
     | otherwise = (oneLine gateName (fromIntegral inputsPerGate) clk rst (take inputsPerGate sigList) results) ++ 
-                  (regGateMap gateName clk rst (skipN sigList inputsPerGate) (tail results))
+                  (regGateMap gateName clk rst (skipN sigList inputsPerGate) (tail results)) 
+                  
 
 -- We can free ourselves from needing to know the exact number of intermediate signals
 -- by creating an infinite sequence. Note that since this list is infinite, you cannot
@@ -72,18 +75,14 @@ makeOneGateLayer gateName clk rst sigList resultNameStub layerNum =
         nOutputs = numOutputs (length sigList) inputsPerGate
 
 
+-- If a number is within a few billionths of an integer, return 0.
+-- Otherwise, return 1. 
+-- This is useful because we need to decide whether to add more gates to layer, or not. 
 zeroOrOne :: Double -> Double
 zeroOrOne q
     | (approxEqual (fromIntegral (floor q)) q) = 0 
     | otherwise = 1
 
-
--- TODO: Finish making all signals include ALL SIGNALS
--- signalPyramid :: String -> [Information] -> [Information]
--- signalPyramid _ [] = []
--- signalPyramid nameStub inputList = 
-    -- numGatesThisLayer = numOutputs (length inputList)
-    -- newSigs = intermediateSigs nameStub numGatesThisLayer
 
 fullServiceRegGate :: String -> ClkRst -> [Information] -> Int -> RegGateOutputPack
 fullServiceRegGate _ _ [] _ = TerminateRegGate
@@ -105,8 +104,7 @@ fullServiceRegGate gateName (ClkRst clk rst) sigList layerNum =
 
 ----------------------------------------------------------------------------------------------------
 --                           Descriptive Wrappers for Registered Gates
-----------------------------------------------------------------------------------------------------
-
+--
 -- These functions give you easy-to-use names for fullServiceRegGate.
 -- They also initialize layerNum to 0 so that's 1 less thing to type.
 --
@@ -117,7 +115,8 @@ fullServiceRegGate gateName (ClkRst clk rst) sigList layerNum =
 --
 -- After calling one of these functions, pass the result to renderFullService,
 -- below, to get the rendered VHDL. 
-
+--
+----------------------------------------------------------------------------------------------------
 andSigs :: ClkRst -> [Information] -> RegGateOutputPack
 andSigs clkRst inputList = fullServiceRegGate "and" clkRst inputList 0
 
@@ -138,22 +137,29 @@ norSigs :: ClkRst -> [Information] -> RegGateOutputPack
 norSigs clkRst inputList = fullServiceRegGate "nor" clkRst inputList 0
 
 
-----------------------------------------------------------------------------------------------------
---                                Call This To Generate Code
-----------------------------------------------------------------------------------------------------
-
--- Pass a RegGateOutputPack into this function, and it will recursively glean 
--- the VHDL from every layer of RegGateOutputPack.
+------------------------------------------------------------------------------------------------------------------------
+--                                            Call This To Generate Code 
+--
+-- Pass a RegGateOutputPack (above) into this function, and it will recursively glean the VHDL from every layer of 
+-- RegGateOutputPack.
+--  
+------------------------------------------------------------------------------------------------------------------------
 renderFullService :: RegGateOutputPack -> [String]
 renderFullService TerminateRegGate = []
 renderFullService oneRegGate = (vhdLines oneRegGate) ++ renderFullService (nextLayer oneRegGate)
 
 
--- TODO: PICK UP HERE: Taper list size down to 1
-declareFullService :: RegGateOutputPack -> [String]
-declareFullService someOutputPack =
-    declareBatch (allSignals someOutputPack)
-
-
-
+------------------------------------------------------------------------------------------------------------------------
+--                                 Call This To Generate A Complete List Of Signals 
+-- 
+-- This function takes the number of inputs going into the 0th layer and nibbles off the correct amount of intermediate
+-- signals from each layer until the output layer contains exactly 1 signal. 
+--
+------------------------------------------------------------------------------------------------------------------------
+totalSignalList :: String -> Int -> Int -> [Information]
+totalSignalList nameStub layerNum inputSigs 
+    | (inputSigs == 1) = (take 1 (intermediateSigs nameStub layerNum))
+    | otherwise = 
+        (take inputSigs (intermediateSigs nameStub layerNum)) ++ 
+        (totalSignalList nameStub (layerNum+1) (numOutputs inputSigs inputsPerGate))
 

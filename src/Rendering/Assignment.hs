@@ -42,6 +42,7 @@ getAssignmentSource a = getRightSide a
 --                                               Render One Assignment
 ------------------------------------------------------------------------------------------------------------------------
 assignment2Str :: Assignment -> String
+assignment2Str (Assignment i1 (Literal _ _ (Specified s) _)) = (nomen i1) ++ (assignmentOperator i1) ++ s ++ ";"
 assignment2Str (Assignment i1 i2) = (nomen i1) ++ (assignmentOperator i1) ++ (nomen i2) ++ ";"
 
 

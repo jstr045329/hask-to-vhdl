@@ -38,6 +38,7 @@ data Width =              Hard Integer
                         | Soft String
                         | WidthNotSpecified
                         | WidthNotRelevant
+                        | WidthInfinite
                           deriving (Eq, Show)
 
 
@@ -110,7 +111,9 @@ data Information =
                 , width                 :: Width
                 , sDefault              :: DefaultValue
                 , comments              :: [String]
-                } deriving (Eq, Show, Generic)
+                } 
+                
+                deriving (Eq, Show, Generic)
 
 
 instance Hashable Information where
@@ -442,6 +445,31 @@ hardWidthSLV nm w = VhdSig {
             , assertionLevel = Just "'1'"
             }
 
+
+hardWidthUnsigned :: String -> Integer -> Information
+hardWidthUnsigned nm w = VhdSig {
+              nomen = nm
+            , dataType = Unsigned
+            , width = Hard w
+            , sDefault = Specified "(others => '0')"
+            , sReset = "(others => '0')"
+            , clocked = Just True
+            , comments = [""]
+            , assertionLevel = Just "'1'"
+            }
+
+
+hardWidthSigned :: String -> Integer -> Information
+hardWidthSigned nm w = VhdSig {
+              nomen = nm
+            , dataType = Signed
+            , width = Hard w
+            , sDefault = Specified "(others => '0')"
+            , sReset = "(others => '0')"
+            , clocked = Just True
+            , comments = [""]
+            , assertionLevel = Just "'1'"
+            }
 
 softWidthSLV :: String -> String -> Information
 softWidthSLV nm softWidth = VhdSig {

@@ -100,6 +100,9 @@ renderClockAndResetIfStatements oneProc projParams
         (nZipTab 2 (resetEverything oneProc)) ++ 
         [(tab 1) ++ "else"] ++
         []
+        
+    
+        
     | otherwise = []
         -- (zZipTab 2 (
         

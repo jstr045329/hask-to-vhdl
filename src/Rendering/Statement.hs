@@ -7,6 +7,8 @@ import Rendering.PortMap
 import Rendering.Condition
 import Rendering.InfoTypes
 import Tools.WhiteSpaceTools
+import Rendering.ElseTerm
+import Tools.ListTools
 
 
 ------------------------------------------------------------------------------------------------------------------------
@@ -41,35 +43,40 @@ data SequentialStatement =
 
 
 ------------------------------------------------------------------------------------------------------------------------
+--                                              Render One If Statement 
+------------------------------------------------------------------------------------------------------------------------
+renderSequential :: SequentialStatement -> Int -> [String]
+
+renderSequential (IfStatement []) _ = ["end if;"]
+
+renderSequential (IfStatement [(TerminalElse, assignmentList, sequentialStatements)]) _ = 
+    ["else"] ++ 
+    (zipTab (assignBatch assignmentList)) ++ 
+    (flattenShallow (map (\x -> (zipTab (renderSequential x 0))) sequentialStatements))
+
+renderSequential (IfStatement someList) whichIfTerm =
+    [(elseTerm whichIfTerm) ++ "if " ++ (cond2Str oneCond) ++ " then"] ++
+    (zipTab (assignBatch assignmentList)) ++ 
+    (flattenShallow (map (\x -> (zipTab (renderSequential x 0))) sequentialStatements)) ++ 
+    (renderSequential (IfStatement (tail someList)) (whichIfTerm+1)) ++ 
+    ["end if;"]
+        where 
+            (oneCond, assignmentList, sequentialStatements) = head someList
+
+
+-- TODO: PICK UP HERE: Flesh out sequential for other constructors. 
+
+------------------------------------------------------------------------------------------------------------------------
 --                                           Render Sequential Statements 
 ------------------------------------------------------------------------------------------------------------------------
--- renderSequential :: SequentialStatement -> Int -> [String]
 
 
--- renderSequential (SeqBatch []) _ = []
--- renderSequential (SeqBatch assignments) numTabs = 
-    -- nZipTab numTabs (assignBatch assignments)
+-- TODO: After fleshing out for other constructors...
+-- Figure out at what point this library should be good enough. 
+-- Originally the idea was to generate repetitive circuit structures.
+-- Lately it's turned into reinventing the language which is obviously not helpful.
 
-
--- -- renderSequential (IfStatement []) _ = []
--- -- renderSequential (IfStatement ifStatementList) numTabs = 
-    -- -- (nZipTab 
-        -- -- numTabs 
-        -- -- []
-        -- -- ) ++ 
-
-
--- renderSequential (CaseStatement _ []) _ = []
--- renderSequential (CaseStatement switchSig moreSequentialStatements) numTabs =
-    -- nZipTab numTabs
-    
-
--- renderSequential (ForLoop _ _ [] _) _ = []
--- renderSequential (ForLoop idxLo idxHi someAssignments moreSequentialStatements) numTabs =
-    -- nZipTab numTabs
-
-
--- renderSequential (WhileLoop _ [] _) _ = []
--- renderSequential (WhileLoop someCondition  someAssignments moreSequentialStatements) numTabs =
-    -- nZipTab numTabs
-
+-- If the point is to make Haskell programs do large amounts of heavy lifting, 
+-- draw out what heavy lifting that will be exactly and how it will be achieved. 
+-- Yes, letting Hs reason about VHDL in Hs terms might be powerful, but I need a road
+-- map how I'm going to get out of typing really low level stuff. 

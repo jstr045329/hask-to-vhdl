@@ -3,6 +3,7 @@ import Rendering.InfoTypes
 import Rendering.Function
 import Rendering.Procedure
 import Rendering.Process
+import Rendering.PortMap
 
 
 data Entity = Entity {
@@ -13,12 +14,11 @@ data Entity = Entity {
         ,   functions :: [Function]
         ,   procedures :: [Procedure]
         ,   nestedEntities :: [Entity]
+        ,   childInstances :: [PortMap]
         ,   processes :: [Process]
-        ,   inputBuffLayers :: Integer
-        ,   outputBuffLayers :: Integer
-        ,   overallLatency :: Integer
-        ,   latencyDatum :: Maybe Information
-        ,   latencyRelevant :: Bool
-        ,   maxRecursionDepth :: Integer -- For recursive entities, choose a termination depth
+        ,   inputBuffLayers :: Int
+        ,   outputBuffLayers :: Int
+        ,   recursionDepth :: Int
+        ,   maxRecursionDepth :: Int -- For recursive entities, choose a termination depth
     } deriving (Eq, Show)
 

@@ -3,13 +3,7 @@ import Rendering.BitCountingTools
 import Rendering.ZeroPad
 import Tools.WhiteSpaceTools
 import Rendering.IntToBin
-
-
--- Skips the "else" for the first "if" term. 
--- Inserts "else" for every term thereafter. 
-elseTerm :: Int -> String
-elseTerm 0 = ""
-elseTerm _ = "els"
+import Rendering.ElseTerm
 
 
 generateOneRow :: Int -> Int -> Int -> [String]

@@ -26,6 +26,8 @@ infiniteSignals nomen0 dt0 w0 default0 sReset0 clocked0 comments0 assertionLevel
         } | n <- [0..]]
         
 
+-- Note: This is useful for getting names for an infinitely wide bus, but you don't want to use this for signal 
+-- declarations. 
 infiniteSlvBus :: String -> DataType -> Width -> DefaultValue -> String -> Maybe Bool -> [String] -> Maybe String -> [Information]
 infiniteSlvBus nomen0 dt0 w0 default0 sReset0 clocked0 comments0 assertionLevel0 =
     [VhdSig {
@@ -38,9 +40,9 @@ infiniteSlvBus nomen0 dt0 w0 default0 sReset0 clocked0 comments0 assertionLevel0
         ,   comments = comments0
         ,   assertionLevel = assertionLevel0
         } | n <- [0..]]
-
+    
 -- TODO: Check if some functions in this file are reinventing other ones.
-
+-- mapM putStrLn (renderFullService (orSigs easyClkRst (infiniteSlvBus "intermediate" StdLogic (Hard 1) Unspecified "'0'" Nothing [] Nothing)))
 ------------------------------------------------------------------------------------------------------------------------
 --                                          Create Infinite List of Signals
 --

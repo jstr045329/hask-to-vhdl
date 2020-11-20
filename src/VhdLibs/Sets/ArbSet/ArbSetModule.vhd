@@ -37,6 +37,8 @@ architecture behavioral_ArbSetModule of ArbSetModule is
 signal s_predecessor_occupied : std_logic_vector(num_nodes-1 downto 0);
 signal s_membership : std_logic_vector(num_nodes-1 downto 0);
 signal s_overall_membership : std_logic;
+constant lotsOfZeros : std_logic_vector(1023 downto 16) := (others => '0');
+signal intermediate : std_logic_vector(1023 downto 0);
 
 ------------------------------------------------------------------------------------------------------------------------
 --                                                      Begin 
@@ -83,32 +85,15 @@ end generate;
 ------------------------------------------------------------------------------------------------------------------------
 --                                      Logically OR Membership Tests Together 
 ------------------------------------------------------------------------------------------------------------------------
-MEMBERSHIP_DRIVER: process(clk)
-begin
-    if rising_edge(clk) then 
-        if rst = '1' then 
-            s_overall_membership <= '0';
-        else
-            s_overall_membership <= 
-                s_membership(0) or
-                s_membership(1) or
-                s_membership(2) or
-                s_membership(3) or
-                s_membership(4) or
-                s_membership(5) or
-                s_membership(6) or
-                s_membership(7) or
-                s_membership(8) or
-                s_membership(9) or
-                s_membership(10) or
-                s_membership(11) or
-                s_membership(12) or
-                s_membership(13) or
-                s_membership(14) or
-                s_membership(15);
-        end if;
-    end if;
-end process;
+intermediate <= s_membership & lotsOfZeros;
+
+BIG_OR_GATE: ArbSetOrGate 
+    port map (
+        clk => clk, 
+        rst => rst, 
+        intermediate => intermediate,
+        dout => s_overall_membership
+    );
 
 
 ------------------------------------------------------------------------------------------------------------------------

@@ -44,10 +44,18 @@ component ArbSetModule is
 end component;
 
 
+component ArbSetOrGate is
+    port (
+        clk : in std_logic;
+        rst : in std_logic;
+        intermediate : in std_logic_vector(1023 downto 0);
+        dout : out std_logic
+    );
+end component;
+
+
 end package ArbSetPkg;
 
 
 package body ArbSetPkg is
-
-
 end package body ArbSetPkg;
