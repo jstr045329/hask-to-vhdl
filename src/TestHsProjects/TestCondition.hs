@@ -18,3 +18,4 @@ someTestCondition5 = StdLogicLow someTestSig5
 
 someTestCondition6 = Or [someTestCondition1, someTestCondition2, someTestCondition3, someTestCondition4, someTestCondition5]
 someTestCondition7 = Nand [someTestCondition1, someTestCondition2, someTestCondition3, someTestCondition4, someTestCondition5]
+

@@ -4,7 +4,7 @@ cabal-version: 1.12
 --
 -- see: https://github.com/sol/hpack
 --
--- hash: 7cb9987dd0be7926343d1d4734133a8165fc5cd76296ea949d077d199284087f
+-- hash: 20fdd6e927aaf4de560ae1b73eaa5fbf287f5fdf3ee4a104255aa2ec403106a8
 
 name:           hask-to-vhd
 version:        0.1.0.0
@@ -34,10 +34,12 @@ library
       Cookbook.ShiftRegister
       Cookbook.TestbenchWiz
       DataStructures.TreeOfTuples
+      EasyTui.EasyTuiTools
       Modification.AssignmentAligner
       Parsing.EntityReport
       Parsing.ExtractEntity
       Parsing.GuaranteeWhitespace
+      Parsing.ParsecExample
       Parsing.PortExtractor
       Parsing.SensitivityScanner
       Parsing.TokenMatchingTools
@@ -48,6 +50,7 @@ library
       Rendering.Clock
       Rendering.CodeGenerationParameters
       Rendering.CommentTools
+      Rendering.CommonLiterals
       Rendering.Concatenations
       Rendering.Condition
       Rendering.Count1s
@@ -55,6 +58,7 @@ library
       Rendering.DeclarePorts
       Rendering.DeclareSignals
       Rendering.ElseClause
+      Rendering.ElseTerm
       Rendering.Entity
       Rendering.FilterUnique
       Rendering.FiniteStateMachine
@@ -76,6 +80,7 @@ library
       Rendering.Process
       Rendering.ProcessFile
       Rendering.ProjectParameters
+      Rendering.RapidProjectGen.RapidProjectGen
       Rendering.RegGateOutputPack
       Rendering.RegisteredFunction
       Rendering.RegisteredGates
@@ -93,6 +98,7 @@ library
       Rendering.ZeroPad
       TestHsProjects.GenerateHashSet
       TestHsProjects.GenerateTestEntity
+      TestHsProjects.PwmConverter
       TestHsProjects.TestCondition
       Tools.ListTools
       Tools.LogicTools
@@ -110,6 +116,9 @@ library
     , base >=4.7 && <5
     , bytestring >=0.10 && <1
     , hashable >=1.2 && <2
+    , mtl >2.2 && <3
+    , parsec >3.1 && <4
+    , random
     , split >0.2 && <1
     , tasty >=1.2 && <2
     , text >=1.2 && <2
@@ -130,6 +139,9 @@ executable hask-to-vhd-exe
     , bytestring >=0.10 && <1
     , hashable >=1.2 && <2
     , hask-to-vhd
+    , mtl >2.2 && <3
+    , parsec >3.1 && <4
+    , random
     , split >0.2 && <1
     , tasty >=1.2 && <2
     , text >=1.2 && <2
@@ -149,6 +161,9 @@ test-suite hask-to-vhd-test
     , bytestring >=0.10 && <1
     , hashable >=1.2 && <2
     , hask-to-vhd
+    , mtl >2.2 && <3
+    , parsec >3.1 && <4
+    , random
     , split >0.2 && <1
     , tasty >=1.2 && <2
     , text >=1.2 && <2

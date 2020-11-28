@@ -20,5 +20,29 @@ data Entity = Entity {
         ,   outputBuffLayers :: Int
         ,   recursionDepth :: Int
         ,   maxRecursionDepth :: Int -- For recursive entities, choose a termination depth
-    } deriving (Eq, Show)
+        ,   literalVhdLines :: [String]
+        ,   renderedHsLines :: [String]
+        ,   tuiCommands :: [String]
+    } | TopLevelEntity 
+        deriving (Eq, Show)
 
+
+defaultEntity :: Entity 
+defaultEntity = Entity {
+        entNomen = "Give Me A Name"
+    ,   generics = []
+    ,   ports = []
+    ,   signals = []
+    ,   functions = []
+    ,   procedures = []
+    ,   nestedEntities = []
+    ,   childInstances = []
+    ,   processes = []
+    ,   inputBuffLayers = 0
+    ,   outputBuffLayers = 0
+    ,   recursionDepth = 0
+    ,   maxRecursionDepth = 0
+    ,   literalVhdLines = []
+    ,   renderedHsLines = []
+    ,   tuiCommands = []
+    }

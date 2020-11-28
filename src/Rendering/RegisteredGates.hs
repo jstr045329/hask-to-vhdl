@@ -102,8 +102,8 @@ fullServiceRegGate gateName (ClkRst clk rst) sigList layerNum =
                 else fullServiceRegGate gateName (ClkRst clk rst) newSignals (layerNum+1)
  
 
-----------------------------------------------------------------------------------------------------
---                           Descriptive Wrappers for Registered Gates
+------------------------------------------------------------------------------------------------------------------------
+--                                     Descriptive Wrappers for Registered Gates 
 --
 -- These functions give you easy-to-use names for fullServiceRegGate.
 -- They also initialize layerNum to 0 so that's 1 less thing to type.
@@ -116,7 +116,7 @@ fullServiceRegGate gateName (ClkRst clk rst) sigList layerNum =
 -- After calling one of these functions, pass the result to renderFullService,
 -- below, to get the rendered VHDL. 
 --
-----------------------------------------------------------------------------------------------------
+------------------------------------------------------------------------------------------------------------------------
 andSigs :: ClkRst -> [Information] -> RegGateOutputPack
 andSigs clkRst inputList = fullServiceRegGate "and" clkRst inputList 0
 

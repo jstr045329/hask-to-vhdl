@@ -30,12 +30,15 @@ resolver: lts-14.3
 #   - wai
 packages:
 - .
+
 # Dependency packages to be pulled from upstream that are not in the resolver.
 # These entries can reference officially published versions as well as
 # forks / in-progress versions pinned to a git hash. For example:
 #
 extra-deps:
 - text-replace-0.0.0.4@sha256:88800aba160dfb512cf43b24063170d34900e1646ad21f28715a22679f42ae15,1738
+#- terminfo-0.4.1.4@sha256:64489de75cd4a4a6b427bb870b66274922c851570642e0fd242d320dcb67322b,1658
+#- unix-2.7.2.2@sha256:9e93f93cc5a065248120136e83a0a6d1ce93d6eb5ef2a2543f9593e93e164d24,3496
 
 #extra-deps: []
 
