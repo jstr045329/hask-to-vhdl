@@ -40,3 +40,7 @@ commentBlock los
         [dashLine]
 
 
+dashes :: String
+dashes = repeat '-'
+
+

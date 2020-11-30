@@ -35,6 +35,7 @@ import Rendering.RapidProjectGen.GeneratorState
 import Rendering.RapidProjectGen.ScreenParameters
 import Rendering.RapidProjectGen.CommandDecoder
 import Tools.StringTools
+import Rendering.CommentTools
 
 
 tui :: IO ()
@@ -128,15 +129,24 @@ drawOneLine n b =
 showOneInfo :: Information -> String
 showOneInfo (Port n dt w dir _ _ _ _ _) = (leftJustifyStr n 20) ++ " " ++ (leftJustifyStr (show dt) 10) ++ " " ++ (show w) ++ " " ++ (show dir)
 showOneInfo (VhdSig n dt w _ _ _ _ _) = (leftJustifyStr n 20) ++ " " ++ (leftJustifyStr (show dt) 10) ++ " " ++ (show w)
+showOneInfo (Generic n dt w _ _) = (leftJustifyStr n 20) ++ " " ++ (leftJustifyStr (show dt) 10) ++ " " ++ (show w)
 showOneInfo _ = ""
 
 
+sideColDashes :: String
+sideColDashes = ctrString (take (sideColumn - 2) dashes) sideColumn
+
+
+gleanGenerics :: TuiState -> [String]
+gleanGenerics ts = take 12 (["\n", ctrString "Generics" sideColumn, sideColDashes] ++ (map showOneInfo (generics (presentEntity (generatorState ts)))) ++ blankLines)
+
+
 gleanPorts :: TuiState -> [String]
-gleanPorts ts = take 20 ([ctrString "Ports" sideColumn] ++ (map showOneInfo (ports (presentEntity (generatorState ts)))) ++ blankLines)
+gleanPorts ts = take 18 (["\n", ctrString "Ports" sideColumn, sideColDashes] ++ (map showOneInfo (ports (presentEntity (generatorState ts)))) ++ blankLines)
 
 
 gleanSignals :: TuiState -> [String]
-gleanSignals ts = take 20 ([ctrString "Signals" sideColumn] ++ (map showOneInfo (signals (presentEntity (generatorState ts)))) ++ blankLines)
+gleanSignals ts = take 18 (["\n", ctrString "Signals" sideColumn, sideColDashes] ++ (map showOneInfo (signals (presentEntity (generatorState ts)))) ++ blankLines)
 
 
 drawTui :: TuiState -> [Widget ResourceName]
@@ -146,7 +156,7 @@ drawTui ts = [
                 vBox $ concat [map str (_entityTree ts)]
             ,   vBox $ concat [map str (_renderedCode ts)]
             ,   vBox $ concat [
-                            map str (_genericList ts)
+                            map str (gleanGenerics ts)
                         ,   map str (gleanPorts ts)
                         ,   map str (gleanSignals ts)
                         ]
@@ -214,6 +224,6 @@ handleTuiEvent s e =
 
 
 
-
+-- TODO: Delete all the unused fields in TuiState
 
 

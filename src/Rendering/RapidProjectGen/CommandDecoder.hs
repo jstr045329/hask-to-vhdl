@@ -141,8 +141,13 @@ decodeOneStr oneStr presentState
 
     | otherwise = slurpCommand oneStr presentState
 
+    -- TODO: Reinstate drinkingProcess
+    -- Process Imbiber should parse signals.
+    -- Anything to the left of a <= gets declared if it isn't already in the signal list.
+    -- If you declare something after you use it, TUI fills in the missing details. 
+    -- When you type </proc>, TUI prompts you to fill in any details that are still missing. 
 
-
+    -- Process Imbiber should automatically reset any signals you use. 
 
 
 
@@ -161,4 +166,9 @@ decodeOneStr oneStr presentState
 -- TODO: Come up with some simple rule that allows hask-to-vhdl to intersperse
 -- Hs output with Vhd literal lines. 
 
+-- TODO: Add commands to modify ProjectParameters.
+-- You should be able to change reset style in all processes with a single command. 
+
+-- TODO: Add commands to choose a different clock, different reset style for individual
+-- processes. 
 
