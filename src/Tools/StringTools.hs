@@ -11,10 +11,16 @@ module Tools.StringTools (
     , allUppercase
     , joinStringsWithCommas
     , joinStringsWithUnderscores
+    , startsWith
     ) where
 import qualified Data.Char as DC
 import Tools.LogicTools
-
+import Text.Parsec as Parsec
+import Text.Parsec ((<?>))
+import Control.Applicative
+import Control.Monad.Identity (Identity)
+import Parsing.ParsecExample
+import Parsing.GuaranteeWhitespace
 
 ------------------------------------------------------------------------------------------------------------------------
 --                                        Check If String Contains Substring
@@ -152,4 +158,15 @@ joinStringsWithUnderscores [] = ""
 joinStringsWithUnderscores los
     | ((length los) == 1) = head los
     | otherwise = (head los) ++ "_" ++ (joinStringsWithUnderscores (tail los))
+
+
+
+------------------------------------------------------------------------------------------------------------------------
+--                                     Check If One String Starts With Substring
+------------------------------------------------------------------------------------------------------------------------
+startsWith :: String -> String -> Bool
+startsWith txtBody lookFor
+    | (Parsing.ParsecExample.parse (Parsec.string lookFor) txtBody) == Right lookFor = True 
+    | otherwise = False
+
 

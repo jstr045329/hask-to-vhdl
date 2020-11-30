@@ -31,4 +31,18 @@ spacePad n s
     | otherwise = " " ++ (spacePad (n-1) s)
 
 
+trimLeadingSpaces :: String -> String
+trimLeadingSpaces [] = []
+trimLeadingSpaces s
+    | ((head s) == ' ') = trimLeadingSpaces (tail s)
+    | otherwise = s 
+
+
+infiniteSpaces :: String
+infiniteSpaces = repeat ' ' 
+
+
+blankLines :: [String]
+blankLines = repeat "\n"
+
 

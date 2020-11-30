@@ -36,6 +36,7 @@ joinWithCommas tokList
 --                                          Take The Last N Items In A List
 ------------------------------------------------------------------------------------------------------------------------
 lastN :: [a] -> Int -> [a]
+lastN [] _ = []
 lastN _ 0 = []
 lastN someList n
     | length someList <= n = someList

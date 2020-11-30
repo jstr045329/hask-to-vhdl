@@ -4,7 +4,7 @@ cabal-version: 1.12
 --
 -- see: https://github.com/sol/hpack
 --
--- hash: 20fdd6e927aaf4de560ae1b73eaa5fbf287f5fdf3ee4a104255aa2ec403106a8
+-- hash: 05aabaffb46b0245b60d645c93ccc91c05e3146ed3dfac4ea8692d320ef5366d
 
 name:           hask-to-vhd
 version:        0.1.0.0
@@ -34,7 +34,6 @@ library
       Cookbook.ShiftRegister
       Cookbook.TestbenchWiz
       DataStructures.TreeOfTuples
-      EasyTui.EasyTuiTools
       Modification.AssignmentAligner
       Parsing.EntityReport
       Parsing.ExtractEntity
@@ -80,7 +79,11 @@ library
       Rendering.Process
       Rendering.ProcessFile
       Rendering.ProjectParameters
+      Rendering.RapidProjectGen.CommandDecoder
+      Rendering.RapidProjectGen.GeneratorState
+      Rendering.RapidProjectGen.RapidGenFSM
       Rendering.RapidProjectGen.RapidProjectGen
+      Rendering.RapidProjectGen.ScreenParameters
       Rendering.RegGateOutputPack
       Rendering.RegisteredFunction
       Rendering.RegisteredGates
@@ -114,16 +117,20 @@ library
   build-depends:
       HUnit >=1.6 && <2
     , base >=4.7 && <5
+    , brick
     , bytestring >=0.10 && <1
+    , cursor >=0.3 && <1
+    , directory
     , hashable >=1.2 && <2
+    , lens
     , mtl >2.2 && <3
     , parsec >3.1 && <4
-    , random
     , split >0.2 && <1
     , tasty >=1.2 && <2
     , text >=1.2 && <2
     , unique
     , unordered-containers >=0.2 && <0.3
+    , vty
   default-language: Haskell2010
 
 executable hask-to-vhd-exe
@@ -136,17 +143,21 @@ executable hask-to-vhd-exe
   build-depends:
       HUnit >=1.6 && <2
     , base >=4.7 && <5
+    , brick
     , bytestring >=0.10 && <1
+    , cursor >=0.3 && <1
+    , directory
     , hashable >=1.2 && <2
     , hask-to-vhd
+    , lens
     , mtl >2.2 && <3
     , parsec >3.1 && <4
-    , random
     , split >0.2 && <1
     , tasty >=1.2 && <2
     , text >=1.2 && <2
     , unique
     , unordered-containers >=0.2 && <0.3
+    , vty
   default-language: Haskell2010
 
 test-suite hask-to-vhd-test
@@ -158,15 +169,19 @@ test-suite hask-to-vhd-test
   build-depends:
       HUnit >=1.6 && <2
     , base >=4.7 && <5
+    , brick
     , bytestring >=0.10 && <1
+    , cursor >=0.3 && <1
+    , directory
     , hashable >=1.2 && <2
     , hask-to-vhd
+    , lens
     , mtl >2.2 && <3
     , parsec >3.1 && <4
-    , random
     , split >0.2 && <1
     , tasty >=1.2 && <2
     , text >=1.2 && <2
     , unique
     , unordered-containers >=0.2 && <0.3
+    , vty
   default-language: Haskell2010

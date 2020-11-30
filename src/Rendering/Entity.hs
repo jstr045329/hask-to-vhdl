@@ -21,6 +21,7 @@ data Entity = Entity {
         ,   recursionDepth :: Int
         ,   maxRecursionDepth :: Int -- For recursive entities, choose a termination depth
         ,   literalVhdLines :: [String]
+        ,   literalHsLines :: [String]
         ,   renderedHsLines :: [String]
         ,   tuiCommands :: [String]
     } | TopLevelEntity 
@@ -43,6 +44,7 @@ defaultEntity = Entity {
     ,   recursionDepth = 0
     ,   maxRecursionDepth = 0
     ,   literalVhdLines = []
+    ,   literalHsLines = []
     ,   renderedHsLines = []
     ,   tuiCommands = []
     }
