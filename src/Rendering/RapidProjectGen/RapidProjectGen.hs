@@ -34,6 +34,7 @@ import Rendering.RapidProjectGen.ScreenParameters
 import Rendering.RapidProjectGen.GeneratorState
 import Rendering.RapidProjectGen.ScreenParameters
 import Rendering.RapidProjectGen.CommandDecoder
+import Tools.StringTools
 
 
 tui :: IO ()
@@ -124,6 +125,20 @@ drawOneLine n b =
     str
 
 
+showOneInfo :: Information -> String
+showOneInfo (Port n dt w dir _ _ _ _ _) = (leftJustifyStr n 20) ++ " " ++ (leftJustifyStr (show dt) 10) ++ " " ++ (show w) ++ " " ++ (show dir)
+showOneInfo (VhdSig n dt w _ _ _ _ _) = (leftJustifyStr n 20) ++ " " ++ (leftJustifyStr (show dt) 10) ++ " " ++ (show w)
+showOneInfo _ = ""
+
+
+gleanPorts :: TuiState -> [String]
+gleanPorts ts = take 20 ([ctrString "Ports" sideColumn] ++ (map showOneInfo (ports (presentEntity (generatorState ts)))) ++ blankLines)
+
+
+gleanSignals :: TuiState -> [String]
+gleanSignals ts = take 20 ([ctrString "Signals" sideColumn] ++ (map showOneInfo (signals (presentEntity (generatorState ts)))) ++ blankLines)
+
+
 drawTui :: TuiState -> [Widget ResourceName]
 drawTui ts = [
     vBox [
@@ -132,8 +147,8 @@ drawTui ts = [
             ,   vBox $ concat [map str (_renderedCode ts)]
             ,   vBox $ concat [
                             map str (_genericList ts)
-                        ,   map str (_portList ts)
-                        ,   map str (_signalList ts)
+                        ,   map str (gleanPorts ts)
+                        ,   map str (gleanSignals ts)
                         ]
             ]
     ,   vBox $ concat [map str (makeVisibleCommandHistory (_commandHistory ts))]

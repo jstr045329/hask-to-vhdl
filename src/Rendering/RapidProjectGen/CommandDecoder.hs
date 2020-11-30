@@ -41,9 +41,9 @@ decodeGenericWidth los
 ------------------------------------------------------------------------------------------------------------------------
 makeOneNewGeneric :: String -> GeneratorState -> Information
 makeOneNewGeneric oneStr generatorState =
-    let tokList = tokenize'' oneStr
+    let tokList = words oneStr
     in Generic {
-            nomen = tokList !! 1
+            nomen = tokList !! 0
         ,   dataType = decodeGenericType tokList
         ,   width = decodeGenericWidth tokList
 
@@ -58,9 +58,9 @@ makeOneNewGeneric oneStr generatorState =
 ------------------------------------------------------------------------------------------------------------------------
 makeOneNewSignal :: String -> GeneratorState -> Information
 makeOneNewSignal oneStr generatorState =
-    let tokList = tokenize'' oneStr
+    let tokList = words oneStr
     in VhdSig {
-            nomen = tokList !! 1
+            nomen = tokList !! 0
         ,   dataType = defaultDataType generatorState
         ,   width = if (length (afterKeyword tokList ["width", "="]) > 0)
                         then Hard (read (head (afterKeyword tokList ["width", "="])) :: Integer)
@@ -78,9 +78,9 @@ makeOneNewSignal oneStr generatorState =
 ------------------------------------------------------------------------------------------------------------------------
 makeOneNewPort :: String -> GeneratorState -> Bool -> Information
 makeOneNewPort oneStr generatorState isInput =
-    let tokList = tokenize'' oneStr
+    let tokList = words oneStr
     in Port {
-            nomen = tokList !! 1
+            nomen = tokList !! 0
         ,   dataType = defaultDataType generatorState
         ,   width = if (length (afterKeyword tokList ["width", "="]) > 0)
                         then Hard (read (head (afterKeyword tokList ["width", "="])) :: Integer)
@@ -122,6 +122,8 @@ slurpCommand s gS
 decodeOneStr :: String -> GeneratorState -> GeneratorState
 decodeOneStr oneStr presentState
     | (startsWith oneStr "<ent>") = presentState { formingEntity = True}
+
+    -- TODO: Make a way to set name of present entity
 
     | (startsWith oneStr "</ent>") = presentState { formingEntity = False}
 

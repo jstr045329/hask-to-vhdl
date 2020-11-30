@@ -12,6 +12,8 @@ module Tools.StringTools (
     , joinStringsWithCommas
     , joinStringsWithUnderscores
     , startsWith
+    , leftJustifyStr
+    , rightJustifyStr
     ) where
 import qualified Data.Char as DC
 import Tools.LogicTools
@@ -168,5 +170,21 @@ startsWith :: String -> String -> Bool
 startsWith txtBody lookFor
     | (Parsing.ParsecExample.parse (Parsec.string lookFor) txtBody) == Right lookFor = True 
     | otherwise = False
+
+
+------------------------------------------------------------------------------------------------------------------------
+--                                             Left Justify A String
+------------------------------------------------------------------------------------------------------------------------
+leftJustifyStr :: String -> Int -> String
+leftJustifyStr s w = take w (s ++ (repeat ' '))
+
+
+------------------------------------------------------------------------------------------------------------------------
+--                                             Right Justify A String
+------------------------------------------------------------------------------------------------------------------------
+rightJustifyStr :: String -> Int -> String
+rightJustifyStr s w = (take (w - (length s)) (repeat ' ')) ++ s
+
+
 
 
