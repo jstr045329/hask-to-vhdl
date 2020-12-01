@@ -14,6 +14,8 @@ module Tools.StringTools (
     , startsWith
     , leftJustifyStr
     , rightJustifyStr
+    , ljs
+    , rjs
     ) where
 import qualified Data.Char as DC
 import Tools.LogicTools
@@ -186,5 +188,11 @@ rightJustifyStr :: String -> Int -> String
 rightJustifyStr s w = (take (w - (length s)) (repeat ' ')) ++ s
 
 
+------------------------------------------------------------------------------------------------------------------------
+--                                  Make Abbreviations For Some Long Function Names
+------------------------------------------------------------------------------------------------------------------------
+ljs = leftJustifyStr
+
+rjs = rightJustifyStr
 
 

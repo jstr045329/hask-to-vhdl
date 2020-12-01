@@ -36,6 +36,7 @@ import Rendering.RapidProjectGen.ScreenParameters
 import Rendering.RapidProjectGen.CommandDecoder
 import Tools.StringTools
 import Rendering.CommentTools
+import Data.List
 
 
 tui :: IO ()
@@ -126,10 +127,54 @@ drawOneLine n b =
     str
 
 
+dt2Str :: DataType -> String
+dt2Str StdLogic = "SL"
+dt2Str StdLogicVector = "SL Vec"
+dt2Str StdULogic = "SUL"
+dt2Str StdULogicVector = "SUL Vec"
+dt2Str Signed = "Signed"
+dt2Str Unsigned = "Unsigned"
+dt2Str Bit = "Bit"
+dt2Str UnconstrainedInt = "Int"
+dt2Str (ConstrainedInt a b) = "Int " ++ (show a) ++ " " ++ (show b)
+dt2Str _ = ""
+
+
+--data DataType =           StdLogic
+-- 46                         | StdULogic
+-- 47                         | StdLogicVector
+-- 48                         | StdULogicVector
+-- 49                         | Signed
+-- 50                         | Unsigned
+-- 51                         | Bit
+-- 52                         | UnconstrainedInt
+-- 53                         | ConstrainedInt Int Int
+-- 54                         | Record String [Information]
+-- 55                         | UserDefinedDataType String
+-- 56                           deriving (Eq, Show)
+
+
+nomenWidth :: Int
+nomenWidth = 20
+
+
+dtWidth :: Int
+dtWidth = 10
+
+
+widthWidth :: Int
+widthWidth = 10
+
+
+defaultStrWidth :: Int
+defaultStrWidth = 10
+
+
 showOneInfo :: Information -> String
-showOneInfo (Port n dt w dir _ _ _ _ _) = (leftJustifyStr n 20) ++ " " ++ (leftJustifyStr (show dt) 10) ++ " " ++ (show w) ++ " " ++ (show dir)
-showOneInfo (VhdSig n dt w _ _ _ _ _) = (leftJustifyStr n 20) ++ " " ++ (leftJustifyStr (show dt) 10) ++ " " ++ (show w)
-showOneInfo (Generic n dt w _ _) = (leftJustifyStr n 20) ++ " " ++ (leftJustifyStr (show dt) 10) ++ " " ++ (show w)
+showOneInfo (Port n dt w dir _ _ _ _ _) = intercalate " " [ljs n nomenWidth, ljs (dt2Str dt) dtWidth, ljs (show w) 10, show dir]
+showOneInfo (VhdSig n dt w _ _ _ _ _) = intercalate " " [ljs n nomenWidth, ljs (dt2Str dt) dtWidth, ljs (show w) 10]
+showOneInfo (Generic n dt w (Specified dV) _) = intercalate " " [ljs n nomenWidth, ljs dV defaultStrWidth, ljs (dt2Str dt) dtWidth, ljs (show w) 10]
+showOneInfo (Generic n dt w Unspecified _) = intercalate " " [ljs n nomenWidth, ljs "" defaultStrWidth, ljs (dt2Str dt) dtWidth, ljs (show w) 10]
 showOneInfo _ = ""
 
 
@@ -138,7 +183,7 @@ sideColDashes = ctrString (take (sideColumn - 2) dashes) sideColumn
 
 
 gleanGenerics :: TuiState -> [String]
-gleanGenerics ts = take 12 (["\n", ctrString "Generics" sideColumn, sideColDashes] ++ (map showOneInfo (generics (presentEntity (generatorState ts)))) ++ blankLines)
+gleanGenerics ts = take 12 ([ctrString "Generics" sideColumn, sideColDashes] ++ (map showOneInfo (generics (presentEntity (generatorState ts)))) ++ blankLines)
 
 
 gleanPorts :: TuiState -> [String]

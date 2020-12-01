@@ -14,10 +14,10 @@ import Parsing.GuaranteeWhitespace
 ------------------------------------------------------------------------------------------------------------------------
 decodeGenericType :: [String] -> DataType
 decodeGenericType los
-    | ((head los) == "StdLogic") = StdLogic
-    | ((head los) == "StdLogicVector") = StdLogicVector
-    | ((head los) == "Signed") = Signed 
-    | ((head los) == "Unsigned") = Unsigned
+    | (elem "slv" los) = StdLogicVector
+    | (elem "sl" los) = StdLogic
+    | (elem "unsigned" los) = Unsigned
+    | (elem "signed" los) = Signed
     | otherwise = UnconstrainedInt
 
 
@@ -29,11 +29,17 @@ decodeGenericWidth' los
 
 decodeGenericWidth :: [String] -> Width
 decodeGenericWidth los
-    | ((head los) == "StdLogic") = Hard 1
-    | ((head los) == "StdLogicVector") = decodeGenericWidth' los
-    | ((head los) == "Signed") = decodeGenericWidth' los
-    | ((head los) == "Unsigned") = decodeGenericWidth' los
+    | (elem "slv" los) = decodeGenericWidth' los
+    | (elem "sl" los) = Hard 1
+    | (elem "unsigned" los) = decodeGenericWidth' los
+    | (elem "signed" los) = decodeGenericWidth' los
     | otherwise = Hard 32
+
+
+decodeGenericDefault :: [String] -> DefaultValue
+decodeGenericDefault los
+    | (length (afterKeyword los [":="]) > 0) = Specified (head (afterKeyword los [":="]))
+    | otherwise = Unspecified
 
 
 ------------------------------------------------------------------------------------------------------------------------
@@ -46,9 +52,7 @@ makeOneNewGeneric oneStr generatorState =
             nomen = tokList !! 0
         ,   dataType = decodeGenericType tokList
         ,   width = decodeGenericWidth tokList
-
-        -- TODO: Replace Unspecified with parsing
-        ,   sDefault = Unspecified
+        ,   sDefault = decodeGenericDefault tokList
         ,   comments = []
         }
 
