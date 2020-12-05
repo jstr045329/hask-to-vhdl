@@ -166,6 +166,9 @@ decodeOneStr oneStr gS
 
     | otherwise = slurpCommand oneStr gS
 
+
+-- HIGH PRIORITY:
+
 -- TODO: Go through all modules and explicity export things. 
 -- Avoiding name collisions is starting to be a pain. 
 
