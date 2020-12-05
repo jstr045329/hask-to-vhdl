@@ -26,7 +26,7 @@ pwmBusinessLogic =
 
 -- Files having to do with language modeling can be split into a 3rd 
 
--- TODO: PICK UP HERE:
+-- TODO: 
 --      1.) Move files that model the language into a LanguageModeling directory, 
 --      2.) Move files that clearly fit one of the 2 objectives into the appropriate directory, 
 --      3.) Delete everything else. 

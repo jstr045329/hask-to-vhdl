@@ -1,12 +1,15 @@
+------------------------------------------------------------------------------------------------------------------------
+--                          This Module Represents The State Of The Rapid Project Generator 
+------------------------------------------------------------------------------------------------------------------------
 module Rendering.RapidProjectGen.GeneratorState where 
 import Rendering.Entity
 import Rendering.InfoTypes
 import Rendering.ProjectParameters
+import Rendering.EntityTree
 
 
 data GeneratorState = GeneratorState {
-        keepGoing :: Bool
-    ,   showVhd :: Bool 
+        showVhd :: Bool 
     ,   showHs :: Bool 
     ,   formingEntity :: Bool 
     ,   useConcurrent :: Bool
@@ -14,12 +17,9 @@ data GeneratorState = GeneratorState {
     ,   drinkingVhd :: Bool 
     ,   drinkingHs :: Bool
     ,   enableAutoPortMap :: Bool
-    ,   uniqueNameInt :: Integer
     ,   projectParameters :: ProjectParameters
-    ,   childEntities :: [Entity]
-    ,   presentEntity :: Entity
-    ,   parentEntity :: [Entity]
-    ,   parentState :: [GeneratorState]
+    ,   pathToPresent :: [String]
+    ,   entTree :: EntityTree
     ,   defaultClk :: Information
     ,   defaultRst :: Information
     ,   defaultDataType :: DataType
@@ -29,8 +29,7 @@ data GeneratorState = GeneratorState {
 
 defaultGeneratorState :: GeneratorState 
 defaultGeneratorState = GeneratorState {
-        keepGoing = True
-    ,   showVhd = True
+        showVhd = True
     ,   showHs = False
     ,   formingEntity = False
     ,   useConcurrent = True
@@ -38,19 +37,16 @@ defaultGeneratorState = GeneratorState {
     ,   drinkingVhd = False 
     ,   drinkingHs = False
     ,   enableAutoPortMap = False
-    ,   uniqueNameInt = 495137688
     ,   projectParameters = easyProjParams
-    ,   childEntities = []
-    ,   presentEntity = defaultEntity
-    ,   parentEntity = [TopLevelEntity]
-    ,   parentState = []
+    ,   pathToPresent = ["Unnamed"]
+    ,   entTree = EntityTree defaultEntity []
     ,   defaultClk = easyClk
     ,   defaultRst = easyRst
     ,   defaultDataType = StdLogic
     ,   defaultWidth = Hard 1
     }
 
-
+-- TODO: Delete all unused fields in GeneratorState
 
 
 

@@ -2,11 +2,13 @@ module Rendering.RapidProjectGen.CommandDecoder where
 import Rendering.RapidProjectGen.GeneratorState
 import Rendering.InfoTypes
 import Rendering.Entity
+import Rendering.EntityTree
 import Tools.WhiteSpaceTools
 import Tools.ListTools
 import Parsing.TokenMatchingTools
 import Tools.StringTools
 import Parsing.GuaranteeWhitespace
+import Rendering.InterspersedCode
 
 
 ------------------------------------------------------------------------------------------------------------------------
@@ -101,22 +103,29 @@ makeOneNewPort oneStr generatorState isInput =
 
 
 ------------------------------------------------------------------------------------------------------------------------
+--                                      Get Present Entity From Generator State 
+------------------------------------------------------------------------------------------------------------------------
+gPEnt :: GeneratorState -> String
+gPEnt gS = last (pathToPresent gS)
+
+
+------------------------------------------------------------------------------------------------------------------------
 --                                           Update the State of Present Entity
 ------------------------------------------------------------------------------------------------------------------------
 slurpCommand :: String -> GeneratorState -> GeneratorState
 slurpCommand s gS 
-    | (drinkingVhd gS) = gS { presentEntity = (presentEntity gS) { literalVhdLines = (literalVhdLines (presentEntity gS)) ++ [s]}}
+    | (drinkingVhd gS) = gS { entTree = changeOneEntity (gPEnt gS) (entTree gS) (\x -> x { interspersedCode = (interspersedCode x) ++ [InterspersedCode (VhdLiteral [s]) NoHs]})}
 
-    | (drinkingHs gS) = gS { presentEntity = (presentEntity gS) { literalHsLines = (literalHsLines (presentEntity gS)) ++ [s]}}
-    
-    | (startsWith s "gen ") = gS {presentEntity = (presentEntity gS) {generics = (generics (presentEntity gS)) ++ [makeOneNewGeneric (skipN s 4) gS]}}
+    | (drinkingVhd gS) = gS { entTree = changeOneEntity (gPEnt gS) (entTree gS) (\x -> x { interspersedCode = (interspersedCode x) ++ [InterspersedCode NoVhd (HsLiteral [s])]})}
 
-    | (startsWith s "sig ") = gS {presentEntity = (presentEntity gS) {signals = (signals (presentEntity gS)) ++ [makeOneNewSignal (skipN s 4) gS]}}
-
-    | (startsWith s "in ") = gS {presentEntity = (presentEntity gS) {ports = (ports (presentEntity gS)) ++ [makeOneNewPort (skipN s 3) gS True]}}
-
-    | (startsWith s "out ") = gS {presentEntity = (presentEntity gS) {ports = (ports (presentEntity gS)) ++ [makeOneNewPort (skipN s 4) gS False]}}
-
+--    | (startsWith s "gen ") = gS {presentEntity = (presentEntity gS) {generics = (generics (presentEntity gS)) ++ [makeOneNewGeneric (skipN s 4) gS]}}
+--
+--    | (startsWith s "sig ") = gS {presentEntity = (presentEntity gS) {signals = (signals (presentEntity gS)) ++ [makeOneNewSignal (skipN s 4) gS]}}
+--
+--    | (startsWith s "in ") = gS {presentEntity = (presentEntity gS) {ports = (ports (presentEntity gS)) ++ [makeOneNewPort (skipN s 3) gS True]}}
+--
+--    | (startsWith s "out ") = gS {presentEntity = (presentEntity gS) {ports = (ports (presentEntity gS)) ++ [makeOneNewPort (skipN s 4) gS False]}}
+--
     | otherwise = gS
 
 
@@ -124,43 +133,68 @@ slurpCommand s gS
 --                                                   Parse Commands
 ------------------------------------------------------------------------------------------------------------------------
 decodeOneStr :: String -> GeneratorState -> GeneratorState
-decodeOneStr oneStr presentState
-    | (startsWith oneStr "<ent>") = presentState { formingEntity = True}
+decodeOneStr oneStr gS
+    -- The <ent> tag requires an entity name immediately after:
+    | (startsWith oneStr "<ent>") = 
+        gS { 
+            formingEntity = True
+        ,   entTree = 
+                appendOneEntity 
+                    (gPEnt gS) -- name of present entity (which will be the parent of the new entity)
+                    (entTree gS) -- entity tree in Generator State
+                    (defaultEntity { entNomen = (words oneStr) !! 1 }) -- The new entity we are creating
 
-    -- TODO: Make a way to set name of present entity
+        ,   pathToPresent = (pathToPresent gS) ++ [(words oneStr) !! 1]
+        }
 
-    | (startsWith oneStr "</ent>") = presentState { formingEntity = False}
+    | (startsWith oneStr "</ent>") = gS { 
+        -- formingEntity = False -- TODO: Think about whether formingEntity is really necessary
+        pathToPresent = take ((length (pathToPresent gS)) - 1) (pathToPresent gS)
+        }
 
-    | (startsWith oneStr "<vhd>") = presentState { drinkingVhd = True }
+    | (startsWith oneStr "<vhd>") = gS { drinkingVhd = True }
 
-    | (startsWith oneStr "</vhd>") = presentState { drinkingVhd = False }
+    | (startsWith oneStr "</vhd>") = gS { drinkingVhd = False }
 
-    | (startsWith oneStr "<hs>") = presentState { drinkingHs = True }
+    | (startsWith oneStr "<hs>") = gS { drinkingHs = True }
 
-    | (startsWith oneStr "</hs>") = presentState { drinkingHs = False }
+    | (startsWith oneStr "</hs>") = gS { drinkingHs = False }
 
-    | (startsWith oneStr "show vhd") = presentState {showVhd = True, showHs = False}
+    | (startsWith oneStr "show vhd") = gS {showVhd = True, showHs = False}
 
-    | (startsWith oneStr "show hs") = presentState {showVhd = False, showHs = True}
+    | (startsWith oneStr "show hs") = gS {showVhd = False, showHs = True}
 
-    | otherwise = slurpCommand oneStr presentState
+    | otherwise = slurpCommand oneStr gS
+
+    -- TODO: Capture Infinite Signals
+    --      * Infinite delay chains for signals
+    --      * Infinite widths for all Information's.
+    --      * Might make sense to change all [Information]'s to [[Informations]],
+    --        then just use the head of each list.
+
 
     -- TODO: Reinstate drinkingProcess
     -- Process Imbiber should parse signals.
     -- Anything to the left of a <= gets declared if it isn't already in the signal list.
     -- If you declare something after you use it, TUI fills in the missing details. 
     -- When you type </proc>, TUI prompts you to fill in any details that are still missing. 
-
     -- Process Imbiber should automatically reset any signals you use. 
 
 
+    -- TODO: Make using literals easy:
+    --      * When a literal is narrower than a signal, zero pad it.
+    --          * Right justify by default
+    --          * Provide option to left justify
+    --      * When a literal is wider than a signal, 
+    --          * Raise an error (default), or
+    --          * Bite off as many bits as signal can accept. 
+    --          * Warning is optional if bite off enabled.
 
 
 -- TODO: Make faculties for recursive entities. 
 
 -- TODO: Make all signals in an entity available to child entities. 
 -- Automatically wire up port map. 
-
 
 -- TODO: Add HashSet's for libraries needed
 
@@ -175,4 +209,32 @@ decodeOneStr oneStr presentState
 
 -- TODO: Add commands to choose a different clock, different reset style for individual
 -- processes. 
+
+-- TODO: Think about how I might support infinite recursion in entities. 
+-- I should be able to do something like this:
+--      take 4872 myEntityList
+-- and the first 4871 instances contain an instance of the same thing.
+
+
+-- TODO: Write commands for making nested entities.
+-- It should be easy to distinguish a child entity from a peer entity. 
+
+
+-- TODO: Think about whether recursive generator state is really necessary.
+
+-- TODO: Refactor parent & child entity structure so that it's capable of representing trees.
+--
+--      Would [[Entity]] work? 
+--
+-- Perhaps it's smarter to only store the top level entity and the present entity. 
+-- That could create difficulty though because drilling down through deep state could get cumbersome. 
+-- Can a recursive function find a match, modify that 1 layer, then leave the rest of the data structure
+-- intact?
+
+-- Go through all modules and explicity explort things. 
+-- Avoiding name collisions is starting to be a pain. 
+
+-- TODO: Add a subsume command. It should create a new entity which absorbs the present entity.
+
+
 

@@ -64,7 +64,7 @@ renderSequential (IfStatement someList) whichIfTerm =
             (oneCond, assignmentList, sequentialStatements) = head someList
 
 
--- TODO: PICK UP HERE: Flesh out sequential for other constructors. 
+-- TODO: Flesh out sequential for other constructors. 
 
 ------------------------------------------------------------------------------------------------------------------------
 --                                           Render Sequential Statements 

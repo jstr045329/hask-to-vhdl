@@ -37,8 +37,12 @@ import Rendering.RapidProjectGen.CommandDecoder
 import Tools.StringTools
 import Rendering.CommentTools
 import Data.List
+import Rendering.EntityTree
 
 
+------------------------------------------------------------------------------------------------------------------------
+--                                              Define TUI Entry Point 
+------------------------------------------------------------------------------------------------------------------------
 tui :: IO ()
 tui = do
   initialState <- buildInitialState
@@ -46,6 +50,9 @@ tui = do
   print endState
 
 
+------------------------------------------------------------------------------------------------------------------------
+--                                              Define TUI Entry State 
+------------------------------------------------------------------------------------------------------------------------
 data TuiState =
   TuiState 
     {
@@ -73,11 +80,17 @@ data TuiState =
     } deriving (Show, Eq) 
 
 
+------------------------------------------------------------------------------------------------------------------------
+--                                                   Boiler Plate 
+------------------------------------------------------------------------------------------------------------------------
 data ResourceName =
   ResourceName
   deriving (Show, Eq, Ord)
 
 
+------------------------------------------------------------------------------------------------------------------------
+--                                                  Define TUI App 
+------------------------------------------------------------------------------------------------------------------------
 tuiApp :: App TuiState e ResourceName
 tuiApp =
   App
@@ -89,11 +102,38 @@ tuiApp =
     }   
 
 
+------------------------------------------------------------------------------------------------------------------------
+--                                            Center A String In A Field 
+------------------------------------------------------------------------------------------------------------------------
 ctrString :: String -> Int -> String
 ctrString s n = take n ((take n' infiniteSpaces) ++ s ++ infiniteSpaces) where
     n' = div (n - (length s)) 2
 
 
+------------------------------------------------------------------------------------------------------------------------
+--                                       Draw Entity Hierarchy From TUI State 
+------------------------------------------------------------------------------------------------------------------------
+drawEntHierarchy :: TuiState -> [String]
+drawEntHierarchy ts = 
+    [ctrString "Entities" sideColumn] ++ (showEntityTree (entTree (generatorState ts)) 0)
+
+-- showEntityTree :: EntityTree -> Int -> [String]
+
+-- showEntityHierarchy (entTree (generatorState ts)) 0
+
+-- showEntityHierarchy :: Entity -> Int -> [String
+--     [ctrString "Entities" sideColumn] ++ (showEntityTree (entTree (generatorState ts)) 0)
+
+
+-- TODO: PICK UP HERE:
+--      Think about whether to delete EntityTree.
+--      Is it really necessary?
+--      If not, delete the file, and all references to it.
+--      Replace with new functions. 
+
+------------------------------------------------------------------------------------------------------------------------
+--                                             Define Initial TUI State 
+------------------------------------------------------------------------------------------------------------------------
 buildInitialState :: IO TuiState
 buildInitialState = 
     pure TuiState {
@@ -103,13 +143,16 @@ buildInitialState =
             ,   _signalList = [ctrString "Signals" sideColumn] ++ (take 20 blankLines)
             ,   _renderedCode = [ctrString "Rendered VHDL" middleColumn] ++ (take 30 blankLines)
             ,   _commandHistory = take 10 blankLines
-            ,   _newCommand = cmdArrows -- ">>   "
+            ,   _newCommand = cmdArrows 
             ,   _userHints = ["\n"]
             ,   emptySpace = ["\n"]
             ,   generatorState = defaultGeneratorState
             }
 
 
+------------------------------------------------------------------------------------------------------------------------
+--                                           Display Most Recent Commands 
+------------------------------------------------------------------------------------------------------------------------
 commandHistoryTraceback :: Int
 commandHistoryTraceback = 10
 
@@ -118,7 +161,9 @@ makeVisibleCommandHistory :: [String] -> [String]
 makeVisibleCommandHistory los = [ctrString "Command History" wholeScreen] ++ (take commandHistoryTraceback ((lastN los commandHistoryTraceback) ++ blankLines))
 
 
--- Applies the selected attribute to the top of a list if it is selected:
+-----------------------------------------------------------------------------------------------------------------------
+--                                    Apply Attribute To Top Of List, If Selected 
+------------------------------------------------------------------------------------------------------------------------
 drawOneLine :: Int -> Bool -> String -> Widget n
 drawOneLine n b = 
     (if (b && (n == 0))
@@ -127,6 +172,9 @@ drawOneLine n b =
     str
 
 
+------------------------------------------------------------------------------------------------------------------------
+--                                            Convert Data Type To String 
+------------------------------------------------------------------------------------------------------------------------
 dt2Str :: DataType -> String
 dt2Str StdLogic = "SL"
 dt2Str StdLogicVector = "SL Vec"
@@ -140,20 +188,9 @@ dt2Str (ConstrainedInt a b) = "Int " ++ (show a) ++ " " ++ (show b)
 dt2Str _ = ""
 
 
---data DataType =           StdLogic
--- 46                         | StdULogic
--- 47                         | StdLogicVector
--- 48                         | StdULogicVector
--- 49                         | Signed
--- 50                         | Unsigned
--- 51                         | Bit
--- 52                         | UnconstrainedInt
--- 53                         | ConstrainedInt Int Int
--- 54                         | Record String [Information]
--- 55                         | UserDefinedDataType String
--- 56                           deriving (Eq, Show)
-
-
+------------------------------------------------------------------------------------------------------------------------
+--                                                Define Field Widths 
+------------------------------------------------------------------------------------------------------------------------
 nomenWidth :: Int
 nomenWidth = 20
 
@@ -170,6 +207,9 @@ defaultStrWidth :: Int
 defaultStrWidth = 10
 
 
+------------------------------------------------------------------------------------------------------------------------
+--                                           Convert Information To String 
+------------------------------------------------------------------------------------------------------------------------
 showOneInfo :: Information -> String
 showOneInfo (Port n dt w dir _ _ _ _ _) = intercalate " " [ljs n nomenWidth, ljs (dt2Str dt) dtWidth, ljs (show w) 10, show dir]
 showOneInfo (VhdSig n dt w _ _ _ _ _) = intercalate " " [ljs n nomenWidth, ljs (dt2Str dt) dtWidth, ljs (show w) 10]
@@ -182,23 +222,61 @@ sideColDashes :: String
 sideColDashes = ctrString (take (sideColumn - 2) dashes) sideColumn
 
 
+-----------------------------------------------------------------------------------------------------------------------
+--                                         Get Present Entity From TUI State 
+------------------------------------------------------------------------------------------------------------------------
+pEnt :: TuiState -> String
+pEnt ts = last (pathToPresent (generatorState ts))
+
+
+------------------------------------------------------------------------------------------------------------------------
+--                                              Display Present Entity 
+------------------------------------------------------------------------------------------------------------------------
+displayPresentEnt :: TuiState -> [String]
+displayPresentEnt ts = ["Present Entity: " ++ (pEnt ts)]
+
+
+------------------------------------------------------------------------------------------------------------------------
+--                                        Glean Information's From TUI State 
+------------------------------------------------------------------------------------------------------------------------
 gleanGenerics :: TuiState -> [String]
-gleanGenerics ts = take 12 ([ctrString "Generics" sideColumn, sideColDashes] ++ (map showOneInfo (generics (presentEntity (generatorState ts)))) ++ blankLines)
+gleanGenerics ts = 
+    take 12 
+        ([ctrString "Generics" sideColumn, sideColDashes] ++ 
+        (if (length (getNodesWithName (pEnt ts) (entTree (generatorState ts))) > 0)
+            then map showOneInfo (generics (head (getNodesWithName (pEnt ts) (entTree (generatorState ts)))))
+            else []) ++
+        blankLines)
 
 
 gleanPorts :: TuiState -> [String]
-gleanPorts ts = take 18 (["\n", ctrString "Ports" sideColumn, sideColDashes] ++ (map showOneInfo (ports (presentEntity (generatorState ts)))) ++ blankLines)
+gleanPorts ts = 
+    take 18
+        ([ctrString "Ports" sideColumn, sideColDashes] ++ 
+        (if (length (getNodesWithName (pEnt ts) (entTree (generatorState ts))) > 0)
+            then map showOneInfo (ports (head (getNodesWithName (pEnt ts) (entTree (generatorState ts)))))
+            else []) ++
+        blankLines)
 
 
 gleanSignals :: TuiState -> [String]
-gleanSignals ts = take 18 (["\n", ctrString "Signals" sideColumn, sideColDashes] ++ (map showOneInfo (signals (presentEntity (generatorState ts)))) ++ blankLines)
+gleanSignals ts = 
+    take 18
+        ([ctrString "Signals" sideColumn, sideColDashes] ++ 
+        (if (length (getNodesWithName (pEnt ts) (entTree (generatorState ts))) > 0)
+            then map showOneInfo (signals (head (getNodesWithName (pEnt ts) (entTree (generatorState ts)))))
+            else []) ++
+        blankLines)
 
 
+------------------------------------------------------------------------------------------------------------------------
+--                                                     Draw TUI 
+------------------------------------------------------------------------------------------------------------------------
 drawTui :: TuiState -> [Widget ResourceName]
 drawTui ts = [
     vBox [
         hBox [
-                vBox $ concat [map str (_entityTree ts)]
+                vBox $ concat [map str (drawEntHierarchy ts)]
             ,   vBox $ concat [map str (_renderedCode ts)]
             ,   vBox $ concat [
                             map str (gleanGenerics ts)
@@ -209,10 +287,14 @@ drawTui ts = [
     ,   vBox $ concat [map str (makeVisibleCommandHistory (_commandHistory ts))]
     ,   vBox [str (_newCommand ts)]
     ,   vBox $ concat [map str (_userHints ts)]
+    ,   vBox $ concat [map str (displayPresentEnt ts)]
     ]
     ]
 
 
+------------------------------------------------------------------------------------------------------------------------
+--                                         Add And Remove The Command Prompt 
+------------------------------------------------------------------------------------------------------------------------
 eraseArrows :: String -> String
 eraseArrows s = "  " ++ (tail (tail s))
 
@@ -221,13 +303,15 @@ cmdArrows :: String
 cmdArrows = ">>   "
 
 
+------------------------------------------------------------------------------------------------------------------------
+--                                                 Handle TUI Events 
+------------------------------------------------------------------------------------------------------------------------
 handleTuiEvent :: TuiState -> BrickEvent n e -> EventM n (Next TuiState)
 handleTuiEvent s e =
   case e of
     VtyEvent vtye ->
       case vtye of
         EvKey KEnter [] -> do 
-            -- TODO: PICK UP HERE: use string to modify generatorState
             let s' = s {
                 _commandHistory = (_commandHistory s) ++ [eraseArrows (_newCommand s)]
             }
@@ -242,7 +326,6 @@ handleTuiEvent s e =
                 generatorState = decodeOneStr trimmedCommand (generatorState s)
             }
             continue s'''
--- decodeOneStr :: String -> GeneratorState -> GeneratorState
 
         EvKey (KChar 'q') [MCtrl] -> halt s
 
@@ -268,7 +351,6 @@ handleTuiEvent s e =
     _ -> continue s
 
 
-
--- TODO: Delete all the unused fields in TuiState
+-- TODO: Make TUI display child instances
 
 

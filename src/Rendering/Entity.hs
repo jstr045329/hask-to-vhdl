@@ -4,6 +4,9 @@ import Rendering.Function
 import Rendering.Procedure
 import Rendering.Process
 import Rendering.PortMap
+import Rendering.InterspersedCode
+import Tools.WhiteSpaceTools
+import Tools.ListTools
 
 
 data Entity = Entity {
@@ -13,6 +16,8 @@ data Entity = Entity {
         ,   signals :: [Information]
         ,   functions :: [Function]
         ,   procedures :: [Procedure]
+        ,   routeInfinitelyUp :: [Information]
+        ,   routeInfinitelyDown :: [Information]
         ,   nestedEntities :: [Entity]
         ,   childInstances :: [PortMap]
         ,   processes :: [Process]
@@ -20,22 +25,21 @@ data Entity = Entity {
         ,   outputBuffLayers :: Int
         ,   recursionDepth :: Int
         ,   maxRecursionDepth :: Int -- For recursive entities, choose a termination depth
-        ,   literalVhdLines :: [String]
-        ,   literalHsLines :: [String]
-        ,   renderedHsLines :: [String]
-        ,   tuiCommands :: [String]
+        ,   interspersedCode :: [InterspersedCode]
     } | TopLevelEntity 
         deriving (Eq, Show)
 
 
 defaultEntity :: Entity 
 defaultEntity = Entity {
-        entNomen = "Give Me A Name"
+        entNomen = "Unnamed"
     ,   generics = []
     ,   ports = []
     ,   signals = []
     ,   functions = []
     ,   procedures = []
+    ,   routeInfinitelyUp = []
+    ,   routeInfinitelyDown = []
     ,   nestedEntities = []
     ,   childInstances = []
     ,   processes = []
@@ -43,8 +47,12 @@ defaultEntity = Entity {
     ,   outputBuffLayers = 0
     ,   recursionDepth = 0
     ,   maxRecursionDepth = 0
-    ,   literalVhdLines = []
-    ,   literalHsLines = []
-    ,   renderedHsLines = []
-    ,   tuiCommands = []
+    ,   interspersedCode = []
     }
+
+
+showEntityHierarchy :: Entity -> Int -> [String]
+showEntityHierarchy e n
+    | (length (nestedEntities e) == 0) = [(tab n) ++ (entNomen e)]
+    | otherwise = [(tab n) ++ (entNomen e)] ++ (flattenShallow (map (\x -> showEntityHierarchy x (n+1)) (nestedEntities e)))
+
