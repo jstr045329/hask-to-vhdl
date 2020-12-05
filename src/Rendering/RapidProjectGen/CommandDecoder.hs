@@ -166,29 +166,38 @@ decodeOneStr oneStr gS
 
     | otherwise = slurpCommand oneStr gS
 
-    -- TODO: Capture Infinite Signals
-    --      * Infinite delay chains for signals
-    --      * Infinite widths for all Information's.
-    --      * Might make sense to change all [Information]'s to [[Informations]],
-    --        then just use the head of each list.
+-- TODO: Go through all modules and explicity export things. 
+-- Avoiding name collisions is starting to be a pain. 
 
 
-    -- TODO: Reinstate drinkingProcess
-    -- Process Imbiber should parse signals.
-    -- Anything to the left of a <= gets declared if it isn't already in the signal list.
-    -- If you declare something after you use it, TUI fills in the missing details. 
-    -- When you type </proc>, TUI prompts you to fill in any details that are still missing. 
-    -- Process Imbiber should automatically reset any signals you use. 
+-- TODO: Go through all the TODO's below, and prioritize everything that's useful for 
+-- skeleton generation & rapid prototyping. Move everything else to a ticket. 
+
+-- TODO: Delete <vhd> and replace with <con>
+-- TODO: Replace <proc> with <seq>
+-- Process Imbiber should parse signals.
+-- Anything to the left of a <= gets declared if it isn't already in the signal list.
+-- If you declare something after you use it, TUI fills in the missing details. 
+-- When you type </seq>, TUI prompts you to fill in any details that are still missing. 
+-- Process Imbiber should automatically reset any signals you use. 
 
 
-    -- TODO: Make using literals easy:
-    --      * When a literal is narrower than a signal, zero pad it.
-    --          * Right justify by default
-    --          * Provide option to left justify
-    --      * When a literal is wider than a signal, 
-    --          * Raise an error (default), or
-    --          * Bite off as many bits as signal can accept. 
-    --          * Warning is optional if bite off enabled.
+-- TODO: Capture Infinite Signals
+--      * Infinite delay chains for signals
+--      * Infinite widths for all Information's.
+--      * Might make sense to change all [Information]'s to [[Informations]],
+--        then just use the head of each list.
+--        Or, maintain [Int] that tracks how many of each thing has been used, 
+--        then take whateverInt from each [Information].
+
+-- TODO: Make using literals easy:
+--      * When a literal is narrower than a signal, zero pad it.
+--          * Right justify by default
+--          * Provide option to left justify
+--      * When a literal is wider than a signal, 
+--          * Raise an error (default), or
+--          * Bite off as many bits as signal can accept. 
+--          * Warning is optional if bite off enabled.
 
 
 -- TODO: Make faculties for recursive entities. 
@@ -196,16 +205,45 @@ decodeOneStr oneStr gS
 -- TODO: Make all signals in an entity available to child entities. 
 -- Automatically wire up port map. 
 
--- TODO: Add HashSet's for libraries needed
-
 -- TODO: Come up with a way to try executing Hs literal lines, and 
 -- Hs literals only affect rendered VHDL when compilation is successful
 
--- TODO: Come up with some simple rule that allows hask-to-vhdl to intersperse
--- Hs output with Vhd literal lines. 
-
 -- TODO: Add commands to modify ProjectParameters.
 -- You should be able to change reset style in all processes with a single command. 
+
+-- TODO: Add commands to alter any parameter in Entity. 
+
+-- TODO: Make a set of all inputs and signals in parent entity, and make those available to child. 
+-- Haskell should automatically:
+--      1) Figure out which ones are actually used, and put those in the entity declaration, and 
+--      2) Map Information's with similar names in the port map,
+-- unless the user commands something else. 
+--
+-- RELATED TODO: Figure out the best way to command Something Else. 
+
+-- TODO: Add an <inst> command, which creates a new instance of a given child.
+--       Figure out rules for whether & how that's going to modify existing port maps. 
+--       For instance, if instance 0 is already prewired, you might need to modify that 
+--       when you create instance 1.  
+
+-- TODO: Add a nomen prefix field to Entity, which is:
+--      intercalate "_" [pathToPresent gS]
+--
+-- This allows user to avoid naming conflicts. Plus, when you look at the VHDL, you can 
+-- see the full path to every entity in the project.
+
+
+-- Lower Priority:
+
+-- TODO: Think about whether I need to develop a system of name transformation conventions. 
+-- For instance, maybe all signals should be an infinite list from the get go. 
+-- Append the six digit number, but that only appears in rendered code. User does not need to 
+-- look at appended numbers. 
+
+-- TODO: Add userMessages field to generatorState, so that user can be informed when a command is rejected.
+
+-- TODO: Figure out how to display infinite entities. 
+-- Could be as simple as, "When list is longer than 10, write ..."
 
 -- TODO: Add commands to choose a different clock, different reset style for individual
 -- processes. 
@@ -213,28 +251,15 @@ decodeOneStr oneStr gS
 -- TODO: Think about how I might support infinite recursion in entities. 
 -- I should be able to do something like this:
 --      take 4872 myEntityList
--- and the first 4871 instances contain an instance of the same thing.
+-- and the first 4871 instances contain an instance of the same thing (but with a different name)
 
-
--- TODO: Write commands for making nested entities.
--- It should be easy to distinguish a child entity from a peer entity. 
-
-
--- TODO: Think about whether recursive generator state is really necessary.
-
--- TODO: Refactor parent & child entity structure so that it's capable of representing trees.
+-- TODO: Add a window that highlights changes to port maps. 
+--       Present entity is instantiated in parent by a port map, 
+--       and this window shows how signals from parent are being routed to child. 
 --
---      Would [[Entity]] work? 
---
--- Perhaps it's smarter to only store the top level entity and the present entity. 
--- That could create difficulty though because drilling down through deep state could get cumbersome. 
--- Can a recursive function find a match, modify that 1 layer, then leave the rest of the data structure
--- intact?
 
--- Go through all modules and explicity explort things. 
--- Avoiding name collisions is starting to be a pain. 
 
--- TODO: Add a subsume command. It should create a new entity which absorbs the present entity.
-
+-- TODO: No need to do this immediately, but once scripting is supported, recursive Generator State
+-- would allow each script to have its own state. 
 
 

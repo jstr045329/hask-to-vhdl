@@ -10,7 +10,10 @@ import Tools.ListTools
 ------------------------------------------------------------------------------------------------------------------------
 --                                            Represent Entity Hierarchy 
 ------------------------------------------------------------------------------------------------------------------------
-data EntityTree = EntityTree Entity [EntityTree] deriving (Eq, Show)
+data EntityTree = 
+        EntityTree Entity [EntityTree] 
+    |   TopLevel
+        deriving (Eq, Show)
 
 
 ------------------------------------------------------------------------------------------------------------------------
@@ -47,8 +50,6 @@ appendOneEntity :: String -> EntityTree -> Entity -> EntityTree
 appendOneEntity parentNomen (EntityTree oneEntity children) oneNewEntity
     | (parentNomen == (entNomen oneEntity)) = 
         EntityTree
-            --(oneEntity { nestedEntities = (nestedEntities oneEntity) ++ [oneNewEntity] })
-            -- children
             oneEntity 
             (children ++ [EntityTree oneNewEntity []])
     | otherwise = 
@@ -106,6 +107,5 @@ testChangeOneEntity = do
         eT3 = EntityTree x9 [x7, x8]
         eT4 = EntityTree x10 [eT1, eT2, eT3]
         eT5 = changeOneEntity "x3" eT4 (\x -> x {entNomen = "Bob"})
-
 
 

@@ -332,6 +332,7 @@ handleTuiEvent s e =
 
         EvKey (KChar 's') [MCtrl] -> do
             -- TODO: save files
+            -- Could be as simple as saving command history
             continue s
 
         EvKey (KChar c) [] -> do
@@ -349,8 +350,5 @@ handleTuiEvent s e =
         _ -> continue s
  
     _ -> continue s
-
-
--- TODO: Make TUI display child instances
 
 

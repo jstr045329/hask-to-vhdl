@@ -38,8 +38,8 @@ defaultGeneratorState = GeneratorState {
     ,   drinkingHs = False
     ,   enableAutoPortMap = False
     ,   projectParameters = easyProjParams
-    ,   pathToPresent = ["Unnamed"]
-    ,   entTree = EntityTree defaultEntity []
+    ,   pathToPresent = ["Top"] -- ["Unnamed"]
+    ,   entTree = EntityTree (defaultEntity { entNomen = "Top" }) []
     ,   defaultClk = easyClk
     ,   defaultRst = easyRst
     ,   defaultDataType = StdLogic
