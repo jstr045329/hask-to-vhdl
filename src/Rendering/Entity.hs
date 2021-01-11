@@ -26,6 +26,7 @@ data Entity = Entity {
         ,   recursionDepth :: Int
         ,   maxRecursionDepth :: Int -- For recursive entities, choose a termination depth
         ,   interspersedCode :: [InterspersedCode]
+        ,   addToVhdBody :: [String] -- VHDL Literals
     } | TopLevelEntity 
         deriving (Eq, Show)
 
@@ -48,6 +49,7 @@ defaultEntity = Entity {
     ,   recursionDepth = 0
     ,   maxRecursionDepth = 0
     ,   interspersedCode = []
+    ,   addToVhdBody = []
     }
 
 

@@ -38,6 +38,8 @@ import Tools.StringTools
 import Rendering.CommentTools
 import Data.List
 import Rendering.EntityTree
+import Rendering.InterspersedCode
+import Rendering.RapidProjectGen.DecodeOneString
 
 
 ------------------------------------------------------------------------------------------------------------------------
@@ -125,11 +127,33 @@ drawEntHierarchy ts =
 --     [ctrString "Entities" sideColumn] ++ (showEntityTree (entTree (generatorState ts)) 0)
 
 
--- TODO: PICK UP HERE:
---      Think about whether to delete EntityTree.
+-- TODO: Think about whether to delete EntityTree.
 --      Is it really necessary?
 --      If not, delete the file, and all references to it.
 --      Replace with new functions. 
+
+------------------------------------------------------------------------------------------------------------------------
+--                                            Decide How Tall Windows Are
+------------------------------------------------------------------------------------------------------------------------
+genericsToShow :: Int
+genericsToShow = 5
+
+
+portsToShow :: Int 
+portsToShow = 20
+
+
+signalsToShow :: Int
+signalsToShow = 20
+
+
+renderedLinesToShow :: Int
+renderedLinesToShow = 30
+
+
+commandHistoryTraceback :: Int
+commandHistoryTraceback = 10
+
 
 ------------------------------------------------------------------------------------------------------------------------
 --                                             Define Initial TUI State 
@@ -138,10 +162,10 @@ buildInitialState :: IO TuiState
 buildInitialState = 
     pure TuiState {
                 _entityTree = [ctrString "Entities" sideColumn]
-            ,   _genericList = [ctrString "Generics" sideColumn] ++ (take 5 blankLines)
-            ,   _portList = [ctrString "Ports" sideColumn] ++ (take 20 blankLines)
-            ,   _signalList = [ctrString "Signals" sideColumn] ++ (take 20 blankLines)
-            ,   _renderedCode = [ctrString "Rendered VHDL" middleColumn] ++ (take 30 blankLines)
+            ,   _genericList = [ctrString "Generics" sideColumn] ++ (take genericsToShow blankLines)
+            ,   _portList = [ctrString "Ports" sideColumn] ++ (take portsToShow blankLines)
+            ,   _signalList = [ctrString "Signals" sideColumn] ++ (take signalsToShow blankLines)
+            ,   _renderedCode = [ctrString "Rendered VHDL" middleColumn] ++ (take renderedLinesToShow blankLines)
             ,   _commandHistory = take 10 blankLines
             ,   _newCommand = cmdArrows 
             ,   _userHints = ["\n"]
@@ -153,10 +177,6 @@ buildInitialState =
 ------------------------------------------------------------------------------------------------------------------------
 --                                           Display Most Recent Commands 
 ------------------------------------------------------------------------------------------------------------------------
-commandHistoryTraceback :: Int
-commandHistoryTraceback = 10
-
-
 makeVisibleCommandHistory :: [String] -> [String]
 makeVisibleCommandHistory los = [ctrString "Command History" wholeScreen] ++ (take commandHistoryTraceback ((lastN los commandHistoryTraceback) ++ blankLines))
 
@@ -239,9 +259,19 @@ displayPresentEnt ts = ["Present Entity: " ++ (pEnt ts)]
 ------------------------------------------------------------------------------------------------------------------------
 --                                        Glean Information's From TUI State 
 ------------------------------------------------------------------------------------------------------------------------
+numGenericsToDisplay :: Int
+numGenericsToDisplay = 12
+
+numPortsToDisplay :: Int
+numPortsToDisplay = 18
+
+numSignalsToDisplay :: Int
+numSignalsToDisplay = 18
+
+
 gleanGenerics :: TuiState -> [String]
 gleanGenerics ts = 
-    take 12 
+    take numGenericsToDisplay
         ([ctrString "Generics" sideColumn, sideColDashes] ++ 
         (if (length (getNodesWithName (pEnt ts) (entTree (generatorState ts))) > 0)
             then map showOneInfo (generics (head (getNodesWithName (pEnt ts) (entTree (generatorState ts)))))
@@ -251,7 +281,7 @@ gleanGenerics ts =
 
 gleanPorts :: TuiState -> [String]
 gleanPorts ts = 
-    take 18
+    take numPortsToDisplay
         ([ctrString "Ports" sideColumn, sideColDashes] ++ 
         (if (length (getNodesWithName (pEnt ts) (entTree (generatorState ts))) > 0)
             then map showOneInfo (ports (head (getNodesWithName (pEnt ts) (entTree (generatorState ts)))))
@@ -261,7 +291,7 @@ gleanPorts ts =
 
 gleanSignals :: TuiState -> [String]
 gleanSignals ts = 
-    take 18
+    take numSignalsToDisplay
         ([ctrString "Signals" sideColumn, sideColDashes] ++ 
         (if (length (getNodesWithName (pEnt ts) (entTree (generatorState ts))) > 0)
             then map showOneInfo (signals (head (getNodesWithName (pEnt ts) (entTree (generatorState ts)))))

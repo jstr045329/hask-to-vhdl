@@ -16,6 +16,9 @@ import Tools.WhiteSpaceTools
 import Data.List
 
 
+------------------------------------------------------------------------------------------------------------------------
+--                                       Define A Struct To Represent Process 
+------------------------------------------------------------------------------------------------------------------------
 data Process = Process {
           procNomen :: String
         , pClk :: Information
@@ -32,6 +35,42 @@ data Process = Process {
         , isClocked :: Bool
         , sequentialCode :: [SequentialStatement]
         } deriving (Eq, Show)
+
+
+------------------------------------------------------------------------------------------------------------------------
+--                                                  Default Process 
+--
+-- Make commonly-used assumptions to form a good starting point for our process. 
+--
+------------------------------------------------------------------------------------------------------------------------
+defaultProcess :: Process
+defaultProcess = Process {
+        procNomen = ""
+    ,   pClk = easyClk
+    ,   pRst = easyRst
+    ,   sensitivityList = [easyClk]
+    ,   procInputs = []
+    ,   variables = []
+    ,   internalState = []
+    ,   procOutputSignals = []
+    ,   isClocked = True
+    ,   sequentialCode = []
+    }
+
+
+defaultNamedProcess :: String -> Process
+defaultNamedProcess thisNomen = Process {
+        procNomen = thisNomen
+    ,   pClk = easyClk
+    ,   pRst = easyRst
+    ,   sensitivityList = [easyClk]
+    ,   procInputs = []
+    ,   variables = []
+    ,   internalState = []
+    ,   procOutputSignals = []
+    ,   isClocked = True
+    ,   sequentialCode = []
+    }
 
 
 ------------------------------------------------------------------------------------------------------------------------

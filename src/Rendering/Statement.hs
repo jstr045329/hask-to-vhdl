@@ -39,6 +39,7 @@ data SequentialStatement =
     |   CaseStatement Information [(Information, [Assignment], [SequentialStatement])]
     |   ForLoop Int Int [Assignment] [SequentialStatement]
     |   WhileLoop Condition [Assignment] [SequentialStatement]
+    |   RawSequentialVhd [String]
         deriving (Eq, Show)
 
 

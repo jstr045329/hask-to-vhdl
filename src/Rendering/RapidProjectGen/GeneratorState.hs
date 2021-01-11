@@ -6,6 +6,8 @@ import Rendering.Entity
 import Rendering.InfoTypes
 import Rendering.ProjectParameters
 import Rendering.EntityTree
+import Rendering.InterspersedCode
+import Rendering.Process
 
 
 data GeneratorState = GeneratorState {
@@ -14,8 +16,7 @@ data GeneratorState = GeneratorState {
     ,   formingEntity :: Bool 
     ,   useConcurrent :: Bool
     ,   useSequential :: Bool
-    ,   drinkingVhd :: Bool 
-    ,   drinkingHs :: Bool
+    ,   codeLines :: [InterspersedCode]
     ,   enableAutoPortMap :: Bool
     ,   projectParameters :: ProjectParameters
     ,   pathToPresent :: [String]
@@ -24,6 +25,10 @@ data GeneratorState = GeneratorState {
     ,   defaultRst :: Information
     ,   defaultDataType :: DataType
     ,   defaultWidth :: Width
+    ,   viewVhd :: Bool
+    ,   viewHs :: Bool
+    ,   drinkProcess :: Bool
+    ,   processUnderConstruction :: [Process]
     } deriving (Eq, Show)
 
 
@@ -34,8 +39,6 @@ defaultGeneratorState = GeneratorState {
     ,   formingEntity = False
     ,   useConcurrent = True
     ,   useSequential = False 
-    ,   drinkingVhd = False 
-    ,   drinkingHs = False
     ,   enableAutoPortMap = False
     ,   projectParameters = easyProjParams
     ,   pathToPresent = ["Top"] -- ["Unnamed"]
@@ -44,9 +47,10 @@ defaultGeneratorState = GeneratorState {
     ,   defaultRst = easyRst
     ,   defaultDataType = StdLogic
     ,   defaultWidth = Hard 1
+    ,   viewVhd = True
+    ,   viewHs = False
+    ,   drinkProcess = False
+    ,   processUnderConstruction = []
     }
-
--- TODO: Delete all unused fields in GeneratorState
-
 
 

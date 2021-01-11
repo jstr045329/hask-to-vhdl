@@ -4,7 +4,7 @@ cabal-version: 1.12
 --
 -- see: https://github.com/sol/hpack
 --
--- hash: 05aabaffb46b0245b60d645c93ccc91c05e3146ed3dfac4ea8692d320ef5366d
+-- hash: 4f94dd287bd2fae5a850fa45bb9d1dce399b1767310be46a60dd7faeb0178864
 
 name:           hask-to-vhd
 version:        0.1.0.0
@@ -59,6 +59,7 @@ library
       Rendering.ElseClause
       Rendering.ElseTerm
       Rendering.Entity
+      Rendering.EntityTree
       Rendering.FilterUnique
       Rendering.FiniteStateMachine
       Rendering.Function
@@ -68,6 +69,7 @@ library
       Rendering.InfiniteSigList
       Rendering.InfoNameTools
       Rendering.InfoTypes
+      Rendering.InterspersedCode
       Rendering.IntToBin
       Rendering.Literals
       Rendering.MajorityRules
@@ -79,7 +81,9 @@ library
       Rendering.Process
       Rendering.ProcessFile
       Rendering.ProjectParameters
+      Rendering.RapidProjectGen.AppendOneLine
       Rendering.RapidProjectGen.CommandDecoder
+      Rendering.RapidProjectGen.DecodeOneString
       Rendering.RapidProjectGen.GeneratorState
       Rendering.RapidProjectGen.RapidGenFSM
       Rendering.RapidProjectGen.RapidProjectGen
@@ -97,6 +101,7 @@ library
       Rendering.StateUpdate
       Rendering.VectorSubRange
       Rendering.VhdLibraries
+      Rendering.VhdLine
       Rendering.WrapInParens
       Rendering.ZeroPad
       TestHsProjects.GenerateHashSet
