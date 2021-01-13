@@ -10,6 +10,9 @@ import Rendering.InterspersedCode
 import Rendering.Process
 
 
+------------------------------------------------------------------------------------------------------------------------
+--                                        Struct To Represent Generator State 
+------------------------------------------------------------------------------------------------------------------------
 data GeneratorState = GeneratorState {
         showVhd :: Bool 
     ,   showHs :: Bool 
@@ -32,6 +35,9 @@ data GeneratorState = GeneratorState {
     } deriving (Eq, Show)
 
 
+------------------------------------------------------------------------------------------------------------------------
+--                                         Define A Default Generator State 
+------------------------------------------------------------------------------------------------------------------------
 defaultGeneratorState :: GeneratorState 
 defaultGeneratorState = GeneratorState {
         showVhd = True
@@ -39,9 +45,10 @@ defaultGeneratorState = GeneratorState {
     ,   formingEntity = False
     ,   useConcurrent = True
     ,   useSequential = False 
+    ,   codeLines = []
     ,   enableAutoPortMap = False
     ,   projectParameters = easyProjParams
-    ,   pathToPresent = ["Top"] -- ["Unnamed"]
+    ,   pathToPresent = ["Top"]
     ,   entTree = EntityTree (defaultEntity { entNomen = "Top" }) []
     ,   defaultClk = easyClk
     ,   defaultRst = easyRst
@@ -50,7 +57,17 @@ defaultGeneratorState = GeneratorState {
     ,   viewVhd = True
     ,   viewHs = False
     ,   drinkProcess = False
-    ,   processUnderConstruction = []
+    ,   processUnderConstruction = [defaultProcess]
     }
+
+
+------------------------------------------------------------------------------------------------------------------------
+--                                      Get Present Entity From Generator State 
+--
+-- This function returns the name of the entity that the user is presently working on. 
+--
+------------------------------------------------------------------------------------------------------------------------
+gPEnt :: GeneratorState -> String
+gPEnt gS = last (pathToPresent gS)
 
 

@@ -3,7 +3,8 @@
 --
 -- This module represents and renders process statements. 
 --
--- Note that at this time, inferred latches are intentionally not supported. 
+-- NOTE: At this time, inferred latches are intentionally not supported. 
+--
 ------------------------------------------------------------------------------------------------------------------------
 module Rendering.Process where
 import Rendering.Assignment
@@ -34,6 +35,7 @@ data Process = Process {
         , procOutputSignals :: [Information]
         , isClocked :: Bool
         , sequentialCode :: [SequentialStatement]
+        , procPlainLines :: [String]
         } deriving (Eq, Show)
 
 
@@ -55,22 +57,12 @@ defaultProcess = Process {
     ,   procOutputSignals = []
     ,   isClocked = True
     ,   sequentialCode = []
+    ,   procPlainLines = []
     }
 
 
 defaultNamedProcess :: String -> Process
-defaultNamedProcess thisNomen = Process {
-        procNomen = thisNomen
-    ,   pClk = easyClk
-    ,   pRst = easyRst
-    ,   sensitivityList = [easyClk]
-    ,   procInputs = []
-    ,   variables = []
-    ,   internalState = []
-    ,   procOutputSignals = []
-    ,   isClocked = True
-    ,   sequentialCode = []
-    }
+defaultNamedProcess thisNomen = defaultProcess {procNomen = thisNomen}
 
 
 ------------------------------------------------------------------------------------------------------------------------
@@ -131,6 +123,7 @@ renderProcessFirstLine oneProc projParams = (renderProcessHeader oneProc) ++ (re
 resetEverything :: Process -> [String]
 resetEverything oneProc = (resetBatch (filterUnique ((sensitivityList oneProc) ++ (procInputs oneProc) ++ (internalState oneProc))))
 
+
 renderClockAndResetIfStatements :: Process -> ProjectParameters -> [String]
 renderClockAndResetIfStatements oneProc projParams
     | ((isClocked oneProc) && ((clkStyle projParams) == RisingEdge) && ((rstStyle projParams) == SyncPositive)) = 
@@ -140,11 +133,70 @@ renderClockAndResetIfStatements oneProc projParams
         [(tab 1) ++ "else"] ++
         []
         
-    
+    | ((isClocked oneProc) && ((clkStyle projParams) == FallingEdge) && ((rstStyle projParams) == SyncPositive)) = 
+        ["if falling_edge(" ++ (nomen (pClk oneProc)) ++ ") then"] ++
+        [(tab 1) ++ "if " ++ (nomen (pRst oneProc)) ++ " = '1' then"] ++
+        (nZipTab 2 (resetEverything oneProc)) ++ 
+        [(tab 1) ++ "else"] ++
+        []
         
+    | ((isClocked oneProc) && ((clkStyle projParams) == RisingEdge) && ((rstStyle projParams) == SyncNegative)) = 
+        ["if rising_edge(" ++ (nomen (pClk oneProc)) ++ ") then"] ++
+        [(tab 1) ++ "if " ++ (nomen (pRst oneProc)) ++ " = '0' then"] ++
+        (nZipTab 2 (resetEverything oneProc)) ++ 
+        [(tab 1) ++ "else"] ++
+        []
+        
+    | ((isClocked oneProc) && ((clkStyle projParams) == FallingEdge) && ((rstStyle projParams) == SyncNegative)) = 
+        ["if falling_edge(" ++ (nomen (pClk oneProc)) ++ ") then"] ++
+        [(tab 1) ++ "if " ++ (nomen (pRst oneProc)) ++ " = '0' then"] ++
+        (nZipTab 2 (resetEverything oneProc)) ++ 
+        [(tab 1) ++ "else"] ++
+        []
+        
+    | ((isClocked oneProc) && ((clkStyle projParams) == RisingEdge) && ((rstStyle projParams) == AsyncPositive)) = 
+        ["if rising_edge(" ++ (nomen (pClk oneProc)) ++ ") then"] ++
+        [(tab 1) ++ "if " ++ (nomen (pRst oneProc)) ++ " = '1' then"] ++
+        (nZipTab 2 (resetEverything oneProc)) ++ 
+        [(tab 1) ++ "else"] ++
+        []
+        
+    | ((isClocked oneProc) && ((clkStyle projParams) == FallingEdge) && ((rstStyle projParams) == AsyncPositive)) = 
+        ["if falling_edge(" ++ (nomen (pClk oneProc)) ++ ") then"] ++
+        [(tab 1) ++ "if " ++ (nomen (pRst oneProc)) ++ " = '1' then"] ++
+        (nZipTab 2 (resetEverything oneProc)) ++ 
+        [(tab 1) ++ "else"] ++
+        []
+        
+    | ((isClocked oneProc) && ((clkStyle projParams) == RisingEdge) && ((rstStyle projParams) == AsyncNegative)) = 
+        ["if rising_edge(" ++ (nomen (pClk oneProc)) ++ ") then"] ++
+        [(tab 1) ++ "if " ++ (nomen (pRst oneProc)) ++ " = '0' then"] ++
+        (nZipTab 2 (resetEverything oneProc)) ++ 
+        [(tab 1) ++ "else"] ++
+        []
+        
+    | ((isClocked oneProc) && ((clkStyle projParams) == FallingEdge) && ((rstStyle projParams) == AsyncNegative)) = 
+        ["if falling_edge(" ++ (nomen (pClk oneProc)) ++ ") then"] ++
+        [(tab 1) ++ "if " ++ (nomen (pRst oneProc)) ++ " = '0' then"] ++
+        (nZipTab 2 (resetEverything oneProc)) ++ 
+        [(tab 1) ++ "else"] ++
+        []
+        
+    | otherwise = ["    -- Process not clocked and/or reset style not relevant."]
+
+
+renderClockAndResetIfStatementFooter :: Process -> ProjectParameters -> [String]
+renderClockAndResetIfStatementFooter oneProc projParams
+    | ((isClocked oneProc) && ((clkStyle projParams) == RisingEdge) && ((rstStyle projParams) == SyncPositive)) = [(tab 1) ++ "end if;", "end if;"]
+    | ((isClocked oneProc) && ((clkStyle projParams) == FallingEdge) && ((rstStyle projParams) == SyncPositive)) = [(tab 1) ++ "end if;", "end if;"]
+    | ((isClocked oneProc) && ((clkStyle projParams) == RisingEdge) && ((rstStyle projParams) == SyncNegative)) = [(tab 1) ++ "end if;", "end if;"]
+    | ((isClocked oneProc) && ((clkStyle projParams) == FallingEdge) && ((rstStyle projParams) == SyncNegative)) = [(tab 1) ++ "end if;", "end if;"]
+    | ((isClocked oneProc) && ((clkStyle projParams) == RisingEdge) && ((rstStyle projParams) == AsyncPositive)) = [(tab 1) ++ "end if;", "end if;"]
+    | ((isClocked oneProc) && ((clkStyle projParams) == FallingEdge) && ((rstStyle projParams) == AsyncPositive)) = [(tab 1) ++ "end if;", "end if;"]
+    | ((isClocked oneProc) && ((clkStyle projParams) == RisingEdge) && ((rstStyle projParams) == AsyncNegative)) = [(tab 1) ++ "end if;", "end if;"]
+    | ((isClocked oneProc) && ((clkStyle projParams) == FallingEdge) && ((rstStyle projParams) == AsyncNegative)) = [(tab 1) ++ "end if;", "end if;"]
     | otherwise = []
-        -- (zZipTab 2 (
-        
+
 
 ------------------------------------------------------------------------------------------------------------------------
 --                                                  Render Process 
@@ -153,7 +205,11 @@ renderProcess :: Process -> ProjectParameters -> [String]
 renderProcess oneProc projParams =
     [renderProcessFirstLine oneProc projParams] ++ 
     ["begin"] ++
-    []
-    
-    
-    
+    (renderClockAndResetIfStatements oneProc projParams) ++ 
+    -- TODO: Render the SequentialCode field in Process.
+    (procPlainLines oneProc) ++ 
+    (renderClockAndResetIfStatementFooter oneProc projParams) ++
+    ["end process;"] ++ 
+    ["", ""]
+
+

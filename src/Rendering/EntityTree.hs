@@ -26,13 +26,38 @@ modEntMatchName s e f
 
 
 ------------------------------------------------------------------------------------------------------------------------
+--                                                 Fetch One Entity 
+--
+-- Returns the first entity that matches by name, or an empty list if no match is found. 
+--
+------------------------------------------------------------------------------------------------------------------------
+fetchOneEntity :: String -> EntityTree -> [Entity]
+fetchOneEntity oneEntNomen (EntityTree oneEntity entList) = 
+    if ((entNomen oneEntity) == oneEntNomen)
+        then [oneEntity]
+        else flattenShallow (map (\x -> fetchOneEntity oneEntNomen x) entList)
+
+
+------------------------------------------------------------------------------------------------------------------------
 --                                        Change One Entity, Matched By Name 
 -- 
 -- Requires a function (typically anonymous, though it does not have to be) with type:
+--
 --      Entity -> Entity
 --
+-- Locates the first entity that matches the name oneEntNomen, and then someFunc modifies that entity in any 
+-- way it wants.
+--
+-- If no match is found, this function searches through the entire entity tree but changes nothing. 
+--
 -----------------------------------------------------------------------------------------------------------------------
+
+-- TODO: Move this function to a different name, say, changeOneEntity'. 
+-- Then change the type of changeOneEntity to an easier to use wrapper. 
+-- For instance, (Entity -> Entity) -> GeneratorState -> GeneratorState, 
+-- and the new function assumes the present entity is the one you want to change.
 changeOneEntity :: String -> EntityTree -> (Entity -> Entity) -> EntityTree
+-- TODO: Eliminate this first branch and verify that it doesn't hurt anything. 
 changeOneEntity oneEntNomen (EntityTree oneEntity []) someFunc = 
     EntityTree 
         (modEntMatchName oneEntNomen oneEntity someFunc) 

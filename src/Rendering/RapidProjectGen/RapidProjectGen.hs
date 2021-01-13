@@ -8,6 +8,8 @@ import Control.Applicative
 import Control.Monad.Identity (Identity)
 import Rendering.Entity
 import Rendering.InfoTypes
+import Rendering.Process
+import Rendering.ProjectParameters
 import Parsing.ParsecExample
 import Control.Monad.State
 import Rendering.ProjectParameters
@@ -73,9 +75,6 @@ data TuiState =
     ,   _commandHistory :: [String]
     ,   _newCommand :: String
     ,   _userHints :: [String]
-
-        -- This provides some space between lists:
-    ,   emptySpace :: [String]
 
         -- This stores the state of the code generator:
     ,   generatorState :: GeneratorState
@@ -148,7 +147,7 @@ signalsToShow = 20
 
 
 renderedLinesToShow :: Int
-renderedLinesToShow = 30
+renderedLinesToShow = 27
 
 
 commandHistoryTraceback :: Int
@@ -166,13 +165,33 @@ buildInitialState =
             ,   _portList = [ctrString "Ports" sideColumn] ++ (take portsToShow blankLines)
             ,   _signalList = [ctrString "Signals" sideColumn] ++ (take signalsToShow blankLines)
             ,   _renderedCode = [ctrString "Rendered VHDL" middleColumn] ++ (take renderedLinesToShow blankLines)
-            ,   _commandHistory = take 10 blankLines
+            ,   _commandHistory = take commandHistoryTraceback blankLines
             ,   _newCommand = cmdArrows 
             ,   _userHints = ["\n"]
-            ,   emptySpace = ["\n"]
             ,   generatorState = defaultGeneratorState
             }
 
+
+
+
+--drawTui :: TuiState -> [Widget ResourceName]
+--drawTui ts = [
+--    vBox [
+--        hBox [
+----                vBox $ concat [map str (drawEntHierarchy ts)]
+--               vBox $ concat [map str (gleanRenderedCode ts)]
+----            ,   vBox $ concat [
+----                            map str (gleanGenerics ts)
+----                        ,   map str (gleanPorts ts)
+----                        ,   map str (gleanSignals ts)
+----                        ]
+--            ]
+----    ,   vBox $ concat [map str (makeVisibleCommandHistory (_commandHistory ts))]
+--    ,   vBox [str (_newCommand ts)]
+--    ,   vBox $ concat [map str (_userHints ts)]
+--    ,   vBox $ concat [map str (displayPresentEnt ts)]
+--    ]
+--    ]
 
 ------------------------------------------------------------------------------------------------------------------------
 --                                           Display Most Recent Commands 
@@ -269,6 +288,9 @@ numSignalsToDisplay :: Int
 numSignalsToDisplay = 18
 
 
+------------------------------------------------------------------------------------------------------------------------
+--                                           Glean Generics from TuiState 
+------------------------------------------------------------------------------------------------------------------------
 gleanGenerics :: TuiState -> [String]
 gleanGenerics ts = 
     take numGenericsToDisplay
@@ -279,6 +301,9 @@ gleanGenerics ts =
         blankLines)
 
 
+------------------------------------------------------------------------------------------------------------------------
+--                                             Glean Ports from TuiState 
+------------------------------------------------------------------------------------------------------------------------
 gleanPorts :: TuiState -> [String]
 gleanPorts ts = 
     take numPortsToDisplay
@@ -289,6 +314,9 @@ gleanPorts ts =
         blankLines)
 
 
+------------------------------------------------------------------------------------------------------------------------
+--                                            Glean Signals from TuiState 
+------------------------------------------------------------------------------------------------------------------------
 gleanSignals :: TuiState -> [String]
 gleanSignals ts = 
     take numSignalsToDisplay
@@ -297,6 +325,29 @@ gleanSignals ts =
             then map showOneInfo (signals (head (getNodesWithName (pEnt ts) (entTree (generatorState ts)))))
             else []) ++
         blankLines)
+
+------------------------------------------------------------------------------------------------------------------------
+--                                         Glean Rendered Code from TuiState 
+------------------------------------------------------------------------------------------------------------------------
+renderedCodeWidth :: Int
+renderedCodeWidth = 75
+
+
+bedOfProcrustes :: String -> String
+bedOfProcrustes s = take renderedCodeWidth (s ++ (repeat ' '))
+
+
+allProcessLines :: Entity -> [String]
+allProcessLines someEnt = flattenShallow (map (\x -> renderProcess x easyProjParams) (processes someEnt))
+
+
+gleanRenderedCode :: TuiState -> [String]
+gleanRenderedCode ts = [titleLine] ++ take renderedLinesToShow perfectLines where
+    oneEntTree = entTree (generatorState ts)
+    oneEnt = head (fetchOneEntity (pEnt ts) oneEntTree)
+    rawLines = (addToVhdBody oneEnt) ++ (allProcessLines oneEnt) ++ blankLines
+    perfectLines = map bedOfProcrustes rawLines
+    titleLine = ctrString "Rendered Code" renderedCodeWidth
 
 
 ------------------------------------------------------------------------------------------------------------------------
@@ -307,7 +358,7 @@ drawTui ts = [
     vBox [
         hBox [
                 vBox $ concat [map str (drawEntHierarchy ts)]
-            ,   vBox $ concat [map str (_renderedCode ts)]
+            ,   vBox $ concat [map str (gleanRenderedCode ts)]
             ,   vBox $ concat [
                             map str (gleanGenerics ts)
                         ,   map str (gleanPorts ts)

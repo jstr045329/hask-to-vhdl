@@ -12,6 +12,7 @@ import Rendering.InterspersedCode
 import Rendering.RapidProjectGen.AppendOneLine
 import Rendering.Process
 import Rendering.Statement
+import Tools.WhiteSpaceTools
 
 
 ------------------------------------------------------------------------------------------------------------------------
@@ -105,12 +106,10 @@ makeOneNewPort oneStr generatorState isInput =
         }
 
 
-------------------------------------------------------------------------------------------------------------------------
---                                      Get Present Entity From Generator State 
-------------------------------------------------------------------------------------------------------------------------
-gPEnt :: GeneratorState -> String
-gPEnt gS = last (pathToPresent gS)
-
+-- Extract VHDL from InterspersedCode:
+retrieveVhd :: InterspersedCode -> [String]
+retrieveVhd (InterspersedCode (VhdLiteral los) _ _) = los
+retrieveVhd _ = []
 
 ------------------------------------------------------------------------------------------------------------------------
 --                                           Update the State of Present Entity
@@ -132,8 +131,11 @@ slurpCommand s gS
         ,   entTree = changeOneEntity 
                         (gPEnt gS) 
                         (entTree gS) 
-                        (\x -> x {processes = (processes x) ++ (processUnderConstruction gS)})
-        ,   processUnderConstruction = []}
+                        (\x -> x {
+                            processes = (processes x) ++ (processUnderConstruction gS)
+                        ,   addToVhdBody = (addToVhdBody x) ++ (flattenShallow (map retrieveVhd (codeLines gS)))
+                        })
+        ,   processUnderConstruction = [defaultProcess]}
 
 
 ------------------------------------------------------------------------------------------------------------------------
@@ -142,9 +144,13 @@ slurpCommand s gS
 -- If the drinkProcess flag is set, treat this line as a sequential statement.
 --
 ------------------------------------------------------------------------------------------------------------------------
-    | (drinkProcess gS) = gS { 
-        processUnderConstruction = [((head (processUnderConstruction gS)) {sequentialCode = (sequentialCode (head (processUnderConstruction gS))) ++ [RawSequentialVhd [s]]})]}
+    | (drinkProcess gS) =  gS { processUnderConstruction = [(head (processUnderConstruction gS)) {procPlainLines = (procPlainLines (head (processUnderConstruction gS))) ++ (nZipTab 2 [s])}]}
 
+-- [((head (processUnderConstruction gS)) {sequentialCode = (sequentialCode (head (processUnderConstruction gS))) ++ [RawSequentialVhd [s]]})]}
+
+-- TODO: Change this line so that new line goes into process.
+
+-- modifyLastProcess (\x -> x { procPlainLines = (procPlainLines x) ++ [s]}) gS
 
 ------------------------------------------------------------------------------------------------------------------------
 --                                              Check If s Is A Command 
@@ -165,9 +171,14 @@ slurpCommand s gS
                     then [defaultNamedProcess ((words s) !! 1)]
                     else [defaultProcess]}
 
+    -- TODO: PICK UP HERE: Write on paper where the lines go as user enters them - both inside & outside process.
+    -- Then figure out how to get those lines on the screen. 
+
+    -- TODO: Make sure that when user types a new entity, rendered code is that of new entity. 
+
 
     -- TODO: Flesh this out
-    | (s == "up") = gS 
+    | (s == "up") = gS { pathToPresent = dropLast (pathToPresent gS)}
 
     -- TODO: Flesh this out
     | (startsWith s "dn ") = gS
