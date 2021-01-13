@@ -32,6 +32,7 @@ data GeneratorState = GeneratorState {
     ,   viewHs :: Bool
     ,   drinkProcess :: Bool
     ,   processUnderConstruction :: [Process]
+    ,   renderedCodeStartLoc :: Int
     } deriving (Eq, Show)
 
 
@@ -58,6 +59,7 @@ defaultGeneratorState = GeneratorState {
     ,   viewHs = False
     ,   drinkProcess = False
     ,   processUnderConstruction = [defaultProcess]
+    ,   renderedCodeStartLoc = 0
     }
 
 

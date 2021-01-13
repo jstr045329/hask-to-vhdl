@@ -342,12 +342,13 @@ allProcessLines someEnt = flattenShallow (map (\x -> renderProcess x easyProjPar
 
 
 gleanRenderedCode :: TuiState -> [String]
-gleanRenderedCode ts = [titleLine] ++ take renderedLinesToShow perfectLines where
+gleanRenderedCode ts = [titleLine] ++ take renderedLinesToShow (skipN perfectLines startLoc) where
     oneEntTree = entTree (generatorState ts)
     oneEnt = head (fetchOneEntity (pEnt ts) oneEntTree)
     rawLines = (addToVhdBody oneEnt) ++ (allProcessLines oneEnt) ++ blankLines
     perfectLines = map bedOfProcrustes rawLines
     titleLine = ctrString "Rendered Code" renderedCodeWidth
+    startLoc = renderedCodeStartLoc (generatorState ts)
 
 
 ------------------------------------------------------------------------------------------------------------------------
@@ -384,6 +385,18 @@ cmdArrows :: String
 cmdArrows = ">>   "
 
 
+incRendCodeStartLoc :: GeneratorState -> GeneratorState
+incRendCodeStartLoc gS 
+    | ((renderedCodeStartLoc gS) < 2147483640) = gS { renderedCodeStartLoc = (renderedCodeStartLoc gS) + 1}
+    | otherwise = gS
+
+
+decRendCodeStartLoc :: GeneratorState -> GeneratorState
+decRendCodeStartLoc gS 
+    | ((renderedCodeStartLoc gS) > 0) = gS { renderedCodeStartLoc = (renderedCodeStartLoc gS) - 1}
+    | otherwise = gS
+
+
 ------------------------------------------------------------------------------------------------------------------------
 --                                                 Handle TUI Events 
 ------------------------------------------------------------------------------------------------------------------------
@@ -415,6 +428,18 @@ handleTuiEvent s e =
             -- TODO: save files
             -- Could be as simple as saving command history
             continue s
+
+        EvKey (KChar 'u') [MCtrl] -> do
+            let s' = s {
+                generatorState = decRendCodeStartLoc (generatorState s) 
+            }
+            continue s'
+
+        EvKey (KChar 'd') [MCtrl] -> do
+            let s' = s {
+                generatorState = incRendCodeStartLoc (generatorState s) 
+            }
+            continue s'
 
         EvKey (KChar c) [] -> do
             let s' = s {
