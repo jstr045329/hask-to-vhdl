@@ -13,6 +13,7 @@ import Rendering.RapidProjectGen.AppendOneLine
 import Rendering.Process
 import Rendering.Statement
 import Tools.WhiteSpaceTools
+import Rendering.RapidProjectGen.DrillDown
 
 
 ------------------------------------------------------------------------------------------------------------------------
@@ -166,13 +167,17 @@ slurpCommand s gS
                     then [defaultNamedProcess ((words s) !! 1)]
                     else [defaultProcess]}
 
+    -- u and up move up 1 layer in hierarchy:
     | (s == "u") = gS { pathToPresent = dropLast (pathToPresent gS)}
     | (s == "up") = gS { pathToPresent = dropLast (pathToPresent gS)}
 
-    -- TODO: PICK UP HERE: Flesh this out
-    -- Parse the name. If match is found, change path to present to work on that entity.
-    | (startsWith s "dn ") = gS
+    -- dn <child_entity_name> moves down to the child entity:
+    | (startsWith s "dn ") = 
+        if ((length (words s)) < 2)
+            then gS
+            else drillDownOneLayer ((words s) !! 1) gS
 
+    -- TODO: PICK UP HERE: Test drilling up & down some more
 
     -- TODO: High Priority, but don't start until dn command is fleshed out:
     -- Parse Vhd literal entries for signal names. 
@@ -186,4 +191,14 @@ slurpCommand s gS
     | otherwise = appendVhd s gS
 
 
+
+
+
+-- 1 module Rendering.RapidProjectGen.DrillDown where
+--   2 import Rendering.RapidProjectGen.GeneratorState
+--   3 import Rendering.Entity
+--   4 import Rendering.EntityTree
+--   5 
+--   6 
+--   7 drillDownOneLayer :: String -> GeneratorState -> GeneratorState
 

@@ -33,6 +33,7 @@ data GeneratorState = GeneratorState {
     ,   drinkProcess :: Bool
     ,   processUnderConstruction :: [Process]
     ,   renderedCodeStartLoc :: Int
+    ,   userMessages :: [(String, Int)]
     } deriving (Eq, Show)
 
 
@@ -60,6 +61,7 @@ defaultGeneratorState = GeneratorState {
     ,   drinkProcess = False
     ,   processUnderConstruction = [defaultProcess]
     ,   renderedCodeStartLoc = 0
+    ,   userMessages = []
     }
 
 
@@ -71,5 +73,30 @@ defaultGeneratorState = GeneratorState {
 ------------------------------------------------------------------------------------------------------------------------
 gPEnt :: GeneratorState -> String
 gPEnt gS = last (pathToPresent gS)
+
+
+------------------------------------------------------------------------------------------------------------------------
+--                                                Purge User Messages 
+--
+-- This function deletes user messages after they age out. 
+--
+------------------------------------------------------------------------------------------------------------------------
+usrMsgAgeLimit :: Int
+usrMsgAgeLimit = 1
+
+
+-- This function increments age of any 
+iterateOverUsrMessages :: [(String, Int)] -> [(String, Int)]
+iterateOverUsrMessages [] = []
+iterateOverUsrMessages someList
+    | (a >= usrMsgAgeLimit) = iterateOverUsrMessages (tail someList) 
+    | otherwise = [(s, a+1)] ++ (iterateOverUsrMessages (tail someList)) where
+        (s, a) = head someList
+
+
+purgeUserMessages :: GeneratorState -> GeneratorState
+purgeUserMessages gS = gS {userMessages = iterateOverUsrMessages (userMessages gS)}
+
+
 
 

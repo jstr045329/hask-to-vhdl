@@ -16,6 +16,10 @@ data EntityTree =
         deriving (Eq, Show)
 
 
+getPresentEntityName :: EntityTree -> String
+getPresentEntityName (EntityTree oneEnt _) = entNomen oneEnt
+
+
 ------------------------------------------------------------------------------------------------------------------------
 --                                       Operate On One Entity If Name Matches 
 ------------------------------------------------------------------------------------------------------------------------
@@ -37,6 +41,11 @@ fetchOneEntity oneEntNomen (EntityTree oneEntity entList) =
         then [oneEntity]
         else flattenShallow (map (\x -> fetchOneEntity oneEntNomen x) entList)
 
+
+fetchOneEntityTree :: String -> EntityTree -> [EntityTree]
+fetchOneEntityTree oneEntNomen (EntityTree oneEntity entList) 
+    | (elem oneEntNomen (map getPresentEntityName entList)) = [x | x <- entList, (getPresentEntityName x) == oneEntNomen]
+    | otherwise = flattenShallow (map (\x -> fetchOneEntityTree oneEntNomen x) entList)
 
 ------------------------------------------------------------------------------------------------------------------------
 --                                        Change One Entity, Matched By Name 
