@@ -177,9 +177,8 @@ slurpCommand s gS
             then gS
             else drillDownOneLayer ((words s) !! 1) gS
 
-    -- TODO: PICK UP HERE: Test drilling up & down some more
 
-    -- TODO: High Priority, but don't start until dn command is fleshed out:
+    -- TODO: 
     -- Parse Vhd literal entries for signal names. 
     -- Anything used as both input and output should be declared a signal. 
     -- When user uses similar names for both input and output, Hs should declare s_ and o_ versions of the same name. 
@@ -190,15 +189,4 @@ slurpCommand s gS
 ------------------------------------------------------------------------------------------------------------------------
     | otherwise = appendVhd s gS
 
-
-
-
-
--- 1 module Rendering.RapidProjectGen.DrillDown where
---   2 import Rendering.RapidProjectGen.GeneratorState
---   3 import Rendering.Entity
---   4 import Rendering.EntityTree
---   5 
---   6 
---   7 drillDownOneLayer :: String -> GeneratorState -> GeneratorState
 

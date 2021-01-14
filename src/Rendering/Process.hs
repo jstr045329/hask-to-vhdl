@@ -121,7 +121,7 @@ renderProcessFirstLine oneProc projParams = (renderProcessHeader oneProc) ++ (re
 --                                       Render Clock and Reset If Statements 
 ------------------------------------------------------------------------------------------------------------------------
 resetEverything :: Process -> [String]
-resetEverything oneProc = (resetBatch (filterUnique ((sensitivityList oneProc) ++ (procInputs oneProc) ++ (internalState oneProc))))
+resetEverything oneProc = (resetBatch (filterUnique (procOutputSignals oneProc)))
 
 
 renderClockAndResetIfStatements :: Process -> ProjectParameters -> [String]
