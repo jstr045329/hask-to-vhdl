@@ -118,14 +118,6 @@ drawEntHierarchy :: TuiState -> [String]
 drawEntHierarchy ts = 
     [ctrString "Entities" sideColumn] ++ (showEntityTree (entTree (generatorState ts)) 0)
 
--- showEntityTree :: EntityTree -> Int -> [String]
-
--- showEntityHierarchy (entTree (generatorState ts)) 0
-
--- showEntityHierarchy :: Entity -> Int -> [String
---     [ctrString "Entities" sideColumn] ++ (showEntityTree (entTree (generatorState ts)) 0)
-
-
 -- TODO: Think about whether to delete EntityTree.
 --      Is it really necessary?
 --      If not, delete the file, and all references to it.
@@ -171,27 +163,6 @@ buildInitialState =
             ,   generatorState = defaultGeneratorState
             }
 
-
-
-
---drawTui :: TuiState -> [Widget ResourceName]
---drawTui ts = [
---    vBox [
---        hBox [
-----                vBox $ concat [map str (drawEntHierarchy ts)]
---               vBox $ concat [map str (gleanRenderedCode ts)]
-----            ,   vBox $ concat [
-----                            map str (gleanGenerics ts)
-----                        ,   map str (gleanPorts ts)
-----                        ,   map str (gleanSignals ts)
-----                        ]
---            ]
-----    ,   vBox $ concat [map str (makeVisibleCommandHistory (_commandHistory ts))]
---    ,   vBox [str (_newCommand ts)]
---    ,   vBox $ concat [map str (_userHints ts)]
---    ,   vBox $ concat [map str (displayPresentEnt ts)]
---    ]
---    ]
 
 ------------------------------------------------------------------------------------------------------------------------
 --                                           Display Most Recent Commands 

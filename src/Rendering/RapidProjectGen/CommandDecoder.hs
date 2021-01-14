@@ -146,11 +146,6 @@ slurpCommand s gS
 ------------------------------------------------------------------------------------------------------------------------
     | (drinkProcess gS) =  gS { processUnderConstruction = [(head (processUnderConstruction gS)) {procPlainLines = (procPlainLines (head (processUnderConstruction gS))) ++ (nZipTab 2 [s])}]}
 
--- [((head (processUnderConstruction gS)) {sequentialCode = (sequentialCode (head (processUnderConstruction gS))) ++ [RawSequentialVhd [s]]})]}
-
--- TODO: Change this line so that new line goes into process.
-
--- modifyLastProcess (\x -> x { procPlainLines = (procPlainLines x) ++ [s]}) gS
 
 ------------------------------------------------------------------------------------------------------------------------
 --                                              Check If s Is A Command 
@@ -171,18 +166,19 @@ slurpCommand s gS
                     then [defaultNamedProcess ((words s) !! 1)]
                     else [defaultProcess]}
 
-    -- TODO: PICK UP HERE: Write on paper where the lines go as user enters them - both inside & outside process.
-    -- Then figure out how to get those lines on the screen. 
-
-    -- TODO: Make sure that when user types a new entity, rendered code is that of new entity. 
-
-
-    -- TODO: Flesh this out
+    | (s == "u") = gS { pathToPresent = dropLast (pathToPresent gS)}
     | (s == "up") = gS { pathToPresent = dropLast (pathToPresent gS)}
 
-    -- TODO: Flesh this out
+    -- TODO: PICK UP HERE: Flesh this out
+    -- Parse the name. If match is found, change path to present to work on that entity.
     | (startsWith s "dn ") = gS
 
+
+    -- TODO: High Priority, but don't start until dn command is fleshed out:
+    -- Parse Vhd literal entries for signal names. 
+    -- Anything used as both input and output should be declared a signal. 
+    -- When user uses similar names for both input and output, Hs should declare s_ and o_ versions of the same name. 
+    -- Anything that is a signal in an above entity should be declared as an input - If the flag enabling that feature is set.
 
 ------------------------------------------------------------------------------------------------------------------------
 --                           If s Is None of The Above, It Must Be A Concurrent Statement 
