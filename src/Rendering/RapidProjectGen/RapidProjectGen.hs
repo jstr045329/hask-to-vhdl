@@ -322,6 +322,9 @@ gleanRenderedCode ts = [titleLine] ++ take renderedLinesToShow (skipN perfectLin
     startLoc = renderedCodeStartLoc (generatorState ts)
 
 
+gleanUserMessages :: TuiState -> [String]
+gleanUserMessages ts = map getOneUserMessage (userMessages (generatorState ts))
+
 ------------------------------------------------------------------------------------------------------------------------
 --                                                     Draw TUI 
 ------------------------------------------------------------------------------------------------------------------------
@@ -339,7 +342,7 @@ drawTui ts = [
             ]
     ,   vBox $ concat [map str (makeVisibleCommandHistory (_commandHistory ts))]
     ,   vBox [str (_newCommand ts)]
-    ,   vBox $ concat [map str (_userHints ts)]
+    ,   vBox $ concat [map str (gleanUserMessages ts)] -- [map str (_userHints ts)]
     ,   vBox $ concat [map str (displayPresentEnt ts)]
     ]
     ]

@@ -85,7 +85,7 @@ usrMsgAgeLimit :: Int
 usrMsgAgeLimit = 1
 
 
--- This function increments age of any 
+-- This function increments age of user messages that haven't aged out yet, and eliminates the ones that have.
 iterateOverUsrMessages :: [(String, Int)] -> [(String, Int)]
 iterateOverUsrMessages [] = []
 iterateOverUsrMessages someList
@@ -98,5 +98,7 @@ purgeUserMessages :: GeneratorState -> GeneratorState
 purgeUserMessages gS = gS {userMessages = iterateOverUsrMessages (userMessages gS)}
 
 
+getOneUserMessage :: (String, Int) -> String
+getOneUserMessage (s, _) = s
 
 

@@ -183,7 +183,26 @@ slurpCommand s gS
     -- Anything used as both input and output should be declared a signal. 
     -- When user uses similar names for both input and output, Hs should declare s_ and o_ versions of the same name. 
     -- Anything that is a signal in an above entity should be declared as an input - If the flag enabling that feature is set.
+    -- Any signal that user uses but never assigns should be declared as an input.
 
+    -- 
+
+    -- TODO: test user messages
+
+    -- TODO: Allow user to turn Info prefixes on & off from TUI.
+    -- User should be able to type:
+    --
+    --          x <= din;
+    --
+    -- and either see that, or:
+    --
+    --          s_x <= i_din;
+    -- ...
+    --          o_x <= s_x;
+    --
+    -- just by changing a command. 
+
+    -- TODO: Allow user to declare constants
 ------------------------------------------------------------------------------------------------------------------------
 --                           If s Is None of The Above, It Must Be A Concurrent Statement 
 ------------------------------------------------------------------------------------------------------------------------
