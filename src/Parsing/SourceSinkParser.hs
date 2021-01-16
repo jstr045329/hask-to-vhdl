@@ -145,6 +145,32 @@ extractSignalsFromString los _ = []
 
 
 ------------------------------------------------------------------------------------------------------------------------
+--                                                  Extract Outputs 
+--
+-- This function isolates Information's that are on the left of the assignment operator. 
+--
+------------------------------------------------------------------------------------------------------------------------
+--stopAtAssignmentOperator :: [String] -> [String]
+--stopAtAssignmentOperator [] = []
+--stopAtAssignmentOperator los
+--    | ((head los) == ":=") = []
+--    | ((head los) == "<=") = []
+--    | otherwise = [head los] ++ (stopAtAssignmentOperator (tail los))
+
+
+noAssignmentOperator :: [String] -> Bool
+noAssignmentOperator [] = True
+noAssignmentOperator los = not ((elem ":=" los) || (elem "<=" los))
+
+
+isolateOutputs :: [String] -> [String]
+isolateOutputs los
+    | ((length los) < 2) = []
+    | (noAssignmentOperator los) = []
+    | otherwise = untilVhdlKeyword (untilVhdlOperator los)
+
+
+------------------------------------------------------------------------------------------------------------------------
 --                                                  Parse One Line 
 --
 -- NOTE: Do NOT use this function on subprograms! unless you're past all function f(x : std_logic...)...begin... 
@@ -178,7 +204,7 @@ parseVhd los pastKeywords
             InfoPack {
                 sigNames = HashSet.fromList (extractSignalsFromString los pastKeywords)
             ,   inputNames = HashSet.fromList []
-            ,   outputNames = HashSet.fromList []
+            ,   outputNames = HashSet.fromList (isolateOutputs los)
             ,   internalState = HashSet.fromList []
             ,   constantNames = HashSet.fromList []
             ,   varNames = HashSet.fromList []

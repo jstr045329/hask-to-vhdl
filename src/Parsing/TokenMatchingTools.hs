@@ -1,4 +1,6 @@
 module Parsing.TokenMatchingTools where
+import Parsing.VhdlKeywords
+import Parsing.GuaranteeWhitespace
 
 
 skipNTokens :: [String] -> Int -> [String]
@@ -77,5 +79,20 @@ afterAnyIncFirst los keywordListList
     | (length (afterKeywordEarlyTerm los (head keywordListList) [";"]) > 0) = 
         (afterKeywordEarlyTerm los (head keywordListList) [";"]) ++ (head keywordListList)
     | otherwise = afterAnyIncFirst los (tail keywordListList)
+
+
+untilVhdlKeyword :: [String] -> [String]
+untilVhdlKeyword [] = []
+untilVhdlKeyword los
+    | (isVhdlKeyword (head los)) = []
+    | otherwise = [head los] ++ (untilVhdlKeyword (tail los))
+
+
+untilVhdlOperator :: [String] -> [String]
+untilVhdlOperator [] = []
+untilVhdlOperator los
+    | (elem (head los) oneCharTokens) = []
+    | (elem (head los) twoCharTokens) = []
+    | otherwise = [head los] ++ (untilVhdlOperator (tail los))
 
 

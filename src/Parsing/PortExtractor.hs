@@ -59,6 +59,15 @@ stopAtClosingParen (x:xs) numOpening numClosing =
                 else [x] ++ stopAtClosingParen xs numOpening numClosing
 
 
+-- Pass in a list of tokens, and this will return the same list up until a 
+-- closing parenthesis has been encountered.
+stopAtOpeningParen :: [String] -> [String]
+stopAtOpeningParen [] = []
+stopAtOpeningParen los
+    | ((head los) == "(") = []
+    | otherwise = [head los] ++ (stopAtOpeningParen (tail los))
+
+
 testTokens :: [String]
 testTokens =   ["entity", "entity_name", "is", 
                 "generic", "(", "width", ":", "integer", ":=", "8", ";",
