@@ -28,11 +28,16 @@
 -- in trying to deduce which names are signals as opposed to constants in this situation.
 --
 ------------------------------------------------------------------------------------------------------------------------
-module Parsing.ScrapeInputs where
+module Parsing.ScrapeInputs (
+    scrapeFormulaInputs
+    ) where
 import Parsing.PortExtractor
 import Parsing.NumberRecognition
+import Parsing.TokenMatchingTools
+import Parsing.VhdlTokens
+import Parsing.VhdlKeywords
+import Tools.ListTools
 
--- TODO: Go through every line, and figure out whether the (length los) > 1 condition needs to be removed.
 
 recurIfMore :: [String] -> [String]
 recurIfMore los
@@ -145,8 +150,11 @@ scrapeFormulaInputs los
     | (((length los) > 1) && ((los !! 1) == "xor")) = [los !! 0, los!! 2] ++ (recurIfMore (tail (tail (tail los))))
 
     -- Scrape Inputs From Infix Operators:
-    | (((length los) > 2) && ((los !! 1) == "<=")) = scrapeFormulaInputs (tail los)
-    | ((los !! 0) == "<=") = recurIfMore los
+    | (((indexOf ";" los 0) > 0) && ((indexOf "<=" los 0) > 0) && ((indexOf ";" los 0) > (indexOf "<=" los 0))) =
+        [x | x <- (untilKeyword (afterKeyword los ["<="]) [";"] []), not (isVhdlKeyword x), not (isVhdlToken x), not (isVhdlNumber x)] ++
+--         ["this POS ran"] ++ 
+        (scrapeFormulaInputs (afterKeyword los [";"]))
+
 
     -- NOTE: Input scraping from port maps not supported at this time.
     -- There is simply no way to do it without a priori knowledge of port direction. 

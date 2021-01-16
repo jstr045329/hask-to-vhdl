@@ -16,6 +16,7 @@ import Parsing.NumberRecognition
 import Parsing.VhdlKeywords
 import Parsing.VhdlTokens
 import Parsing.PortExtractor
+import Parsing.ScrapeInputs
 
 
 data InfoPack = InfoPack {
@@ -203,8 +204,10 @@ parseVhd los pastKeywords
         uniteInfoPacks
             InfoPack {
                 sigNames = HashSet.fromList (extractSignalsFromString los pastKeywords)
-            ,   inputNames = HashSet.fromList []
-            ,   outputNames = HashSet.fromList (isolateOutputs los)
+            ,   inputNames = HashSet.fromList (scrapeFormulaInputs los) 
+            ,   outputNames = 
+                    HashSet.difference (HashSet.fromList (extractSignalsFromString los pastKeywords)) (HashSet.fromList (scrapeFormulaInputs los))
+                    --HashSet.fromList (isolateOutputs los)
             ,   internalState = HashSet.fromList []
             ,   constantNames = HashSet.fromList []
             ,   varNames = HashSet.fromList []

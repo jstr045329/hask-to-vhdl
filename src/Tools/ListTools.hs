@@ -59,3 +59,12 @@ flattenShallow [[]] = []
 flattenShallow [] = []
 flattenShallow listOfLists = (head listOfLists) ++ (flattenShallow (tail listOfLists))
 
+
+-- NOTE: This function uses a C-style -1 to signal that 
+indexOf :: (Eq a) => a -> [a] -> Int -> Int
+indexOf x [] _ = -1
+indexOf x someList n
+    | x == (head someList) = n
+    | otherwise = indexOf x (tail someList) (n+1)
+
+
