@@ -152,7 +152,10 @@ scrapeFormulaInputs los
     -- Scrape Inputs From Infix Operators:
     | (((indexOf ";" los 0) > 0) && ((indexOf "<=" los 0) > 0) && ((indexOf ";" los 0) > (indexOf "<=" los 0))) =
         [x | x <- (untilKeyword (afterKeyword los ["<="]) [";"] []), not (isVhdlKeyword x), not (isVhdlToken x), not (isVhdlNumber x)] ++
---         ["this POS ran"] ++ 
+        (scrapeFormulaInputs (afterKeyword los [";"]))
+
+    | (((indexOf ";" los 0) > 0) && ((indexOf ":=" los 0) > 0) && ((indexOf ";" los 0) > (indexOf ":=" los 0))) =
+        [x | x <- (untilKeyword (afterKeyword los [":="]) [";"] []), not (isVhdlKeyword x), not (isVhdlToken x), not (isVhdlNumber x)] ++
         (scrapeFormulaInputs (afterKeyword los [";"]))
 
 
@@ -190,5 +193,5 @@ scrapeFormulaInputs los
     | (isVhdlNumber (head los)) = scrapeFormulaInputs (tail los)
 
     -- If a string made it this far, include it!
-    | otherwise = [head los] ++ scrapeFormulaInputs (tail los)
+    | otherwise = [x | x <- [head los] ++ scrapeFormulaInputs (tail los), not (isVhdlNumber x), not (isVhdlToken x), not (isVhdlKeyword x)]
 

@@ -203,12 +203,17 @@ parseVhd los pastKeywords
     | otherwise = 
         uniteInfoPacks
             InfoPack {
+                -- NOTE: Everything in sigNames should have a name similar to a signal name, but sigNames does not
+                -- by itself tell you what all your signal names should be. Additional algos are required to decide
+                -- which names in sigNames should be declared directly as a signal, if any; which names need both 
+                -- a signal variant and an output variant; and whether sigNames should be /= internalState.
                 sigNames = HashSet.fromList (extractSignalsFromString los pastKeywords)
             ,   inputNames = HashSet.fromList (scrapeFormulaInputs los) 
             ,   outputNames = 
                     HashSet.difference (HashSet.fromList (extractSignalsFromString los pastKeywords)) (HashSet.fromList (scrapeFormulaInputs los))
-                    --HashSet.fromList (isolateOutputs los)
-            ,   internalState = HashSet.fromList []
+
+                -- NOTE: Right now, internalState == sigNames. At some point it may be beneficial to make a distinction between the two. 
+            ,   internalState = HashSet.fromList (extractSignalsFromString los pastKeywords)
             ,   constantNames = HashSet.fromList []
             ,   varNames = HashSet.fromList []
             }

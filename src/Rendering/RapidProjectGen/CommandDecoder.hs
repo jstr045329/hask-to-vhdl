@@ -177,15 +177,13 @@ slurpCommand s gS
             then gS
             else drillDownOneLayer ((words s) !! 1) gS
 
+    -- TODO: PICK UP HERE: Call parseVhd :: [String] -> InputParsingKeywords -> InfoPack
+    -- from SourceSinkParser
 
     -- TODO: 
-    -- Parse Vhd literal entries for signal names. 
-    -- Anything used as both input and output should be declared a signal. 
     -- When user uses similar names for both input and output, Hs should declare s_ and o_ versions of the same name. 
     -- Anything that is a signal in an above entity should be declared as an input - If the flag enabling that feature is set.
     -- Any signal that user uses but never assigns should be declared as an input.
-
-    -- 
 
     -- TODO: test user messages
 
