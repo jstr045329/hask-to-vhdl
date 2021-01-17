@@ -29,7 +29,8 @@ import Parsing.VhdlTokens
 import Parsing.PortExtractor
 import Parsing.ScrapeInputs
 import Parsing.InputParsingKeywords
-
+-- import Parsing.LocateOutputs
+import Parsing.ScrapeOutputs
 
 data InfoPack = InfoPack {
         sigNames :: HashSet.HashSet String
@@ -185,16 +186,19 @@ parseVhd los pastKeywords
                 -- by itself tell you what all your signal names should be. Additional algos are required to decide
                 -- which names in sigNames should be declared directly as a signal, if any; which names need both 
                 -- a signal variant and an output variant; and whether sigNames should be /= internalState.
-                sigNames = HashSet.fromList (extractSignalsFromString los pastKeywords)
+                sigNames = HashSet.union
+                    (HashSet.fromList (scrapeFormulaInputs los))
+                    (HashSet.fromList (scrapeFormulaOutputs los))
             ,   inputNames = HashSet.fromList (scrapeFormulaInputs los) 
 
                 -- TODO: Instead of subtracting inputs from signals, parse for outputs directly. 
                 -- Then construct internal state as the intersection of inputs and outputs. 
-            ,   outputNames = 
-                    HashSet.difference (HashSet.fromList (extractSignalsFromString los pastKeywords)) (HashSet.fromList (scrapeFormulaInputs los))
+            ,   outputNames = HashSet.fromList (scrapeFormulaOutputs los)
+--                    HashSet.difference (HashSet.fromList (extractSignalsFromString los pastKeywords)) (HashSet.fromList (scrapeFormulaInputs los))
 
-                -- NOTE: Right now, internalState == sigNames. At some point it may be beneficial to make a distinction between the two. 
-            ,   internalState = HashSet.fromList (extractSignalsFromString los pastKeywords)
+            ,   internalState = HashSet.intersection 
+                    (HashSet.fromList (scrapeFormulaInputs los))
+                    (HashSet.fromList (scrapeFormulaOutputs los))
             ,   constantNames = HashSet.fromList []
             ,   varNames = HashSet.fromList []
             }

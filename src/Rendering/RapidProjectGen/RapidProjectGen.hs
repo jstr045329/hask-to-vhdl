@@ -312,25 +312,6 @@ gleanPorts ts =
         blankLines) where
             myInformations = (extractParsedInputs ts) ++ (extractParsedOutputs ts)
 
---        gS = generatorState ts
---        myEntList = fetchOneEntity (gPEnt gS) (entTree gS) 
---        myInputPorts = map (\oneInfoName -> easyInSl oneInfoName []) (HashSet.toList (inputNames (parsedNames (head myEntList))))
---        myOutputPorts = map (\oneInfoName -> easyOutSl oneInfoName []) (HashSet.toList (outputNames (parsedNames (head myEntList))))
---        myInformations = myInputPorts ++ myOutputPorts
---        myInfoStrings = map showOneInfo myInformations
-
-
-
-    
-
--- :t inputNames
---      InfoPack -> unordered-containers-0.2.10.0:Data.HashSet.Base.HashSet String
-
--- easyInSl :: String -> [String] -> Information
-
--- fetchOneEntity :: String -> EntityTree -> [Entity]
-
--- TODO: PICK UP HERE: Extract parsedNames from gS, and convert to lines here
 
 ------------------------------------------------------------------------------------------------------------------------
 --                                            Glean Signals from TuiState 

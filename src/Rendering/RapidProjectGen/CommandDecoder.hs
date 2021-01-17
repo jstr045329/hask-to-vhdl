@@ -196,19 +196,6 @@ slurpCommand s gS
         myVhdLines = (addToVhdBody myEntity) ++ [s]
 
 
--- fetchOneEntity :: String -> EntityTree -> [Entity]
--- 153 parseVhd :: [String] -> InputParsingKeywords
-
-
---  25 appendVhd :: String -> GeneratorState -> GeneratorState
---  26 appendVhd s gS = gS { entTree = changeOneEntity (gPEnt gS) (entTree gS) (\x -> x { addToVhdBody = (addToVhdBody x) ++ [s]})}
- 
--- changePresentEntity :: (Entity -> Entity) -> GeneratorState -> GeneratorState 
-
-
-
-
--- 45 fetchOneEntityTree :: String -> EntityTree -> [EntityTree]
 
 
 
@@ -236,11 +223,9 @@ slurpCommand s gS
 
 
 
-
-
-
-
-
+    -- TODO: PICK UP HERE: Route signal names to TUI.
+    -- When printing In & Out names to TUI, first check if a name is in signals before printing to screen. 
+    -- Write functions that perform this check, so that identical results can be used to write a file later.
 
 
     -- TODO: 
