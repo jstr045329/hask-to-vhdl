@@ -37,20 +37,52 @@ import Parsing.TokenMatchingTools
 import Parsing.VhdlTokens
 import Parsing.VhdlKeywords
 import Tools.ListTools
+import Parsing.VhdlTokensToRemove
 
 
+------------------------------------------------------------------------------------------------------------------------
+--                             Bite Off Tokens Before Closing Parenthesis, Remove Tokens 
+------------------------------------------------------------------------------------------------------------------------
+untilClosingParenRemoveTokens :: [String] -> [String]
+untilClosingParenRemoveTokens los = [x | x <- (untilClosingParen (tail los) 0), not (isVhdlKeyword x), not (isVhdlToken x), not (isVhdlNumber x)]
+
+
+------------------------------------------------------------------------------------------------------------------------
+--                               Bite Off One Token To The Left, And One To The Right 
+--
+-- Useful for infix operators. TODO: Replace this with something that can look ahead through arbitrary nesting of 
+-- parentheses and bite off until the next keyword or semicolon. 
+--
+------------------------------------------------------------------------------------------------------------------------
+oneToTheLeftOneToTheRight :: [String] -> [String]
+oneToTheLeftOneToTheRight los = [los !! 0, los!! 2] ++ (recurIfMore (tail (tail (tail los))))
+
+
+------------------------------------------------------------------------------------------------------------------------
+--                                      Recur If List Of Strings Is Long Enough 
+--
+-- There is probably a way to eliminate this function. 
+--
+------------------------------------------------------------------------------------------------------------------------
 recurIfMore :: [String] -> [String]
 recurIfMore los
     | ((length los) < 2) = []
-    | otherwise = scrapeFormulaInputs (tail los)
+    | otherwise = scrapeFormulaInputsBrains (tail los)
 
 
-scrapeFormulaInputs :: [String] -> [String]
-scrapeFormulaInputs [] = []
-scrapeFormulaInputs los
+------------------------------------------------------------------------------------------------------------------------
+--                                                  Brain Function 
+--
+-- This helper function does the heavy lifting and the recursion. Don't call this though. Call the non-brain version 
+-- at the bottom. 
+--
+------------------------------------------------------------------------------------------------------------------------
+scrapeFormulaInputsBrains :: [String] -> [String]
+scrapeFormulaInputsBrains [] = []
+scrapeFormulaInputsBrains los
     | ((length los) < 1) = []
-    | ((head los) == "(") = scrapeFormulaInputs (tail los)
-    | ((head los) == ")") = scrapeFormulaInputs (tail los)
+    | ((head los) == "(") = scrapeFormulaInputsBrains (tail los)
+    | ((head los) == ")") = scrapeFormulaInputsBrains (tail los)
 
     -- Skeleton from py script starts here:
     | (((length los) > 3) && ((los !! 0) == "abs")) = stopAtClosingParen los 0 0
@@ -74,8 +106,8 @@ scrapeFormulaInputs los
     | ((los !! 0) == "constant") = []
     | ((los !! 0) == "disconnect") = []
     | ((los !! 0) == "downto") = [] -- Technically, an input could drive a downto, but we do not support that at this ime. 
-    | (((length los) > 1) && ((los !! 0) == "else")) = scrapeFormulaInputs (tail los)
-    | (((length los) > 1) && ((los !! 0) == "elsif")) = scrapeFormulaInputs (tail los)
+    | (((length los) > 1) && ((los !! 0) == "else")) = scrapeFormulaInputsBrains (tail los)
+    | (((length los) > 1) && ((los !! 0) == "elsif")) = scrapeFormulaInputsBrains (tail los)
     | ((los !! 0) == "end") = []
     | ((los !! 0) == "entity") = []
     | ((los !! 0) == "exit") = []
@@ -86,7 +118,7 @@ scrapeFormulaInputs los
     | ((los !! 0) == "generic") = []
     | ((los !! 0) == "group") = []
     | ((los !! 0) == "guarded") = []
-    | (((length los) > 1) && ((los !! 0) == "if")) = scrapeFormulaInputs (tail los)
+    | (((length los) > 1) && ((los !! 0) == "if")) = scrapeFormulaInputsBrains (tail los)
     | ((los !! 0) == "impure") = []
     | ((los !! 0) == "in") = []
     | ((los !! 0) == "inertial") = []
@@ -98,12 +130,12 @@ scrapeFormulaInputs los
     | ((los !! 0) == "literal") = []
     | ((los !! 0) == "loop") = []
     | ((los !! 0) == "map") = []
-    | (((length los) > 1) && ((los !! 0) == "mod")) = scrapeFormulaInputs (tail los)
+    | (((length los) > 1) && ((los !! 0) == "mod")) = scrapeFormulaInputsBrains (tail los)
     | (((length los) > 1) && ((los !! 0) == "nand")) = [los !! 0, los!! 2] ++ (recurIfMore (tail (tail (tail los))))
     | ((los !! 0) == "new") = []
     | ((los !! 0) == "next") = []
     | (((length los) > 1) && ((los !! 0) == "nor")) = [los !! 0, los!! 2] ++ (recurIfMore (tail (tail (tail los))))
-    | (((length los) > 1) && ((los !! 0) == "not")) = scrapeFormulaInputs (tail los)
+    | (((length los) > 1) && ((los !! 0) == "not")) = scrapeFormulaInputsBrains (tail los)
     | ((los !! 0) == "null") = []
     | ((los !! 0) == "of") = []
     | ((los !! 0) == "on") = []
@@ -115,23 +147,23 @@ scrapeFormulaInputs los
     | ((los !! 0) == "port") = []
     | ((los !! 0) == "postponed") = []
     | ((los !! 0) == "procedure") = []
-    | (((length los) > 1) && ((los !! 0) == "process")) = scrapeFormulaInputs (tail los)
+    | (((length los) > 1) && ((los !! 0) == "process")) = scrapeFormulaInputsBrains (tail los)
     | ((los !! 0) == "pure") = []
     | ((los !! 0) == "range") = []
     | ((los !! 0) == "record") = []
     | ((los !! 0) == "register") = []
     | ((los !! 0) == "reject") = []
     | ((los !! 0) == "return") = []
-    | (((length los) > 1) && ((los !! 1) == "rol")) = [head los] ++ scrapeFormulaInputs (tail (tail los))
-    | (((length los) > 1) && ((los !! 1) == "ror")) = [head los] ++ scrapeFormulaInputs (tail (tail los))
+    | (((length los) > 1) && ((los !! 1) == "rol")) = [head los] ++ scrapeFormulaInputsBrains (tail (tail los))
+    | (((length los) > 1) && ((los !! 1) == "ror")) = [head los] ++ scrapeFormulaInputsBrains (tail (tail los))
     | ((los !! 0) == "select") = []
     | ((los !! 0) == "severity") = []
     | ((los !! 0) == "signal") = []
     | ((los !! 0) == "shared") = []
-    | (((length los) > 1) && ((los !! 1) == "sla")) = [head los] ++ scrapeFormulaInputs (tail (tail los))
-    | (((length los) > 1) && ((los !! 1) == "sli")) = [head los] ++ scrapeFormulaInputs (tail (tail los))
-    | (((length los) > 1) && ((los !! 1) == "sra")) = [head los] ++ scrapeFormulaInputs (tail (tail los))
-    | (((length los) > 1) && ((los !! 1) == "srl")) = [head los] ++ scrapeFormulaInputs (tail (tail los))
+    | (((length los) > 1) && ((los !! 1) == "sla")) = [head los] ++ scrapeFormulaInputsBrains (tail (tail los))
+    | (((length los) > 1) && ((los !! 1) == "sli")) = [head los] ++ scrapeFormulaInputsBrains (tail (tail los))
+    | (((length los) > 1) && ((los !! 1) == "sra")) = [head los] ++ scrapeFormulaInputsBrains (tail (tail los))
+    | (((length los) > 1) && ((los !! 1) == "srl")) = [head los] ++ scrapeFormulaInputsBrains (tail (tail los))
     | ((los !! 0) == "subtype") = []
     | ((los !! 0) == "then") = []
     | ((los !! 0) == "to") = [] -- Technically an input could drive this, but that is not supported presently. 
@@ -149,21 +181,20 @@ scrapeFormulaInputs los
     | (((length los) > 1) && ((los !! 1) == "xnor")) = [los !! 0, los!! 2] ++ (recurIfMore (tail (tail (tail los))))
     | (((length los) > 1) && ((los !! 1) == "xor")) = [los !! 0, los!! 2] ++ (recurIfMore (tail (tail (tail los))))
 
-    -- Scrape Inputs From Infix Operators:
+    -- Scrape Inputs From Assignment Operators:
     | (((indexOf ";" los 0) > 0) && ((indexOf "<=" los 0) > 0) && ((indexOf ";" los 0) > (indexOf "<=" los 0))) =
         [x | x <- (untilKeyword (afterKeyword los ["<="]) [";"] []), not (isVhdlKeyword x), not (isVhdlToken x), not (isVhdlNumber x)] ++
-        (scrapeFormulaInputs (afterKeyword los [";"]))
+        (scrapeFormulaInputsBrains (afterKeyword los [";"]))
 
     | (((indexOf ";" los 0) > 0) && ((indexOf ":=" los 0) > 0) && ((indexOf ";" los 0) > (indexOf ":=" los 0))) =
         [x | x <- (untilKeyword (afterKeyword los [":="]) [";"] []), not (isVhdlKeyword x), not (isVhdlToken x), not (isVhdlNumber x)] ++
-        (scrapeFormulaInputs (afterKeyword los [";"]))
+        (scrapeFormulaInputsBrains (afterKeyword los [";"]))
 
 
     -- NOTE: Input scraping from port maps not supported at this time.
     -- There is simply no way to do it without a priori knowledge of port direction. 
     | ((los !! 0) == "=>") = [] 
-    | ((los !! 0) == ":=") = scrapeFormulaInputs (tail los)
-    | ((los !! 0) == "/=") = scrapeFormulaInputs (tail los)
+    | ((los !! 0) == "/=") = scrapeFormulaInputsBrains (tail los)
 
     -- NOTE: Comments should be impossible after operator input is tokenized. 
     -- That is why this branch is commented out. 
@@ -174,24 +205,67 @@ scrapeFormulaInputs los
     -- in a moment of weakness, might flirt with thoughts of transgression:
     -- | (((length los) > 1) && ((los !! 0) == "--")) = []
 
-    | ((los !! 0) == "**") = scrapeFormulaInputs (tail los)
-    | ((los !! 0) == "=") = scrapeFormulaInputs (tail los)
-    | ((los !! 0) == "<") = scrapeFormulaInputs (tail los)
-    | ((los !! 0) == ">") = scrapeFormulaInputs (tail los)
-    | ((los !! 0) == "(") = scrapeFormulaInputs (tail los)
-    | ((los !! 0) == ")") = scrapeFormulaInputs (tail los)
-    | ((los !! 0) == "+") = scrapeFormulaInputs (tail los)
-    | ((los !! 0) == "-") = scrapeFormulaInputs (tail los)
-    | ((los !! 0) == "*") = scrapeFormulaInputs (tail los)
-    | ((los !! 0) == "/") = scrapeFormulaInputs (tail los)
+    | ((los !! 0) == "**") = scrapeFormulaInputsBrains (tail los)
+    | ((los !! 0) == "=") = scrapeFormulaInputsBrains (tail los)
+    | ((los !! 0) == "<") = scrapeFormulaInputsBrains (tail los)
+    | ((los !! 0) == ">") = scrapeFormulaInputsBrains (tail los)
+    | ((los !! 0) == ">=") = scrapeFormulaInputsBrains (tail los)
+    
+    | ((los !! 0) == "(") = scrapeFormulaInputsBrains (tail los)
+    | ((los !! 0) == ")") = scrapeFormulaInputsBrains (tail los)
+    | ((los !! 0) == "+") = scrapeFormulaInputsBrains (tail los)
+    | ((los !! 0) == "-") = scrapeFormulaInputsBrains (tail los)
+    | ((los !! 0) == "*") = scrapeFormulaInputsBrains (tail los)
+    | ((los !! 0) == "/") = scrapeFormulaInputsBrains (tail los)
     | ((los !! 0) == ",") = []
     | ((los !! 0) == ":") = []
     | ((los !! 0) == ";") = []
 
-    -- TODO: Add common functions (to_signed, to_integer, etc.) to Py script, generate skeleton & flesh out. 
+    -- Functions & operators defined in IEEE.NUMERIC_STD:
+    | (((length los) > 1) && ((los !! 0) == "abs")) = untilClosingParenRemoveTokens los
+    | (((length los) > 1) && ((los !! 0) == "rem")) = oneToTheLeftOneToTheRight los
+    | (((length los) > 1) && ((los !! 0) == "mod")) = oneToTheLeftOneToTheRight los
 
-    | (isVhdlNumber (head los)) = scrapeFormulaInputs (tail los)
+    -- TODO: Add support for less than operator. This function has to figure out whether it's being used as less than or assignment.     
+    -- | (((length los) > 1) && ((los !! 0) == "<=")) = []
+    | (((length los) > 1) && ((los !! 0) == ">=")) = oneToTheLeftOneToTheRight los
+    | (((length los) > 1) && ((los !! 0) == "shift_left")) = untilClosingParenRemoveTokens los
+    | (((length los) > 1) && ((los !! 0) == "shift_right")) = untilClosingParenRemoveTokens los
+    | (((length los) > 1) && ((los !! 0) == "rotate_left")) = untilClosingParenRemoveTokens los
+    | (((length los) > 1) && ((los !! 0) == "rotate_right")) = untilClosingParenRemoveTokens los
+    | (((length los) > 1) && ((los !! 0) == "sll")) = untilClosingParenRemoveTokens los
+    | (((length los) > 1) && ((los !! 0) == "srl")) = untilClosingParenRemoveTokens los
+    | (((length los) > 1) && ((los !! 0) == "resize")) = untilClosingParenRemoveTokens los
+    | (((length los) > 1) && ((los !! 0) == "to_integer")) = untilClosingParenRemoveTokens los
+    | (((length los) > 1) && ((los !! 0) == "to_signed")) = untilClosingParenRemoveTokens los
+    | (((length los) > 1) && ((los !! 0) == "to_unsigned")) = untilClosingParenRemoveTokens los
+    | (((length los) > 1) && ((los !! 0) == "std_match")) = untilClosingParenRemoveTokens los
+    | (((length los) > 1) && ((los !! 0) == "unsigned")) = untilClosingParenRemoveTokens los
+    | (((length los) > 1) && ((los !! 0) == "signed")) = untilClosingParenRemoveTokens los
+
+    -- TODO: Take every keyword that involves some kind of a length requirement, and filter those out of the results. 
+    | (isVhdlNumber (head los)) = scrapeFormulaInputsBrains (tail los)
 
     -- If a string made it this far, include it!
-    | otherwise = [x | x <- [head los] ++ scrapeFormulaInputs (tail los), not (isVhdlNumber x), not (isVhdlToken x), not (isVhdlKeyword x)]
+    -- | otherwise = [x | x <- [head los] ++ scrapeFormulaInputsBrains (tail los), not (isVhdlNumber x), not (isVhdlToken x), not (isVhdlKeyword x)]
+    | otherwise = [head los] ++ (scrapeFormulaInputsBrains (tail los))
+
+
+------------------------------------------------------------------------------------------------------------------------
+--                                       The Function You Actually Want To Use 
+--
+-- This function is a handy wrapper for the monstrosity above. 
+--
+-- Filters out reserved words. We don't do that during the recursive part because that increases the order of the 
+-- polynomial. 
+--
+-- The Brains version (above) will, in many places, only latch onto a keyword if the list of strings is longer than 
+-- some minimum. In some places it's 1, but in some places it's higher. Anywho, we filter keywords out at the end 
+-- in case some reserved word manages to sneak into the results. This is kinda like Bill & Hillary keeping Monica quiet,
+-- but more effective.
+-- 
+------------------------------------------------------------------------------------------------------------------------
+scrapeFormulaInputs :: [String] -> [String]
+scrapeFormulaInputs los = [x | x <- (scrapeFormulaInputsBrains los), not (isTokenToRemove x), not (isVhdlNumber x), not (isVhdlToken x), not (isVhdlKeyword x)] 
+
 

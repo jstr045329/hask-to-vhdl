@@ -7,7 +7,12 @@
 -- For this module, synthesizable code is always the first priority. 
 --
 ------------------------------------------------------------------------------------------------------------------------
-module Parsing.SourceSinkParser where
+module Parsing.SourceSinkParser (
+        InfoPack
+    ,   uniteInfoPacks
+    ,   blankInfoPack
+    ,   parseVhd
+    ) where
 import Rendering.InfoTypes
 import Parsing.TokenMatchingTools
 import qualified Data.HashSet as HashSet
@@ -17,6 +22,7 @@ import Parsing.VhdlKeywords
 import Parsing.VhdlTokens
 import Parsing.PortExtractor
 import Parsing.ScrapeInputs
+import Parsing.InputParsingKeywords
 
 
 data InfoPack = InfoPack {
@@ -49,32 +55,6 @@ blankInfoPack = InfoPack {
     ,   constantNames = HashSet.fromList []
     ,   varNames = HashSet.fromList []
     }
-
-
-------------------------------------------------------------------------------------------------------------------------
---                                   Represent Keywords Relevant To Input Parsing 
---
--- This type represents keywords that must be understood in order to scan a list of strings for inputs. 
--- This type intentionally does not represent keywords such as "begin", "end function", or other keywords
--- that are irrelevant to locating inputs.
---
-------------------------------------------------------------------------------------------------------------------------
-data InputParsingKeywords = 
-        IP_If InputParsingKeywords
-    |   IP_Case InputParsingKeywords
-    |   IP_Elsif InputParsingKeywords
-    |   IP_OpenParen InputParsingKeywords
-    |   IP_CloseParen InputParsingKeywords
-    |   IP_Abs InputParsingKeywords
-    |   IP_Downto InputParsingKeywords
-    |   IP_To InputParsingKeywords
-    |   IP_For InputParsingKeywords
-    |   IP_Loop InputParsingKeywords
-    |   IP_Generate InputParsingKeywords
-    |   IP_Integer InputParsingKeywords
-    |   IP_ToInteger InputParsingKeywords
-    |   IP_NoKeyword -- Need something to show bottom of stack. 
-    deriving (Eq, Show)
 
 
 ------------------------------------------------------------------------------------------------------------------------
@@ -151,24 +131,16 @@ extractSignalsFromString los _ = []
 -- This function isolates Information's that are on the left of the assignment operator. 
 --
 ------------------------------------------------------------------------------------------------------------------------
---stopAtAssignmentOperator :: [String] -> [String]
---stopAtAssignmentOperator [] = []
---stopAtAssignmentOperator los
---    | ((head los) == ":=") = []
---    | ((head los) == "<=") = []
---    | otherwise = [head los] ++ (stopAtAssignmentOperator (tail los))
+--noAssignmentOperator :: [String] -> Bool
+--noAssignmentOperator [] = True
+--noAssignmentOperator los = not ((elem ":=" los) || (elem "<=" los))
 
 
-noAssignmentOperator :: [String] -> Bool
-noAssignmentOperator [] = True
-noAssignmentOperator los = not ((elem ":=" los) || (elem "<=" los))
-
-
-isolateOutputs :: [String] -> [String]
-isolateOutputs los
-    | ((length los) < 2) = []
-    | (noAssignmentOperator los) = []
-    | otherwise = untilVhdlKeyword (untilVhdlOperator los)
+--isolateOutputs :: [String] -> [String]
+--isolateOutputs los
+--    | ((length los) < 2) = []
+--    | (noAssignmentOperator los) = []
+--    | otherwise = untilVhdlKeyword (untilVhdlOperator los)
 
 
 ------------------------------------------------------------------------------------------------------------------------
@@ -209,6 +181,9 @@ parseVhd los pastKeywords
                 -- a signal variant and an output variant; and whether sigNames should be /= internalState.
                 sigNames = HashSet.fromList (extractSignalsFromString los pastKeywords)
             ,   inputNames = HashSet.fromList (scrapeFormulaInputs los) 
+
+                -- TODO: Instead of subtracting inputs from signals, parse for outputs directly. 
+                -- Then construct internal state as the intersection of inputs and outputs. 
             ,   outputNames = 
                     HashSet.difference (HashSet.fromList (extractSignalsFromString los pastKeywords)) (HashSet.fromList (scrapeFormulaInputs los))
 
@@ -218,7 +193,5 @@ parseVhd los pastKeywords
             ,   varNames = HashSet.fromList []
             }
             (parseVhd (tail los) pastKeywords)
-
-
 
 

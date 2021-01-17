@@ -14,6 +14,9 @@ import Rendering.Process
 import Rendering.Statement
 import Tools.WhiteSpaceTools
 import Rendering.RapidProjectGen.DrillDown
+import Parsing.SourceSinkParser
+import Parsing.InputParsingKeywords
+import Data.List
 
 
 ------------------------------------------------------------------------------------------------------------------------
@@ -177,13 +180,35 @@ slurpCommand s gS
             then gS
             else drillDownOneLayer ((words s) !! 1) gS
 
-    -- TODO: PICK UP HERE: Call parseVhd :: [String] -> InputParsingKeywords -> InfoPack
-    -- from SourceSinkParser
+------------------------------------------------------------------------------------------------------------------------
+--                           If s Is None of The Above, It Must Be A Concurrent Statement 
+------------------------------------------------------------------------------------------------------------------------
+    | otherwise = (appendVhd s gS) { presentInfoPack = parseVhd myListOfStrings IP_NoKeyword } where
+
+        myEntity = fetchOneEntity (gPEnt gS) (entTree gS) 
+        bigString = 
+            if ((length myEntity) == 0)
+                then []
+                else intercalate " " (addToVhdBody (head myEntity))
+        myListOfStrings = 
+            if ((length myEntity) == 0)
+                then []
+                else tokenize [bigString]
+
+    -- fetchOneEntity :: String -> EntityTree -> [Entity]
+
+    -- parseVhd :: [String] -> InputParsingKeywords -> InfoPack
+
+
 
     -- TODO: 
     -- When user uses similar names for both input and output, Hs should declare s_ and o_ versions of the same name. 
     -- Anything that is a signal in an above entity should be declared as an input - If the flag enabling that feature is set.
     -- Any signal that user uses but never assigns should be declared as an input.
+
+    -- TODO: Send user a message when all inputs to an entity have a signal (or input) with a similar name in the 
+    -- parent entity. Say, "Perfect Input Subset". That way, user instantly knows when all information going into a module
+    -- has been created.
 
     -- TODO: test user messages
 
@@ -201,9 +226,4 @@ slurpCommand s gS
     -- just by changing a command. 
 
     -- TODO: Allow user to declare constants
-------------------------------------------------------------------------------------------------------------------------
---                           If s Is None of The Above, It Must Be A Concurrent Statement 
-------------------------------------------------------------------------------------------------------------------------
-    | otherwise = appendVhd s gS
-
 

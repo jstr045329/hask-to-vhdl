@@ -284,6 +284,7 @@ gleanPorts ts =
             else []) ++
         blankLines)
 
+-- TODO: PICK UP HERE: Extract presentInfoPack from gS, and convert to lines here
 
 ------------------------------------------------------------------------------------------------------------------------
 --                                            Glean Signals from TuiState 

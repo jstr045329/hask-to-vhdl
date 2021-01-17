@@ -8,6 +8,7 @@ import Rendering.ProjectParameters
 import Rendering.EntityTree
 import Rendering.InterspersedCode
 import Rendering.Process
+import Parsing.SourceSinkParser
 
 
 ------------------------------------------------------------------------------------------------------------------------
@@ -34,6 +35,7 @@ data GeneratorState = GeneratorState {
     ,   processUnderConstruction :: [Process]
     ,   renderedCodeStartLoc :: Int
     ,   userMessages :: [(String, Int)]
+    ,   presentInfoPack :: InfoPack
     } deriving (Eq, Show)
 
 
@@ -62,6 +64,7 @@ defaultGeneratorState = GeneratorState {
     ,   processUnderConstruction = [defaultProcess]
     ,   renderedCodeStartLoc = 0
     ,   userMessages = []
+    ,   presentInfoPack = blankInfoPack
     }
 
 

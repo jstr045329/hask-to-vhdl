@@ -1,3 +1,5 @@
+"""This script generates skeleton code for ScrapeInputs.hs"""
+
 VHDL_KEYWORDS = [
         "abs"
     ,   "access"
@@ -117,19 +119,21 @@ VHDL_OPERATORS = [
     , ";" 
     ]  
 
+
 if __name__ == "__main__":
+    from NumericStd import NUMERIC_STD_FUNCTIONS
     def tab(n=1):
         return "    " * n
 
-    for s in VHDL_KEYWORDS + VHDL_OPERATORS:
+    for s in VHDL_KEYWORDS + VHDL_OPERATORS + NUMERIC_STD_FUNCTIONS:
         print(tab() + '| (((length los) > 1) && ((los !! 0) == "%s")) = []' % (s,))
 
-
-
-
-
-
-
-
+    print("\n\n\n--            Skeleton For Filtering IN Above")
+    print("--               Skeleton For Filtering OUT Below\n\n\n")
+    print("tokensToRemove = [")
+    for s in VHDL_KEYWORDS + VHDL_OPERATORS + NUMERIC_STD_FUNCTIONS:
+        print(tab() + "," + tab() + '"' + s + '"')
+    print("]")
+    
 
 
