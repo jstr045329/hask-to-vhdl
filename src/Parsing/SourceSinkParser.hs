@@ -9,6 +9,12 @@
 ------------------------------------------------------------------------------------------------------------------------
 module Parsing.SourceSinkParser (
         InfoPack
+    ,   sigNames
+    ,   inputNames
+    ,   outputNames
+    ,   internalState
+    ,   constantNames
+    ,   varNames
     ,   uniteInfoPacks
     ,   blankInfoPack
     ,   parseVhd

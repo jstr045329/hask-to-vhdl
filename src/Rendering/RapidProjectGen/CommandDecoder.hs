@@ -183,21 +183,63 @@ slurpCommand s gS
 ------------------------------------------------------------------------------------------------------------------------
 --                           If s Is None of The Above, It Must Be A Concurrent Statement 
 ------------------------------------------------------------------------------------------------------------------------
-    | otherwise = (appendVhd s gS) { presentInfoPack = parseVhd myListOfStrings IP_NoKeyword } where
+    | otherwise = 
+        (appendVhd s 
+        (changePresentEntity
+            (\x -> x {parsedNames = 
+                parseVhd 
+                    (tokenize [intercalate " " myVhdLines])
+                    IP_NoKeyword
+            })
+            gS)) where
+        myEntity = head (fetchOneEntity (gPEnt gS) (entTree gS))
+        myVhdLines = (addToVhdBody myEntity) ++ [s]
 
-        myEntity = fetchOneEntity (gPEnt gS) (entTree gS) 
-        bigString = 
-            if ((length myEntity) == 0)
-                then []
-                else intercalate " " (addToVhdBody (head myEntity))
-        myListOfStrings = 
-            if ((length myEntity) == 0)
-                then []
-                else tokenize [bigString]
 
-    -- fetchOneEntity :: String -> EntityTree -> [Entity]
+-- fetchOneEntity :: String -> EntityTree -> [Entity]
+-- 153 parseVhd :: [String] -> InputParsingKeywords
 
-    -- parseVhd :: [String] -> InputParsingKeywords -> InfoPack
+
+--  25 appendVhd :: String -> GeneratorState -> GeneratorState
+--  26 appendVhd s gS = gS { entTree = changeOneEntity (gPEnt gS) (entTree gS) (\x -> x { addToVhdBody = (addToVhdBody x) ++ [s]})}
+ 
+-- changePresentEntity :: (Entity -> Entity) -> GeneratorState -> GeneratorState 
+
+
+
+
+-- 45 fetchOneEntityTree :: String -> EntityTree -> [EntityTree]
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

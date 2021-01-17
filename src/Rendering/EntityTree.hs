@@ -59,6 +59,11 @@ fetchOneEntityTree oneEntNomen (EntityTree oneEntity entList)
 --
 -- If no match is found, this function searches through the entire entity tree but changes nothing. 
 --
+-- NOTE: This function can be a bit cumbersome to use. Most of the time, you are better off using the wrapper 
+-- changePresentEntity in GeneratorState.hs. I wanted to define that wrapper here, but alas, GeneratorState.hs imports
+-- this file, so there would be mutual imports, leading to an infinte recursion at compile time, the rending of 
+-- spacetime, destruction of the cosmos, etc.
+--
 -----------------------------------------------------------------------------------------------------------------------
 
 -- TODO: Move this function to a different name, say, changeOneEntity'. 

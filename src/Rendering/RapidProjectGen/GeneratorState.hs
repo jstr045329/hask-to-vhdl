@@ -35,7 +35,6 @@ data GeneratorState = GeneratorState {
     ,   processUnderConstruction :: [Process]
     ,   renderedCodeStartLoc :: Int
     ,   userMessages :: [(String, Int)]
-    ,   presentInfoPack :: InfoPack
     } deriving (Eq, Show)
 
 
@@ -64,7 +63,6 @@ defaultGeneratorState = GeneratorState {
     ,   processUnderConstruction = [defaultProcess]
     ,   renderedCodeStartLoc = 0
     ,   userMessages = []
-    ,   presentInfoPack = blankInfoPack
     }
 
 
@@ -103,5 +101,18 @@ purgeUserMessages gS = gS {userMessages = iterateOverUsrMessages (userMessages g
 
 getOneUserMessage :: (String, Int) -> String
 getOneUserMessage (s, _) = s
+
+
+------------------------------------------------------------------------------------------------------------------------
+--                                               Change Present Entity 
+--
+-- changePresentEntity in EntityTree.hs can be a bit cumbersome to use. This function wraps it up so that you pass 
+-- in a function and gS, and that's it. 
+--
+------------------------------------------------------------------------------------------------------------------------
+changePresentEntity :: (Entity -> Entity) -> GeneratorState -> GeneratorState
+changePresentEntity someFunc gS = gS {
+        entTree = changeOneEntity (gPEnt gS) (entTree gS) someFunc
+    }   
 
 

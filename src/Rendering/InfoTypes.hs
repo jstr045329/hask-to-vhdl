@@ -53,6 +53,7 @@ data DataType =           StdLogic
                         | ConstrainedInt Int Int
                         | Record String [Information]
                         | UserDefinedDataType String 
+                        | DtUnknown
                           deriving (Eq, Show)
 
 

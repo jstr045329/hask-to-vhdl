@@ -7,6 +7,7 @@ import Rendering.PortMap
 import Rendering.InterspersedCode
 import Tools.WhiteSpaceTools
 import Tools.ListTools
+import Parsing.SourceSinkParser
 
 
 data Entity = Entity {
@@ -27,6 +28,7 @@ data Entity = Entity {
         ,   maxRecursionDepth :: Int -- For recursive entities, choose a termination depth
         ,   interspersedCode :: [InterspersedCode]
         ,   addToVhdBody :: [String] -- VHDL Literals
+        ,   parsedNames :: InfoPack -- This struct contains names parsed from addToVhdBody, organized by signal, input, output, etc.
     } | TopLevelEntity 
         deriving (Eq, Show)
 
@@ -50,6 +52,7 @@ defaultEntity = Entity {
     ,   maxRecursionDepth = 0
     ,   interspersedCode = []
     ,   addToVhdBody = []
+    ,   parsedNames = blankInfoPack
     }
 
 

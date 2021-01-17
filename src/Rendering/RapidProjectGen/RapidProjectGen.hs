@@ -42,6 +42,8 @@ import Data.List
 import Rendering.EntityTree
 import Rendering.InterspersedCode
 import Rendering.RapidProjectGen.DecodeOneString
+import Parsing.SourceSinkParser
+import qualified Data.HashSet as HashSet
 
 
 ------------------------------------------------------------------------------------------------------------------------
@@ -280,11 +282,22 @@ gleanPorts ts =
     take numPortsToDisplay
         ([ctrString "Ports" sideColumn, sideColDashes] ++ 
         (if (length (getNodesWithName (pEnt ts) (entTree (generatorState ts))) > 0)
-            then map showOneInfo (ports (head (getNodesWithName (pEnt ts) (entTree (generatorState ts)))))
+            then map showOneInfo ((ports (head (getNodesWithName (pEnt ts) (entTree (generatorState ts))))) ++ myInformations)
             else []) ++
-        blankLines)
+        blankLines) where
+        gS = generatorState ts
+        myEntList = fetchOneEntity (gPEnt gS) (entTree gS) 
+        myInputPorts = map (\oneInfoName -> easyInSl oneInfoName []) (HashSet.toList (inputNames (parsedNames (head myEntList))))
+        myOutputPorts = map (\oneInfoName -> easyOutSl oneInfoName []) (HashSet.toList (outputNames (parsedNames (head myEntList))))
+        myInformations = myInputPorts ++ myOutputPorts
+        myInfoStrings = map showOneInfo myInformations
 
--- TODO: PICK UP HERE: Extract presentInfoPack from gS, and convert to lines here
+
+-- easyInSl :: String -> [String] -> Information
+
+-- fetchOneEntity :: String -> EntityTree -> [Entity]
+
+-- TODO: PICK UP HERE: Extract parsedNames from gS, and convert to lines here
 
 ------------------------------------------------------------------------------------------------------------------------
 --                                            Glean Signals from TuiState 
