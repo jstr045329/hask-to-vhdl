@@ -262,6 +262,31 @@ numSignalsToDisplay = 18
 
 
 ------------------------------------------------------------------------------------------------------------------------
+--                                               Extract Parsed Names 
+--
+-- This function extracts the InfoPack from TuiState, extracts a set of names (which is selected by whatever function 
+-- you pass in), and returns a list of Information's that were created from parsed names. 
+--
+-- The function you pass in is simply one of the field names in the InfoPack struct:
+--      inputNames
+--      outputNames
+--      etc.
+--
+------------------------------------------------------------------------------------------------------------------------
+extractParsedInputs :: TuiState -> [Information]
+extractParsedInputs ts = map (\oneInfoName -> easyInSl oneInfoName []) (HashSet.toList (inputNames (parsedNames (head myEntList)))) where
+    gS = generatorState ts
+    myEntList = fetchOneEntity (gPEnt gS) (entTree gS) 
+
+
+extractParsedOutputs :: TuiState -> [Information]
+extractParsedOutputs ts = map (\oneInfoName -> easyOutSl oneInfoName []) (HashSet.toList (outputNames (parsedNames (head myEntList)))) where
+    gS = generatorState ts
+    myEntList = fetchOneEntity (gPEnt gS) (entTree gS) 
+
+-- TODO: PICK UP HERE: Flesh out parsing for signals
+
+------------------------------------------------------------------------------------------------------------------------
 --                                           Glean Generics from TuiState 
 ------------------------------------------------------------------------------------------------------------------------
 gleanGenerics :: TuiState -> [String]
@@ -285,13 +310,21 @@ gleanPorts ts =
             then map showOneInfo ((ports (head (getNodesWithName (pEnt ts) (entTree (generatorState ts))))) ++ myInformations)
             else []) ++
         blankLines) where
-        gS = generatorState ts
-        myEntList = fetchOneEntity (gPEnt gS) (entTree gS) 
-        myInputPorts = map (\oneInfoName -> easyInSl oneInfoName []) (HashSet.toList (inputNames (parsedNames (head myEntList))))
-        myOutputPorts = map (\oneInfoName -> easyOutSl oneInfoName []) (HashSet.toList (outputNames (parsedNames (head myEntList))))
-        myInformations = myInputPorts ++ myOutputPorts
-        myInfoStrings = map showOneInfo myInformations
+            myInformations = (extractParsedInputs ts) ++ (extractParsedOutputs ts)
 
+--        gS = generatorState ts
+--        myEntList = fetchOneEntity (gPEnt gS) (entTree gS) 
+--        myInputPorts = map (\oneInfoName -> easyInSl oneInfoName []) (HashSet.toList (inputNames (parsedNames (head myEntList))))
+--        myOutputPorts = map (\oneInfoName -> easyOutSl oneInfoName []) (HashSet.toList (outputNames (parsedNames (head myEntList))))
+--        myInformations = myInputPorts ++ myOutputPorts
+--        myInfoStrings = map showOneInfo myInformations
+
+
+
+    
+
+-- :t inputNames
+--      InfoPack -> unordered-containers-0.2.10.0:Data.HashSet.Base.HashSet String
 
 -- easyInSl :: String -> [String] -> Information
 
