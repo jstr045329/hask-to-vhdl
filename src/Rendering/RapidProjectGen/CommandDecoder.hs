@@ -214,6 +214,22 @@ slurpCommand s gS
 
 
 
+-- TODO: Plan the demo I want to give. Ensure that scope is in tip top shape. Nothing more.
+
+
+-- TODO: For all names in VHD signals, put a o_ version in outputs, and s_ version in signals.
+-- TODO: For all inputs, render name as i_.
+-- TODO: Create a command that replaces raw names in VHD literals with i_, s_, and o_ variants.
+--       Said command should also drive o_ names.
+
+-- TODO: Before displaying name to TUI, first check whether user has declared a similar name.
+--       If so, steal datatype, width, etc. from that name.
+--       NOTE: Identical name should take precedence over similar name. That way, if user 
+--       doesn't like the automatically extracted version, they can declare the exact name 
+--       with whatever specs they want.
+
+-- TODO: Take Information's as they appear on the screen and render Hs to a file.
+-- TODO: Append every command to a file.
 
 
 
@@ -223,34 +239,35 @@ slurpCommand s gS
 
 
 
-    -- TODO: PICK UP HERE: Route signal names to TUI.
-    -- When printing In & Out names to TUI, first check if a name is in signals before printing to screen. 
-    -- Write functions that perform this check, so that identical results can be used to write a file later.
 
 
-    -- TODO: 
-    -- When user uses similar names for both input and output, Hs should declare s_ and o_ versions of the same name. 
-    -- Anything that is a signal in an above entity should be declared as an input - If the flag enabling that feature is set.
-    -- Any signal that user uses but never assigns should be declared as an input.
 
-    -- TODO: Send user a message when all inputs to an entity have a signal (or input) with a similar name in the 
-    -- parent entity. Say, "Perfect Input Subset". That way, user instantly knows when all information going into a module
-    -- has been created.
 
-    -- TODO: test user messages
 
-    -- TODO: Allow user to turn Info prefixes on & off from TUI.
-    -- User should be able to type:
-    --
-    --          x <= din;
-    --
-    -- and either see that, or:
-    --
-    --          s_x <= i_din;
-    -- ...
-    --          o_x <= s_x;
-    --
-    -- just by changing a command. 
 
-    -- TODO: Allow user to declare constants
+-- TODO: 
+-- When user uses similar names for both input and output, Hs should declare s_ and o_ versions of the same name. 
+-- Anything that is a signal in an above entity should be declared as an input - If the flag enabling that feature is set.
+-- Any signal that user uses but never assigns should be declared as an input.
+
+-- TODO: Send user a message when all inputs to an entity have a signal (or input) with a similar name in the 
+-- parent entity. Say, "Perfect Input Subset". That way, user instantly knows when all information going into a module
+-- has been created.
+
+-- TODO: test user messages
+
+-- TODO: Allow user to turn Info prefixes on & off from TUI.
+-- User should be able to type:
+--
+--          x <= din;
+--
+-- and either see that, or:
+--
+--          s_x <= i_din;
+-- ...
+--          o_x <= s_x;
+--
+-- just by changing a command. 
+
+-- TODO: Allow user to declare constants
 

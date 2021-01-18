@@ -262,6 +262,23 @@ numSignalsToDisplay = 18
 
 
 ------------------------------------------------------------------------------------------------------------------------
+--                                                  Finalize Ports 
+--
+-- Perform set operations to ensure that input names do not also appear in output & vice versa.
+-- Internal State should the intersection of those two sets.
+-- Right now signalNames = internalState, but that could change in the future.
+--
+------------------------------------------------------------------------------------------------------------------------
+finalizePorts :: InfoPack -> InfoPack
+finalizePorts iPack = iPack { 
+        inputNames = HashSet.difference (inputNames iPack) (outputNames iPack) 
+    ,   outputNames = HashSet.difference (outputNames iPack) (inputNames iPack)
+    ,   sigNames = HashSet.intersection (inputNames iPack) (outputNames iPack)
+    ,   Parsing.SourceSinkParser.internalState = HashSet.intersection (inputNames iPack) (outputNames iPack)
+    }
+
+
+------------------------------------------------------------------------------------------------------------------------
 --                                               Extract Parsed Names 
 --
 -- This function extracts the InfoPack from TuiState, extracts a set of names (which is selected by whatever function 
@@ -274,17 +291,29 @@ numSignalsToDisplay = 18
 --
 ------------------------------------------------------------------------------------------------------------------------
 extractParsedInputs :: TuiState -> [Information]
-extractParsedInputs ts = map (\oneInfoName -> easyInSl oneInfoName []) (HashSet.toList (inputNames (parsedNames (head myEntList)))) where
+extractParsedInputs ts = map (\oneInfoName -> easyInSl oneInfoName []) (HashSet.toList (inputNames (finalizePorts (parsedNames (head myEntList))))) where
     gS = generatorState ts
     myEntList = fetchOneEntity (gPEnt gS) (entTree gS) 
 
 
+-- TODO: Replace assumptions about datatype and width with fields from Generator State. 
+-- For instance, give gS fields called defaultDataType, defaultWidth, etc. and call those in these extractParsedXYZ functions.
 extractParsedOutputs :: TuiState -> [Information]
-extractParsedOutputs ts = map (\oneInfoName -> easyOutSl oneInfoName []) (HashSet.toList (outputNames (parsedNames (head myEntList)))) where
+extractParsedOutputs ts = map (\oneInfoName -> easyOutSl oneInfoName []) (HashSet.toList (outputNames (finalizePorts (parsedNames (head myEntList))))) where
     gS = generatorState ts
     myEntList = fetchOneEntity (gPEnt gS) (entTree gS) 
 
 -- TODO: PICK UP HERE: Flesh out parsing for signals
+
+extractParsedSignals :: TuiState -> [Information]
+extractParsedSignals ts = map (\oneInfoName -> easySig oneInfoName StdLogicVector (Hard 32) []) (HashSet.toList (sigNames (finalizePorts (parsedNames (head myEntList))))) where
+    gS = generatorState ts
+    myEntList = fetchOneEntity (gPEnt gS) (entTree gS) 
+
+-- easySig :: String -> DataType -> Width -> [String] -> Information
+
+
+
 
 ------------------------------------------------------------------------------------------------------------------------
 --                                           Glean Generics from TuiState 
@@ -321,9 +350,11 @@ gleanSignals ts =
     take numSignalsToDisplay
         ([ctrString "Signals" sideColumn, sideColDashes] ++ 
         (if (length (getNodesWithName (pEnt ts) (entTree (generatorState ts))) > 0)
-            then map showOneInfo (signals (head (getNodesWithName (pEnt ts) (entTree (generatorState ts)))))
+            then map showOneInfo ((signals (head (getNodesWithName (pEnt ts) (entTree (generatorState ts))))) ++ myInformations)
             else []) ++
-        blankLines)
+        blankLines) where 
+            myInformations = extractParsedSignals ts
+
 
 ------------------------------------------------------------------------------------------------------------------------
 --                                         Glean Rendered Code from TuiState 
