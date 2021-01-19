@@ -141,7 +141,10 @@ slurpCommand s gS
                         ,   parsedNames = parseVhd ((tokenize [intercalate " " myVhdLines]) ++ (addToVhdBody x) ++ (flattenShallow (map retrieveVhd (codeLines gS)))) IP_NoKeyword
                         })
 
--- TODO: PICK UP HERE: Split 1 changeOneEntity call into 2: 
+-- TODO:
+--      Move the business logic in this branch to a separate file, and/or replace with calls to the new file. 
+--      Call new full file rendering.
+--      Split 1 changeOneEntity call into 2.
 --      Inner: Add process lines.
 --      Outie: Parse names.
         ,   processUnderConstruction = [defaultProcess]} 
@@ -153,6 +156,8 @@ slurpCommand s gS
 -- If the drinkProcess flag is set, treat this line as a sequential statement.
 --
 ------------------------------------------------------------------------------------------------------------------------
+
+    -- TODO: Refresh entire entity body when this branch runs. 
     | (drinkProcess gS) =  gS { processUnderConstruction = [(head (processUnderConstruction gS)) {procPlainLines = (procPlainLines (head (processUnderConstruction gS))) ++ (nZipTab 2 [s])}]}
 
 
@@ -201,95 +206,4 @@ slurpCommand s gS
         myEntity = head (fetchOneEntity (gPEnt gS) (entTree gS))
         myVhdLines = (addToVhdBody myEntity) ++ [s]
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
--- TODO: Glean process lines in each entity as well. Take renedered lines from the entire process
--- and glean for ports & signals.
-
--- TODO: Plan the demo I want to give. Ensure that scope is in tip top shape. Nothing more.
--- Take all other TODO's and either turn them into a ticket or delete.
-
--- TODO: Write my coding conventions and enable user to invoke them (or not) from TUI.
-
--- TODO: Eliminate InterspersedCode.
-
--- TODO: Automatically reset all signals assigned in process.
-
--- TODO: For all names in VHD signals, put a o_ version in outputs, and s_ version in signals.
--- TODO: For all inputs, render name as i_.
--- TODO: Create a command that replaces raw names in VHD literals with i_, s_, and o_ variants.
---       Said command should also drive o_ names.
-
-
--- TODO: Before displaying name to TUI, first check whether user has declared a similar name.
---       If so, steal datatype, width, etc. from that name.
---       NOTE: Identical name should take precedence over similar name. That way, if user 
---       doesn't like the automatically extracted version, they can declare the exact name 
---       with whatever specs they want.
-
--- TODO: Take Information's as they appear on the screen and render Hs to a file.
--- TODO: Append every command to a file.
-
--- TODO: Define an interface for automatically applying coding convention. 
---
--- Perhaps define a struct called RenderedCodePack, which contains:
--- 
---      Everything user entered :: [String]
---      Parsed Names :: InfoPack
---      What User Sees :: [String]
---
--- Coding conventions accept the interface RenderedCodePack -> RenderedCodePack.
-
-
-
-
-
-
-
-
-
-
-
--- TODO: Create a command that allows user to change default datatype, default width.
-
-
--- TODO: 
--- When user uses similar names for both input and output, Hs should declare s_ and o_ versions of the same name. 
--- Anything that is a signal in an above entity should be declared as an input - If the flag enabling that feature is set.
--- Any signal that user uses but never assigns should be declared as an input.
-
--- TODO: Send user a message when all inputs to an entity have a signal (or input) with a similar name in the 
--- parent entity. Say, "Perfect Input Subset". That way, user instantly knows when all information going into a module
--- has been created.
-
--- TODO: test user messages
-
--- TODO: Allow user to turn Info prefixes on & off from TUI.
--- User should be able to type:
---
---          x <= din;
---
--- and either see that, or:
---
---          s_x <= i_din;
--- ...
---          o_x <= s_x;
---
--- just by changing a command. 
-
--- TODO: Allow user to declare constants
 

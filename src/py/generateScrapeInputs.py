@@ -1,5 +1,7 @@
 """This script generates skeleton code for ScrapeInputs.hs"""
 
+
+# TODO: Add time amounts to keywords - ns, ms, us. 
 VHDL_KEYWORDS = [
         "abs"
     ,   "access"

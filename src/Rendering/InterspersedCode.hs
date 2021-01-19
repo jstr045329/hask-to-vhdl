@@ -4,6 +4,9 @@
 -- This module represents VHDL, Hs, and hask-to-vhdl commands intermingled in a stream. 
 --
 ------------------------------------------------------------------------------------------------------------------------
+
+-- TODO: Verify this file can be eliminated and if so, eliminate it.
+
 module Rendering.InterspersedCode where 
 
 
@@ -46,13 +49,11 @@ renderVhdToVhd (VhdLiteral los) = los
 renderVhdToVhd NoVhd = []
 
 
--- TODO: PICK UP HERE: Run the Hs literals and return output
 renderHsToVhd :: HsLiteral -> [String]
 renderHsToVhd (HsLiteral los) = los
 renderHsToVhd NoHs = []
 
 
--- TODO: Run the commands and return output
 renderH2VToVhd :: H2VCommand -> [String]
 renderH2VToVhd (H2VLiteral los) = los 
 renderH2VToVhd NoH2V = []
