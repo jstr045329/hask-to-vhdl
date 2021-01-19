@@ -43,9 +43,16 @@ fetchOneEntity oneEntNomen (EntityTree oneEntity entList) =
 
 
 fetchOneEntityTree :: String -> EntityTree -> [EntityTree]
+
+fetchOneEntityTree oneEntNomen (EntityTree oneEntity []) 
+    | (oneEntNomen == (entNomen oneEntity)) = [EntityTree oneEntity []]
+    | otherwise = []
+
 fetchOneEntityTree oneEntNomen (EntityTree oneEntity entList) 
+    | (oneEntNomen == (entNomen oneEntity)) = [EntityTree oneEntity entList]
     | (elem oneEntNomen (map getPresentEntityName entList)) = [x | x <- entList, (getPresentEntityName x) == oneEntNomen]
     | otherwise = flattenShallow (map (\x -> fetchOneEntityTree oneEntNomen x) entList)
+
 
 ------------------------------------------------------------------------------------------------------------------------
 --                                        Change One Entity, Matched By Name 
@@ -71,7 +78,6 @@ fetchOneEntityTree oneEntNomen (EntityTree oneEntity entList)
 -- For instance, (Entity -> Entity) -> GeneratorState -> GeneratorState, 
 -- and the new function assumes the present entity is the one you want to change.
 changeOneEntity :: String -> EntityTree -> (Entity -> Entity) -> EntityTree
--- TODO: Eliminate this first branch and verify that it doesn't hurt anything. 
 changeOneEntity oneEntNomen (EntityTree oneEntity []) someFunc = 
     EntityTree 
         (modEntMatchName oneEntNomen oneEntity someFunc) 

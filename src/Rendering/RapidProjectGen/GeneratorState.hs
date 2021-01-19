@@ -55,8 +55,8 @@ defaultGeneratorState = GeneratorState {
     ,   entTree = EntityTree (defaultEntity { entNomen = "Top" }) []
     ,   defaultClk = easyClk
     ,   defaultRst = easyRst
-    ,   defaultDataType = StdLogic
-    ,   defaultWidth = Hard 1
+    ,   defaultDataType = StdLogicVector
+    ,   defaultWidth = Hard 32
     ,   viewVhd = True
     ,   viewHs = False
     ,   drinkProcess = False

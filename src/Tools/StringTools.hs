@@ -16,6 +16,7 @@ module Tools.StringTools (
     , rightJustifyStr
     , ljs
     , rjs
+    , ctrString
     ) where
 import qualified Data.Char as DC
 import Tools.LogicTools
@@ -194,5 +195,19 @@ rightJustifyStr s w = (take (w - (length s)) (repeat ' ')) ++ s
 ljs = leftJustifyStr
 
 rjs = rightJustifyStr
+
+
+------------------------------------------------------------------------------------------------------------------------
+--                                            Center A String In A Field 
+-- 
+-- s is of course the string.
+-- 
+-- n is the width of the field.
+--
+------------------------------------------------------------------------------------------------------------------------
+ctrString :: String -> Int -> String
+ctrString s n = take n ((take n' infSpaces) ++ s ++ infSpaces) where
+    n' = div (n - (length s)) 2
+    infSpaces = repeat ' '
 
 

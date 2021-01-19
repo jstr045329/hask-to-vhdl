@@ -138,9 +138,14 @@ slurpCommand s gS
                         (\x -> x {
                             processes = (processes x) ++ (processUnderConstruction gS)
                         ,   addToVhdBody = (addToVhdBody x) ++ (flattenShallow (map retrieveVhd (codeLines gS)))
+                        ,   parsedNames = parseVhd ((tokenize [intercalate " " myVhdLines]) ++ (addToVhdBody x) ++ (flattenShallow (map retrieveVhd (codeLines gS)))) IP_NoKeyword
                         })
-        ,   processUnderConstruction = [defaultProcess]}
 
+-- TODO: PICK UP HERE: Split 1 changeOneEntity call into 2: 
+--      Inner: Add process lines.
+--      Outie: Parse names.
+        ,   processUnderConstruction = [defaultProcess]} 
+            
 
 ------------------------------------------------------------------------------------------------------------------------
 --                                     If Drinking A Process, Drink The Process 
@@ -180,6 +185,7 @@ slurpCommand s gS
             then gS
             else drillDownOneLayer ((words s) !! 1) gS
 
+
 ------------------------------------------------------------------------------------------------------------------------
 --                           If s Is None of The Above, It Must Be A Concurrent Statement 
 ------------------------------------------------------------------------------------------------------------------------
@@ -211,16 +217,23 @@ slurpCommand s gS
 
 
 
-
-
+-- TODO: Glean process lines in each entity as well. Take renedered lines from the entire process
+-- and glean for ports & signals.
 
 -- TODO: Plan the demo I want to give. Ensure that scope is in tip top shape. Nothing more.
+-- Take all other TODO's and either turn them into a ticket or delete.
 
+-- TODO: Write my coding conventions and enable user to invoke them (or not) from TUI.
+
+-- TODO: Eliminate InterspersedCode.
+
+-- TODO: Automatically reset all signals assigned in process.
 
 -- TODO: For all names in VHD signals, put a o_ version in outputs, and s_ version in signals.
 -- TODO: For all inputs, render name as i_.
 -- TODO: Create a command that replaces raw names in VHD literals with i_, s_, and o_ variants.
 --       Said command should also drive o_ names.
+
 
 -- TODO: Before displaying name to TUI, first check whether user has declared a similar name.
 --       If so, steal datatype, width, etc. from that name.
@@ -231,6 +244,15 @@ slurpCommand s gS
 -- TODO: Take Information's as they appear on the screen and render Hs to a file.
 -- TODO: Append every command to a file.
 
+-- TODO: Define an interface for automatically applying coding convention. 
+--
+-- Perhaps define a struct called RenderedCodePack, which contains:
+-- 
+--      Everything user entered :: [String]
+--      Parsed Names :: InfoPack
+--      What User Sees :: [String]
+--
+-- Coding conventions accept the interface RenderedCodePack -> RenderedCodePack.
 
 
 
@@ -242,7 +264,7 @@ slurpCommand s gS
 
 
 
-
+-- TODO: Create a command that allows user to change default datatype, default width.
 
 
 -- TODO: 

@@ -9,6 +9,7 @@
 ------------------------------------------------------------------------------------------------------------------------
 module Parsing.SourceSinkParser (
         InfoPack
+    ,   blankInfoPack
     ,   sigNames
     ,   inputNames
     ,   outputNames
@@ -16,8 +17,8 @@ module Parsing.SourceSinkParser (
     ,   constantNames
     ,   varNames
     ,   uniteInfoPacks
-    ,   blankInfoPack
     ,   parseVhd
+    ,   finalizePorts
     ) where
 import Rendering.InfoTypes
 import Parsing.TokenMatchingTools
@@ -29,7 +30,6 @@ import Parsing.VhdlTokens
 import Parsing.PortExtractor
 import Parsing.ScrapeInputs
 import Parsing.InputParsingKeywords
--- import Parsing.LocateOutputs
 import Parsing.ScrapeOutputs
 
 data InfoPack = InfoPack {
@@ -195,5 +195,22 @@ parseVhd los pastKeywords
             } (parseVhd (tail los) pastKeywords) where
                 myInputs = HashSet.fromList (scrapeFormulaInputs los)
                 myOutputs = HashSet.fromList (scrapeFormulaOutputs los)
+
+
+------------------------------------------------------------------------------------------------------------------------
+--                                                  Finalize Ports 
+--
+-- Perform set operations to ensure that input names do not also appear in output & vice versa.
+-- Internal State should be the intersection of those two sets.
+-- Right now signalNames = internalState, but that could change in the future.
+--
+------------------------------------------------------------------------------------------------------------------------
+finalizePorts :: InfoPack -> InfoPack
+finalizePorts iPack = iPack { 
+        inputNames = HashSet.difference (inputNames iPack) (outputNames iPack) 
+    ,   outputNames = HashSet.difference (outputNames iPack) (inputNames iPack)
+    ,   sigNames = HashSet.intersection (inputNames iPack) (outputNames iPack)
+    ,   Parsing.SourceSinkParser.internalState = HashSet.intersection (inputNames iPack) (outputNames iPack)
+    } 
 
 

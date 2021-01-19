@@ -44,6 +44,13 @@ import Rendering.InterspersedCode
 import Rendering.RapidProjectGen.DecodeOneString
 import Parsing.SourceSinkParser
 import qualified Data.HashSet as HashSet
+import Rendering.RapidProjectGen.RapidTuiState
+import Rendering.RapidProjectGen.TuiParameters
+import Rendering.RapidProjectGen.DisplayDataTypes
+import Rendering.RapidProjectGen.DisplayInformation
+import Rendering.RapidProjectGen.SideColDashes
+import Rendering.RapidProjectGen.PresentEntity
+import Rendering.RapidProjectGen.ExtractParsedNames
 
 
 ------------------------------------------------------------------------------------------------------------------------
@@ -54,33 +61,6 @@ tui = do
   initialState <- buildInitialState
   endState <- defaultMain tuiApp initialState
   print endState
-
-
-------------------------------------------------------------------------------------------------------------------------
---                                              Define TUI Entry State 
-------------------------------------------------------------------------------------------------------------------------
-data TuiState =
-  TuiState 
-    {
-        -- These should appear on the left: 
-        _entityTree :: [String]
-
-        -- These should appear on the right:
-    ,   _genericList :: [String]
-    ,   _portList :: [String]
-    ,   _signalList :: [String]
-
-        -- This should appear in the middle:
-    ,   _renderedCode :: [String]
-
-        -- This should appear on the bottom:
-    ,   _commandHistory :: [String]
-    ,   _newCommand :: String
-    ,   _userHints :: [String]
-
-        -- This stores the state of the code generator:
-    ,   generatorState :: GeneratorState
-    } deriving (Show, Eq) 
 
 
 ------------------------------------------------------------------------------------------------------------------------
@@ -106,46 +86,11 @@ tuiApp =
 
 
 ------------------------------------------------------------------------------------------------------------------------
---                                            Center A String In A Field 
-------------------------------------------------------------------------------------------------------------------------
-ctrString :: String -> Int -> String
-ctrString s n = take n ((take n' infiniteSpaces) ++ s ++ infiniteSpaces) where
-    n' = div (n - (length s)) 2
-
-
-------------------------------------------------------------------------------------------------------------------------
 --                                       Draw Entity Hierarchy From TUI State 
 ------------------------------------------------------------------------------------------------------------------------
 drawEntHierarchy :: TuiState -> [String]
 drawEntHierarchy ts = 
     [ctrString "Entities" sideColumn] ++ (showEntityTree (entTree (generatorState ts)) 0)
-
--- TODO: Think about whether to delete EntityTree.
---      Is it really necessary?
---      If not, delete the file, and all references to it.
---      Replace with new functions. 
-
-------------------------------------------------------------------------------------------------------------------------
---                                            Decide How Tall Windows Are
-------------------------------------------------------------------------------------------------------------------------
-genericsToShow :: Int
-genericsToShow = 5
-
-
-portsToShow :: Int 
-portsToShow = 20
-
-
-signalsToShow :: Int
-signalsToShow = 20
-
-
-renderedLinesToShow :: Int
-renderedLinesToShow = 27
-
-
-commandHistoryTraceback :: Int
-commandHistoryTraceback = 10
 
 
 ------------------------------------------------------------------------------------------------------------------------
@@ -185,204 +130,14 @@ drawOneLine n b =
 
 
 ------------------------------------------------------------------------------------------------------------------------
---                                            Convert Data Type To String 
-------------------------------------------------------------------------------------------------------------------------
-dt2Str :: DataType -> String
-dt2Str StdLogic = "SL"
-dt2Str StdLogicVector = "SL Vec"
-dt2Str StdULogic = "SUL"
-dt2Str StdULogicVector = "SUL Vec"
-dt2Str Signed = "Signed"
-dt2Str Unsigned = "Unsigned"
-dt2Str Bit = "Bit"
-dt2Str UnconstrainedInt = "Int"
-dt2Str (ConstrainedInt a b) = "Int " ++ (show a) ++ " " ++ (show b)
-dt2Str _ = ""
-
-
-------------------------------------------------------------------------------------------------------------------------
---                                                Define Field Widths 
-------------------------------------------------------------------------------------------------------------------------
-nomenWidth :: Int
-nomenWidth = 20
-
-
-dtWidth :: Int
-dtWidth = 10
-
-
-widthWidth :: Int
-widthWidth = 10
-
-
-defaultStrWidth :: Int
-defaultStrWidth = 10
-
-
-------------------------------------------------------------------------------------------------------------------------
---                                           Convert Information To String 
-------------------------------------------------------------------------------------------------------------------------
-showOneInfo :: Information -> String
-showOneInfo (Port n dt w dir _ _ _ _ _) = intercalate " " [ljs n nomenWidth, ljs (dt2Str dt) dtWidth, ljs (show w) 10, show dir]
-showOneInfo (VhdSig n dt w _ _ _ _ _) = intercalate " " [ljs n nomenWidth, ljs (dt2Str dt) dtWidth, ljs (show w) 10]
-showOneInfo (Generic n dt w (Specified dV) _) = intercalate " " [ljs n nomenWidth, ljs dV defaultStrWidth, ljs (dt2Str dt) dtWidth, ljs (show w) 10]
-showOneInfo (Generic n dt w Unspecified _) = intercalate " " [ljs n nomenWidth, ljs "" defaultStrWidth, ljs (dt2Str dt) dtWidth, ljs (show w) 10]
-showOneInfo _ = ""
-
-
-sideColDashes :: String
-sideColDashes = ctrString (take (sideColumn - 2) dashes) sideColumn
-
-
------------------------------------------------------------------------------------------------------------------------
---                                         Get Present Entity From TUI State 
-------------------------------------------------------------------------------------------------------------------------
-pEnt :: TuiState -> String
-pEnt ts = last (pathToPresent (generatorState ts))
-
-
-------------------------------------------------------------------------------------------------------------------------
---                                              Display Present Entity 
-------------------------------------------------------------------------------------------------------------------------
-displayPresentEnt :: TuiState -> [String]
-displayPresentEnt ts = ["Present Entity: " ++ (pEnt ts)]
-
-
-------------------------------------------------------------------------------------------------------------------------
---                                        Glean Information's From TUI State 
-------------------------------------------------------------------------------------------------------------------------
-numGenericsToDisplay :: Int
-numGenericsToDisplay = 12
-
-numPortsToDisplay :: Int
-numPortsToDisplay = 18
-
-numSignalsToDisplay :: Int
-numSignalsToDisplay = 18
-
-
-------------------------------------------------------------------------------------------------------------------------
---                                                  Finalize Ports 
+--                                                Glean User Messages 
 --
--- Perform set operations to ensure that input names do not also appear in output & vice versa.
--- Internal State should the intersection of those two sets.
--- Right now signalNames = internalState, but that could change in the future.
+-- Extract user messages from TuiState. 
 --
 ------------------------------------------------------------------------------------------------------------------------
-finalizePorts :: InfoPack -> InfoPack
-finalizePorts iPack = iPack { 
-        inputNames = HashSet.difference (inputNames iPack) (outputNames iPack) 
-    ,   outputNames = HashSet.difference (outputNames iPack) (inputNames iPack)
-    ,   sigNames = HashSet.intersection (inputNames iPack) (outputNames iPack)
-    ,   Parsing.SourceSinkParser.internalState = HashSet.intersection (inputNames iPack) (outputNames iPack)
-    }
-
-
-------------------------------------------------------------------------------------------------------------------------
---                                               Extract Parsed Names 
---
--- This function extracts the InfoPack from TuiState, extracts a set of names (which is selected by whatever function 
--- you pass in), and returns a list of Information's that were created from parsed names. 
---
--- The function you pass in is simply one of the field names in the InfoPack struct:
---      inputNames
---      outputNames
---      etc.
---
-------------------------------------------------------------------------------------------------------------------------
-extractParsedInputs :: TuiState -> [Information]
-extractParsedInputs ts = map (\oneInfoName -> easyInSl oneInfoName []) (HashSet.toList (inputNames (finalizePorts (parsedNames (head myEntList))))) where
-    gS = generatorState ts
-    myEntList = fetchOneEntity (gPEnt gS) (entTree gS) 
-
-
--- TODO: Replace assumptions about datatype and width with fields from Generator State. 
--- For instance, give gS fields called defaultDataType, defaultWidth, etc. and call those in these extractParsedXYZ functions.
-extractParsedOutputs :: TuiState -> [Information]
-extractParsedOutputs ts = map (\oneInfoName -> easyOutSl oneInfoName []) (HashSet.toList (outputNames (finalizePorts (parsedNames (head myEntList))))) where
-    gS = generatorState ts
-    myEntList = fetchOneEntity (gPEnt gS) (entTree gS) 
-
--- TODO: PICK UP HERE: Flesh out parsing for signals
-
-extractParsedSignals :: TuiState -> [Information]
-extractParsedSignals ts = map (\oneInfoName -> easySig oneInfoName StdLogicVector (Hard 32) []) (HashSet.toList (sigNames (finalizePorts (parsedNames (head myEntList))))) where
-    gS = generatorState ts
-    myEntList = fetchOneEntity (gPEnt gS) (entTree gS) 
-
--- easySig :: String -> DataType -> Width -> [String] -> Information
-
-
-
-
-------------------------------------------------------------------------------------------------------------------------
---                                           Glean Generics from TuiState 
-------------------------------------------------------------------------------------------------------------------------
-gleanGenerics :: TuiState -> [String]
-gleanGenerics ts = 
-    take numGenericsToDisplay
-        ([ctrString "Generics" sideColumn, sideColDashes] ++ 
-        (if (length (getNodesWithName (pEnt ts) (entTree (generatorState ts))) > 0)
-            then map showOneInfo (generics (head (getNodesWithName (pEnt ts) (entTree (generatorState ts)))))
-            else []) ++
-        blankLines)
-
-
-------------------------------------------------------------------------------------------------------------------------
---                                             Glean Ports from TuiState 
-------------------------------------------------------------------------------------------------------------------------
-gleanPorts :: TuiState -> [String]
-gleanPorts ts = 
-    take numPortsToDisplay
-        ([ctrString "Ports" sideColumn, sideColDashes] ++ 
-        (if (length (getNodesWithName (pEnt ts) (entTree (generatorState ts))) > 0)
-            then map showOneInfo ((ports (head (getNodesWithName (pEnt ts) (entTree (generatorState ts))))) ++ myInformations)
-            else []) ++
-        blankLines) where
-            myInformations = (extractParsedInputs ts) ++ (extractParsedOutputs ts)
-
-
-------------------------------------------------------------------------------------------------------------------------
---                                            Glean Signals from TuiState 
-------------------------------------------------------------------------------------------------------------------------
-gleanSignals :: TuiState -> [String]
-gleanSignals ts = 
-    take numSignalsToDisplay
-        ([ctrString "Signals" sideColumn, sideColDashes] ++ 
-        (if (length (getNodesWithName (pEnt ts) (entTree (generatorState ts))) > 0)
-            then map showOneInfo ((signals (head (getNodesWithName (pEnt ts) (entTree (generatorState ts))))) ++ myInformations)
-            else []) ++
-        blankLines) where 
-            myInformations = extractParsedSignals ts
-
-
-------------------------------------------------------------------------------------------------------------------------
---                                         Glean Rendered Code from TuiState 
-------------------------------------------------------------------------------------------------------------------------
-renderedCodeWidth :: Int
-renderedCodeWidth = 75
-
-
-bedOfProcrustes :: String -> String
-bedOfProcrustes s = take renderedCodeWidth (s ++ (repeat ' '))
-
-
-allProcessLines :: Entity -> [String]
-allProcessLines someEnt = flattenShallow (map (\x -> renderProcess x easyProjParams) (processes someEnt))
-
-
-gleanRenderedCode :: TuiState -> [String]
-gleanRenderedCode ts = [titleLine] ++ take renderedLinesToShow (skipN perfectLines startLoc) where
-    oneEntTree = entTree (generatorState ts)
-    oneEnt = head (fetchOneEntity (pEnt ts) oneEntTree)
-    rawLines = (addToVhdBody oneEnt) ++ (allProcessLines oneEnt) ++ blankLines
-    perfectLines = map bedOfProcrustes rawLines
-    titleLine = ctrString "Rendered Code" renderedCodeWidth
-    startLoc = renderedCodeStartLoc (generatorState ts)
-
-
 gleanUserMessages :: TuiState -> [String]
 gleanUserMessages ts = map getOneUserMessage (userMessages (generatorState ts))
+
 
 ------------------------------------------------------------------------------------------------------------------------
 --                                                     Draw TUI 
