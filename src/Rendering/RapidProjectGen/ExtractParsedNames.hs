@@ -108,7 +108,11 @@ gleanRenderedCode :: TuiState -> [String]
 gleanRenderedCode ts = [titleLine] ++ take renderedLinesToShow (skipN perfectLines startLoc) where
     oneEntTree = entTree (generatorState ts)
     oneEnt = head (fetchOneEntity (pEnt ts) oneEntTree)
-    rawLines = (addToVhdBody oneEnt) ++ (allProcessLines oneEnt) ++ blankLines
+    gS = generatorState ts
+    myNewProcessLines = if ((head (processUnderConstruction gS)) == defaultProcess)
+                            then []
+                            else renderProcess (head (processUnderConstruction gS)) (projectParameters gS)
+    rawLines = (addToVhdBody oneEnt) ++ (allProcessLines oneEnt) ++ myNewProcessLines ++ blankLines
     perfectLines = map bedOfProcrustes rawLines
     titleLine = ctrString "Rendered Code" renderedCodeWidth
     startLoc = renderedCodeStartLoc (generatorState ts)

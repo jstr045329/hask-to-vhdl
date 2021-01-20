@@ -17,7 +17,7 @@ import Rendering.RapidProjectGen.DrillDown
 import Parsing.SourceSinkParser
 import Parsing.InputParsingKeywords
 import Data.List
-
+import Rendering.RapidProjectGen.UpdateVhdRendering
 
 ------------------------------------------------------------------------------------------------------------------------
 --                             Helper Functions To Decode Port, Signal & Generic Creation
@@ -110,11 +110,6 @@ makeOneNewPort oneStr generatorState isInput =
         }
 
 
--- Extract VHDL from InterspersedCode:
-retrieveVhd :: InterspersedCode -> [String]
-retrieveVhd (InterspersedCode (VhdLiteral los) _ _) = los
-retrieveVhd _ = []
-
 ------------------------------------------------------------------------------------------------------------------------
 --                                           Update the State of Present Entity
 ------------------------------------------------------------------------------------------------------------------------
@@ -130,25 +125,16 @@ slurpCommand s gS
 --      2) Set GeneratorState's processUnderConstruction to an empty list.
 --
 ------------------------------------------------------------------------------------------------------------------------
-    | (startsWith s "</proc>") = gS { 
-            drinkProcess = False
-        ,   entTree = changeOneEntity 
-                        (gPEnt gS) 
-                        (entTree gS) 
-                        (\x -> x {
-                            processes = (processes x) ++ (processUnderConstruction gS)
-                        ,   addToVhdBody = (addToVhdBody x) ++ (flattenShallow (map retrieveVhd (codeLines gS)))
-                        ,   parsedNames = parseVhd ((tokenize [intercalate " " myVhdLines]) ++ (addToVhdBody x) ++ (flattenShallow (map retrieveVhd (codeLines gS)))) IP_NoKeyword
-                        })
+    | (startsWith s "</proc>") = updateVhdRendering 
+                                    (changePresentEntity
+                                    (\x -> x{ 
+                                            processes = (processes x) ++ (processUnderConstruction gS)
+--                                         ,   drinkProcess = False
+                                    }) gS) {
+                                            drinkProcess = False
+                                        ,   processUnderConstruction = [defaultProcess]
+                                        }
 
--- TODO:
---      Move the business logic in this branch to a separate file, and/or replace with calls to the new file. 
---      Call new full file rendering.
---      Split 1 changeOneEntity call into 2.
---      Inner: Add process lines.
---      Outie: Parse names.
-        ,   processUnderConstruction = [defaultProcess]} 
-            
 
 ------------------------------------------------------------------------------------------------------------------------
 --                                     If Drinking A Process, Drink The Process 
@@ -158,7 +144,7 @@ slurpCommand s gS
 ------------------------------------------------------------------------------------------------------------------------
 
     -- TODO: Refresh entire entity body when this branch runs. 
-    | (drinkProcess gS) =  gS { processUnderConstruction = [(head (processUnderConstruction gS)) {procPlainLines = (procPlainLines (head (processUnderConstruction gS))) ++ (nZipTab 2 [s])}]}
+    | (drinkProcess gS) = updateVhdRendering (gS { processUnderConstruction = [(head (processUnderConstruction gS)) {procPlainLines = (procPlainLines (head (processUnderConstruction gS))) ++ (nZipTab 2 [s])}]})
 
 
 ------------------------------------------------------------------------------------------------------------------------
@@ -194,16 +180,7 @@ slurpCommand s gS
 ------------------------------------------------------------------------------------------------------------------------
 --                           If s Is None of The Above, It Must Be A Concurrent Statement 
 ------------------------------------------------------------------------------------------------------------------------
-    | otherwise = 
-        (appendVhd s 
-        (changePresentEntity
-            (\x -> x {parsedNames = 
-                parseVhd 
-                    (tokenize [intercalate " " myVhdLines])
-                    IP_NoKeyword
-            })
-            gS)) where
+    | otherwise = updateVhdRendering (appendVhd s gS) where
         myEntity = head (fetchOneEntity (gPEnt gS) (entTree gS))
-        myVhdLines = (addToVhdBody myEntity) ++ [s]
 
 

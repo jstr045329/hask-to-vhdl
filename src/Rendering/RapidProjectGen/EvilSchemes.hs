@@ -12,18 +12,7 @@ module Rendering.RapidProjectGen.EvilSchemes where
 
 
 
--- TODO: PICK UP HERE: Take all port parsing, port reasoning, all gleaning, applying a coding standard, 
--- everything else that goes into the lines that the user sees. Wrap all of that up in 1 file, called
--- RenderEntity or something like that. That way, the exact results the user sees can go to a file. 
---      * Be sure to add rendered processes to overall entity rendering.
---      * Glean ALL entity body for names
---      * Figure out why "proc" gets declared as a variable.
---      * Add 2 sets to Entity:
---          * DeclaredNames
---          * ParsedNames
---          * DeclaredNames takes precedence over ParsedNames
---      * The process has to automatically reset all signals, using declaredNames if available, 
---        otherwise parsedNames. 
+-- TODO: PICK UP HERE: Rehearse the exact demo. Make everything perfect.
 
 
 
@@ -48,7 +37,10 @@ module Rendering.RapidProjectGen.EvilSchemes where
 --          * A package which declares all components, 
 --          * A testbench for every component.
 --
+--
 -- BPSK modulator would be a good example, because it's practical yet easy to write in a few minutes.
+--      * Set default width to ADC_WIDTH when declaring ADC signals
+--      * Set default width to ACCUMULATOR_WIDTH when declaring acculator.
 --
 -- The goal is to show how powerful it is when you can iterate through code, just like you would iterate 
 -- through requirements. In each pass, you keep some kind of improvement from the last one, yet you reduce
@@ -117,13 +109,33 @@ module Rendering.RapidProjectGen.EvilSchemes where
 
 
 
-
+-- TODO:
+--      * Add 2 sets to Entity:
+--          * DeclaredNames
+--          * ParsedNames
+--          * DeclaredNames takes precedence over ParsedNames
+--      * The process has to automatically reset all signals, using declaredNames if available, 
+--        otherwise parsedNames. 
 
 
 -- TODO: Go through all modules and explicity export things. 
 -- Avoiding name collisions is starting to be a pain. 
 
+-- Replace all width & height parameters with a struct that can be changed through command.
 
+
+-- TODO: Add rising edge and falling edge commands. 
+--       re <signal_name>
+-- instantiates a rising edge detector like this:
+--
+-- SIGNAL_NAME_RISING_EDGE: rising_edge_detector port map(
+--      clk => clk,
+--      ...
+--      din => <signal_name>
+--      dout => <signal_name>_re
+--      );
+--
+-- Likewise for falling edge.
 
 
 -- TODO: Think of a way a single Hs file can run TuiState through its paces. 
