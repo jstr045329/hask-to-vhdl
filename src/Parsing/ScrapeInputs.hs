@@ -38,6 +38,7 @@ import Parsing.VhdlTokens
 import Parsing.VhdlKeywords
 import Tools.ListTools
 import Parsing.VhdlTokensToRemove
+import Parsing.ConstantRecognition
 
 
 ------------------------------------------------------------------------------------------------------------------------
@@ -266,6 +267,6 @@ scrapeFormulaInputsBrains los
 -- 
 ------------------------------------------------------------------------------------------------------------------------
 scrapeFormulaInputs :: [String] -> [String]
-scrapeFormulaInputs los = [x | x <- (scrapeFormulaInputsBrains los), not (isTokenToRemove x), not (isVhdlNumber x), not (isVhdlToken x), not (isVhdlKeyword x)] 
+scrapeFormulaInputs los = [x | x <- (scrapeFormulaInputsBrains los), not (isTokenToRemove x), not (isVhdlNumber x), not (isVhdlToken x), not (isVhdlKeyword x), not (isConstant x)] 
 
 

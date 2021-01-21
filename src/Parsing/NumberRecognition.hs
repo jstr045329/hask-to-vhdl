@@ -7,6 +7,13 @@
 module Parsing.NumberRecognition where
 
 
+isSingleBit :: String -> Bool
+isSingleBit s
+    | ((head s) /= '\'') = False
+    | ((last s) /= '\'') = False
+    | otherwise = True
+
+
 isBinLiteral :: String -> Bool
 isBinLiteral s
     | ((head s) /= '"') = False
@@ -31,6 +38,6 @@ isIntLiteral s
 
 
 isVhdlNumber :: String -> Bool
-isVhdlNumber s = (isBinLiteral s) || (isHexLiteral s) || (isIntLiteral s)
+isVhdlNumber s = (isBinLiteral s) || (isHexLiteral s) || (isIntLiteral s) || (isSingleBit s)
 
 
