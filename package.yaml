@@ -36,6 +36,7 @@ dependencies:
 - directory
 - cursor >= 0.3 && < 1
 - lens
+- sort
 
 library:
   source-dirs: src
