@@ -105,9 +105,27 @@ module Rendering.RapidProjectGen.EvilSchemes where
 
 
 
+-- TODO: Make these defaults commandable:
+--      * clock name
+--      * reset name
+--      * data type
+--      * width
+--      * Every screen parameter
+--      * Whether or not GeneratorState embeds all process activity in an if en = '1' statement,
+--        and if so, the name of that enable should be programmable. 
+--
+-- Screen parameters and InfoAssumptions need to be 2 separate structs. 
+-- InfoAssumptions is germaine to scripting, while screen parameters are not. 
 
+-- TODO: Change <proc> to proc. Eliminate all the <'s and >'s for things that user will type a lot.
 
+-- TODO: Give proc command an optional sensitivity list. If user wants to use clk100 instead of clk, 
+-- or write a combinational process, user can do it.
 
+-- TODO: Give /proc the option to put all inputs in sensitivity list. 
+
+-- TODO: In outermost parser (DecodeOneLine?) make string "ctrl-d" same as holding Ctrl and pressing D, 
+-- so that those commands are scriptable. 
 
 -- TODO:
 --      * Add 2 sets to Entity:

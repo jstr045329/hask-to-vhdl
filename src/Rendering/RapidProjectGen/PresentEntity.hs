@@ -7,6 +7,8 @@
 module Rendering.RapidProjectGen.PresentEntity where
 import Rendering.RapidProjectGen.GeneratorState
 import Rendering.RapidProjectGen.RapidTuiState
+import Rendering.Entity
+import Rendering.EntityTree
 
 
 -----------------------------------------------------------------------------------------------------------------------
@@ -21,5 +23,12 @@ pEnt ts = last (pathToPresent (generatorState ts))
 ------------------------------------------------------------------------------------------------------------------------
 displayPresentEnt :: TuiState -> [String]
 displayPresentEnt ts = ["Present Entity: " ++ (pEnt ts)]
+
+
+------------------------------------------------------------------------------------------------------------------------
+--                                      Get Present Entity from Generator State 
+------------------------------------------------------------------------------------------------------------------------
+getPresentEntity :: GeneratorState -> Entity
+getPresentEntity gS = head (fetchOneEntity (gPEnt gS) (entTree gS))
 
 

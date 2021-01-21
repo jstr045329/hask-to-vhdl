@@ -19,6 +19,7 @@ import Parsing.InputParsingKeywords
 import Data.List
 import Rendering.RapidProjectGen.UpdateVhdRendering
 
+
 ------------------------------------------------------------------------------------------------------------------------
 --                             Helper Functions To Decode Port, Signal & Generic Creation
 ------------------------------------------------------------------------------------------------------------------------
@@ -125,7 +126,8 @@ slurpCommand s gS
 --      2) Set GeneratorState's processUnderConstruction to an empty list.
 --
 ------------------------------------------------------------------------------------------------------------------------
-    | (startsWith s "</proc>") = updateVhdRendering 
+    | (startsWith s "</proc>") = updateVhdRendering
+                                    (updateProcessOutputs 
                                     (changePresentEntity
                                     (\x -> x{ 
                                             processes = (processes x) ++ (processUnderConstruction gS)
@@ -133,7 +135,7 @@ slurpCommand s gS
                                     }) gS) {
                                             drinkProcess = False
                                         ,   processUnderConstruction = [defaultProcess]
-                                        }
+                                        })
 
 
 ------------------------------------------------------------------------------------------------------------------------
@@ -144,7 +146,7 @@ slurpCommand s gS
 ------------------------------------------------------------------------------------------------------------------------
 
     -- TODO: Refresh entire entity body when this branch runs. 
-    | (drinkProcess gS) = updateVhdRendering (gS { processUnderConstruction = [(head (processUnderConstruction gS)) {procPlainLines = (procPlainLines (head (processUnderConstruction gS))) ++ (nZipTab 2 [s])}]})
+    | (drinkProcess gS) = updateVhdRendering (updateProcessOutputs (gS { processUnderConstruction = [(head (processUnderConstruction gS)) {procPlainLines = (procPlainLines (head (processUnderConstruction gS))) ++ (nZipTab 2 [s])}]}))
 
 
 ------------------------------------------------------------------------------------------------------------------------

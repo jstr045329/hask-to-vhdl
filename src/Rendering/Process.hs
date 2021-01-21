@@ -206,7 +206,6 @@ renderProcess oneProc projParams =
     [renderProcessFirstLine oneProc projParams] ++ 
     ["begin"] ++
     (renderClockAndResetIfStatements oneProc projParams) ++ 
-    -- TODO: Render the SequentialCode field in Process.
     (procPlainLines oneProc) ++ 
     (renderClockAndResetIfStatementFooter oneProc projParams) ++
     ["end process;"] ++ 
