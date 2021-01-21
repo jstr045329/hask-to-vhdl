@@ -16,6 +16,7 @@ import Rendering.RapidProjectGen.SideColDashes
 import Rendering.RapidProjectGen.DisplayInformation
 import Rendering.Process
 import Rendering.ProjectParameters
+import Data.Sort
 
 
 ------------------------------------------------------------------------------------------------------------------------
@@ -35,19 +36,19 @@ applyInformationDefaults gS myInfo = myInfo {
 --                                               Extract Parsed Names 
 ------------------------------------------------------------------------------------------------------------------------
 extractParsedInputs :: TuiState -> [Information]
-extractParsedInputs ts = map (\oneInfoName -> applyInformationDefaults gS (easyInSl oneInfoName [])) (HashSet.toList (inputNames (finalizePorts (parsedNames (head myEntList))))) where
+extractParsedInputs ts = map (\oneInfoName -> applyInformationDefaults gS (easyInSl oneInfoName [])) (sort (HashSet.toList (inputNames (finalizePorts (parsedNames (head myEntList)))))) where
     gS = generatorState ts
     myEntList = fetchOneEntity (gPEnt gS) (entTree gS) 
 
 
 extractParsedOutputs :: TuiState -> [Information]
-extractParsedOutputs ts = map (\oneInfoName -> applyInformationDefaults gS (easyOutSl oneInfoName [])) (HashSet.toList (outputNames (finalizePorts (parsedNames (head myEntList))))) where
+extractParsedOutputs ts = map (\oneInfoName -> applyInformationDefaults gS (easyOutSl oneInfoName [])) (sort (HashSet.toList (outputNames (finalizePorts (parsedNames (head myEntList)))))) where
     gS = generatorState ts
     myEntList = fetchOneEntity (gPEnt gS) (entTree gS) 
 
 
 extractParsedSignals :: TuiState -> [Information]
-extractParsedSignals ts = map (\oneInfoName -> applyInformationDefaults gS (easySig oneInfoName StdLogicVector (Hard 32) [])) (HashSet.toList (sigNames (finalizePorts (parsedNames (head myEntList))))) where
+extractParsedSignals ts = map (\oneInfoName -> applyInformationDefaults gS (easySig oneInfoName StdLogicVector (Hard 32) [])) (sort (HashSet.toList (sigNames (finalizePorts (parsedNames (head myEntList)))))) where
     gS = generatorState ts
     myEntList = fetchOneEntity (gPEnt gS) (entTree gS) 
 
@@ -72,9 +73,9 @@ gleanPorts :: TuiState -> [String]
 gleanPorts ts =
     take numPortsToDisplay
         ([ctrString "Ports" sideColumn, sideColDashes] ++
-        (if (length (getNodesWithName (pEnt ts) (entTree (generatorState ts))) > 0)
-            then map showOneInfo ((ports (head (getNodesWithName (pEnt ts) (entTree (generatorState ts))))) ++ myInformations)
-            else []) ++
+        (sort (if (length (getNodesWithName (pEnt ts) (entTree (generatorState ts))) > 0)
+            then sort (map showOneInfo ((ports (head (getNodesWithName (pEnt ts) (entTree (generatorState ts))))) ++ myInformations))
+            else [])) ++
         blankLines) where
             myInformations = (extractParsedInputs ts) ++ (extractParsedOutputs ts)
 
@@ -87,7 +88,7 @@ gleanSignals ts =
     take numSignalsToDisplay
         ([ctrString "Signals" sideColumn, sideColDashes] ++
         (if (length (getNodesWithName (pEnt ts) (entTree (generatorState ts))) > 0)
-            then map showOneInfo ((signals (head (getNodesWithName (pEnt ts) (entTree (generatorState ts))))) ++ myInformations)
+            then sort (map showOneInfo ((signals (head (getNodesWithName (pEnt ts) (entTree (generatorState ts))))) ++ myInformations))
             else []) ++
         blankLines) where
             myInformations = extractParsedSignals ts

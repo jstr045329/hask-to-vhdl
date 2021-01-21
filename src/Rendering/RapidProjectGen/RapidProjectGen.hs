@@ -51,6 +51,7 @@ import Rendering.RapidProjectGen.DisplayInformation
 import Rendering.RapidProjectGen.SideColDashes
 import Rendering.RapidProjectGen.PresentEntity
 import Rendering.RapidProjectGen.ExtractParsedNames
+import Data.Sort
 
 
 ------------------------------------------------------------------------------------------------------------------------
