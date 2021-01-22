@@ -148,7 +148,7 @@ drawTui ts = [
     vBox [
         hBox [
                 vBox $ concat [map str (drawEntHierarchy ts)]
-            ,   vBox $ concat [map str (gleanRenderedCode ts)]
+            ,   vBox $ concat [map str (gleanRenderedCode (generatorState ts))]
             ,   vBox $ concat [
                             map str (gleanGenerics ts)
                         ,   map str (gleanPorts ts)

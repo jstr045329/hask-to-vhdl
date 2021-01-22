@@ -12,6 +12,8 @@ import Parsing.SourceSinkParser
 
 data Entity = Entity {
             entNomen :: String
+
+        -- These lists contain lists of informations the user has declared:
         ,   generics :: [Information]
         ,   ports :: [Information]
         ,   signals :: [Information]
@@ -28,7 +30,25 @@ data Entity = Entity {
         ,   maxRecursionDepth :: Int -- For recursive entities, choose a termination depth
         ,   interspersedCode :: [InterspersedCode]
         ,   addToVhdBody :: [String] -- VHDL Literals
-        ,   parsedNames :: InfoPack -- This struct contains names parsed from addToVhdBody, organized by signal, input, output, etc.
+
+        -- This struct contains names parsed from addToVhdBody, organized by signal, input, etc. 
+        -- parsedNames is naive, in that all it knows are names. Contains no information about 
+        -- width, datatype, etc. 
+        ,   parsedNames :: InfoPack 
+
+        -- These lists contain default Information's for every name in parsedNames:
+        ,   parsedInputs :: [Information]
+        ,   parsedOutputs :: [Information]
+        ,   parsedSignals :: [Information]
+        ,   parsedGenerics :: [Information]
+
+        -- These are the finalized lists of Information's:
+        -- Anything the user has declared takes precedence. 
+        -- Anything in parsedNames that has not been declared also goes to the appropriate list:
+        ,   aggInputs :: [Information]
+        ,   aggOutputs :: [Information]
+        ,   aggSignals :: [Information]
+        ,   aggGenerics :: [Information]
     } | TopLevelEntity 
         deriving (Eq, Show)
 
@@ -53,6 +73,14 @@ defaultEntity = Entity {
     ,   interspersedCode = []
     ,   addToVhdBody = []
     ,   parsedNames = blankInfoPack
+    ,   parsedInputs = []
+    ,   parsedOutputs = []
+    ,   parsedSignals = []
+    ,   parsedGenerics = []
+    ,   aggInputs = []
+    ,   aggOutputs = []
+    ,   aggSignals = []
+    ,   aggGenerics = []
     }
 
 
