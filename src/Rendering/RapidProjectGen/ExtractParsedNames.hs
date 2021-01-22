@@ -123,7 +123,7 @@ gleanPorts ts =
             else [])) ++
         blankLines) where
             myEnt = getPresentEntity (generatorState ts)
-            myInformations = filterUnique ((aggInputs myEnt) ++ (aggOutputs myEnt)) 
+            myInformations = [x | x <- filterUnique ((aggInputs myEnt) ++ (aggOutputs myEnt)), not (elem (nomen x) (map nomen (signals myEnt)))]
 
 
 ------------------------------------------------------------------------------------------------------------------------
@@ -139,7 +139,7 @@ gleanSignals ts =
             else []) ++
         blankLines) where
             myEnt = getPresentEntity (generatorState ts)
-            myInformations = filterUnique (aggSignals myEnt) -- extractParsedSignals ts
+            myInformations = [x | x <- filterUnique (aggSignals myEnt), not (elem (nomen x) (map nomen (ports myEnt)))]
 
 
 ------------------------------------------------------------------------------------------------------------------------

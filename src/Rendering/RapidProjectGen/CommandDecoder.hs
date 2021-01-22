@@ -160,7 +160,7 @@ removeDuplicates gS =
 statusQuoFunctions :: [(GeneratorState -> GeneratorState)]
 statusQuoFunctions = [
         updateVhdRendering
---    ,   updateProcessOutputs
+    ,   updateProcessOutputs
     ,   putInfoInPresentEntity
     ,   purgeDeclarations
 --     ,   removeDuplicates
@@ -184,7 +184,7 @@ updateGsBrains gS n
 
 
 updateGs :: GeneratorState -> GeneratorState
-updateGs gS = updateGsBrains gS 1
+updateGs gS = updateGsBrains gS 10
 
 
 ------------------------------------------------------------------------------------------------------------------------
