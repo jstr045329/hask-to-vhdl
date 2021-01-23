@@ -90,8 +90,6 @@ makeOneNewSignal oneStr generatorState =
         }
 
 
--- decodeGenericType :: [String] -> DataType
-
 ------------------------------------------------------------------------------------------------------------------------
 --                                                Make 1 New Port
 ------------------------------------------------------------------------------------------------------------------------
@@ -163,14 +161,8 @@ statusQuoFunctions = [
     ,   updateProcessOutputs
     ,   putInfoInPresentEntity
     ,   purgeDeclarations
---     ,   removeDuplicates
     ]
 
-
--- TODO: PICK UP HERE: Write a GeneratorState -> GeneratorState to look at declared Information lists and purge all but the 
--- newest. 
-
--- changePresentEntity :: (Entity -> Entity) -> GeneratorState -> GeneratorState
 
 applyFuncList :: [(GeneratorState -> GeneratorState)] -> GeneratorState -> GeneratorState
 applyFuncList [] gS = gS
@@ -252,12 +244,6 @@ slurpCommand s gS
             then gS
             else drillDownOneLayer ((words s) !! 1) gS
 
--- TODO: PICK UP HERE: Call whatshername about insurance.
--- TODO: Wrap up all functions that happen anywhere into a brains function. 
--- Then a wrapper called runMeEveryTime calls the brains 10 times. 
-
--- TODO: After that's done, render full entity.
--- TODO: After that's done, render all entities, generate packages, and instantiate children. 
 
 ------------------------------------------------------------------------------------------------------------------------
 --                           If s Is None of The Above, It Must Be A Concurrent Statement 

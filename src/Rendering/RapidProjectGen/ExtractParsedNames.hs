@@ -21,6 +21,7 @@ import Data.List
 import Parsing.ConstantRecognition
 import Parsing.GuaranteeWhitespace
 import Rendering.FilterUnique
+import qualified Rendering.PopulateTemplates as PopTemp
 
 
 ------------------------------------------------------------------------------------------------------------------------
@@ -153,14 +154,19 @@ allProcessLines :: Entity -> [String]
 allProcessLines someEnt = flattenShallow (map (\x -> renderProcess x easyProjParams) (processes someEnt))
 
 
--- TODO: SUPER EFFING IMPORTANT: Render the entity declaration, signals. 
 gleanRenderedCode :: GeneratorState -> [String]
 gleanRenderedCode gS = [titleLine] ++ take renderedLinesToShow (skipN perfectLines startLoc) where
     oneEnt = getPresentEntity gS
     myNewProcessLines = if ((head (processUnderConstruction gS)) == defaultProcess)
                             then []
                             else renderProcess (head (processUnderConstruction gS)) (projectParameters gS)
-    rawLines = (addToVhdBody oneEnt) ++ (allProcessLines oneEnt) ++ myNewProcessLines ++ blankLines
+    rawLines = (PopTemp.populateEntityTemplate
+                (declareBatch (aggGenerics oneEnt))
+                (declareBatch ((aggInputs oneEnt) ++ (aggOutputs oneEnt)))
+                (declareBatch (aggSignals oneEnt))
+                ((addToVhdBody oneEnt) ++ (allProcessLines oneEnt) ++ myNewProcessLines)
+                (PopTemp.vanillaSettings (entNomen oneEnt))) ++
+                blankLines
     perfectLines = map bedOfProcrustes rawLines
     titleLine = ctrString "Rendered Code" renderedCodeWidth
     startLoc = renderedCodeStartLoc gS
@@ -201,29 +207,4 @@ putInfoInEntity gS myEnt = (populateEntityDefaults gS myEnt) {
 putInfoInPresentEntity :: GeneratorState -> GeneratorState
 putInfoInPresentEntity gS = changePresentEntity (\x -> putInfoInEntity gS x) gS
         
-
-
--- 13 data Entity = Entity {
--- 14             entNomen :: String
--- 15 
--- 16         -- These lists contain lists of informations the user has declared:
--- 17         ,   generics :: [Information]
--- 18         ,   ports :: [Information]
--- 19         ,   signals :: [Information]
--- 38 
--- 39         -- These lists contain default Information's for every name in parsedNames:
--- 40         ,   parsedInputs :: [Information]
--- 41         ,   parsedOutputs :: [Information]
--- 42         ,   parsedSignals :: [Information]
--- 43         ,   parsedGenerics :: [Information]
--- 44         
--- 45         -- These are the finalized lists of Information's:
--- 46         -- Anything the user has declared takes precedence. 
--- 47         -- Anything in parsedNames that has not been declared also goes to the appropriate list:
--- 48         ,   aggInputs :: [Information]
--- 49         ,   aggOutputs :: [Information]
--- 50         ,   aggSignals :: [Information]
--- 51         ,   aggGenerics :: [Information]
--- 52     } | TopLevelEntity
--- 53         deriving (Eq, Show)
 

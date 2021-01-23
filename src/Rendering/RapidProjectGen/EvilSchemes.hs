@@ -12,7 +12,7 @@ module Rendering.RapidProjectGen.EvilSchemes where
 
 
 
--- TODO: PICK UP HERE: Rehearse the exact demo. Make everything perfect.
+-- TODO: Rehearse the exact demo. Make everything perfect.
 
 
 
@@ -100,9 +100,15 @@ module Rendering.RapidProjectGen.EvilSchemes where
 
 
 
+-- TODO: Write a function like this:
+-- GeneratorState -> String
+-- It intercalates "_" in between entity names to get to present entity. 
 
+-- TODO: Render component declarations:
+-- Write a GeneratorState -> [String] that fills a package will every component in the hierarchy.
 
-
+-- TODO: Render port map for child entities.
+-- TODO: Write the poop command, which poops entire entity hierarchy into 1 big file. 
 
 
 -- TODO: Make these defaults commandable:

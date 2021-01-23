@@ -41,8 +41,7 @@ infiniteSlvBus nomen0 dt0 w0 default0 sReset0 clocked0 comments0 assertionLevel0
         ,   assertionLevel = assertionLevel0
         } | n <- [0..]]
     
--- TODO: Check if some functions in this file are reinventing other ones.
--- mapM putStrLn (renderFullService (orSigs easyClkRst (infiniteSlvBus "intermediate" StdLogic (Hard 1) Unspecified "'0'" Nothing [] Nothing)))
+
 ------------------------------------------------------------------------------------------------------------------------
 --                                          Create Infinite List of Signals
 --

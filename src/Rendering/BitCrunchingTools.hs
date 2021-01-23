@@ -21,7 +21,6 @@ char2Int '0' = 0
 char2Int _ = 1
 
 
---str2Int :: (Num a) => String -> a
 str2Int :: String -> Integer
 str2Int "" = 0
 str2Int s = ((2 ^ ((length s) - 1)) * char2Int (head s)) + str2Int (tail s)

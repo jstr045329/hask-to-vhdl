@@ -69,5 +69,5 @@ data Concatenation = JustInfo Information
                 }
 
                 deriving (Eq, Show)
-                
-            -- TODO: Think about whether these new datatypes are putting the project on the right path.
+
+

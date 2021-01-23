@@ -212,7 +212,7 @@ handleTuiEvent s e =
 
         EvKey (KChar 'q') [MCtrl] -> halt s
 
--- TODO: PICK UP HERE: Make Ctrl-R render all VHDL
+-- TODO: Make Ctrl-R render all VHDL
 --        EvKey (KChar 'r') [MCtrl] ->  
 
 -- TODO: Add undo button:

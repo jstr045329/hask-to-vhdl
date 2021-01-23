@@ -72,11 +72,6 @@ fetchOneEntityTree oneEntNomen (EntityTree oneEntity entList)
 -- spacetime, destruction of the cosmos, etc.
 --
 -----------------------------------------------------------------------------------------------------------------------
-
--- TODO: Move this function to a different name, say, changeOneEntity'. 
--- Then change the type of changeOneEntity to an easier to use wrapper. 
--- For instance, (Entity -> Entity) -> GeneratorState -> GeneratorState, 
--- and the new function assumes the present entity is the one you want to change.
 changeOneEntity :: String -> EntityTree -> (Entity -> Entity) -> EntityTree
 changeOneEntity oneEntNomen (EntityTree oneEntity []) someFunc = 
     EntityTree 
