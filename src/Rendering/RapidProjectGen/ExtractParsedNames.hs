@@ -44,17 +44,17 @@ applyInformationDefaults gS myInfo = myInfo {
 --
 ------------------------------------------------------------------------------------------------------------------------
 extractParsedInputs' :: GeneratorState -> [Information]
-extractParsedInputs' gS = map (\oneInfoName -> applyInformationDefaults gS (easyInSl oneInfoName [])) (sort (HashSet.toList (inputNames (finalizePorts (parsedNames (head myEntList)))))) where
+extractParsedInputs' gS = map (\oneInfoName -> applyInformationDefaults gS (easyInSl oneInfoName [])) (HashSet.toList (inputNames (finalizePorts (parsedNames (head myEntList))))) where
     myEntList = fetchOneEntity (gPEnt gS) (entTree gS) 
 
 
 extractParsedOutputs' :: GeneratorState -> [Information]
-extractParsedOutputs' gS = map (\oneInfoName -> applyInformationDefaults gS (easyOutSl oneInfoName [])) (sort (HashSet.toList (outputNames (finalizePorts (parsedNames (head myEntList)))))) where
+extractParsedOutputs' gS = map (\oneInfoName -> applyInformationDefaults gS (easyOutSl oneInfoName [])) (HashSet.toList (outputNames (finalizePorts (parsedNames (head myEntList))))) where
     myEntList = fetchOneEntity (gPEnt gS) (entTree gS) 
 
 
 extractParsedSignals' :: GeneratorState -> [Information]
-extractParsedSignals' gS = map (\oneInfoName -> applyInformationDefaults gS (easySig oneInfoName StdLogicVector (Hard 32) [])) (sort (HashSet.toList (sigNames (finalizePorts (parsedNames (head myEntList)))))) where
+extractParsedSignals' gS = map (\oneInfoName -> applyInformationDefaults gS (easySig oneInfoName StdLogicVector (Hard 32) [])) (HashSet.toList (sigNames (finalizePorts (parsedNames (head myEntList))))) where
     myEntList = fetchOneEntity (gPEnt gS) (entTree gS) 
 
 
@@ -119,9 +119,9 @@ gleanPorts :: TuiState -> [String]
 gleanPorts ts =
     take numPortsToDisplay
         ([ctrString "Ports" sideColumn, sideColDashes] ++
-        (sort (if (length (getNodesWithName (pEnt ts) (entTree (generatorState ts))) > 0)
-            then sort (map showOneInfo myInformations) 
-            else [])) ++
+        (if (length (getNodesWithName (pEnt ts) (entTree (generatorState ts))) > 0)
+            then (map showOneInfo myInformations) 
+            else []) ++
         blankLines) where
             myEnt = getPresentEntity (generatorState ts)
             myInformations = [x | x <- filterUnique ((aggInputs myEnt) ++ (aggOutputs myEnt)), not (elem (nomen x) (map nomen (signals myEnt)))]
@@ -135,8 +135,7 @@ gleanSignals ts =
     take numSignalsToDisplay
         ([ctrString "Signals" sideColumn, sideColDashes] ++
         (if (length (getNodesWithName (pEnt ts) (entTree (generatorState ts))) > 0)
-            -- then sort (map showOneInfo ((signals (head (getNodesWithName (pEnt ts) (entTree (generatorState ts))))) ++ myInformations))
-            then sort (map showOneInfo myInformations)
+            then map showOneInfo myInformations
             else []) ++
         blankLines) where
             myEnt = getPresentEntity (generatorState ts)

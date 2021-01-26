@@ -7,6 +7,11 @@ tail' [] = []
 tail' x = tail x
 
 
+head' :: [a] -> [a]
+head' [] = []
+head' x = head x
+
+
 skipN :: [a] -> Int -> [a]
 skipN [] _ = []
 skipN someList 0 = someList

@@ -223,6 +223,7 @@ extractWidthExpression xs
 
 
 startsWithNum :: String -> Bool
+startsWithNum "" = False
 startsWithNum s = elem (head s) ['0'..'9']
 
 

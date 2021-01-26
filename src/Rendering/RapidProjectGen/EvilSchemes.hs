@@ -9,12 +9,66 @@ module Rendering.RapidProjectGen.EvilSchemes where
 
 
 
+-- TODO: PICK UP HERE: 
+--      Render entire GeneratorState to Vhd:
+--          * Generate a testbench for every entity, 
+--          * Generate a TCL for every entity.
+--          * Generate a package holding all component declarations
+--          * For each entity, generate a package w/ component declaration for that package and its children. 
+--      Render entire GeneratorState to Hs.
+--      Give this thing the ability to execute scripts.
 
+
+-- TODO: Write a command called delayParsing, which simply enters lines into GeneratorState.
+-- TODO: Write a command called parseNow, which runs the N^2 stuff. 
+-- The idea is run the program in N^2 time, instead of turning it into N^3 by running N^2 after every command.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-- TODO: Rehearse event logger.
 
 
 -- TODO: Rehearse the exact demo. Make everything perfect.
-
-
 
 
 -- This is the demo I want to give:

@@ -232,82 +232,87 @@ resetStimSignals los = resetBatch stimSigs where
 
 
 generateTestbench :: [String] -> [String]
-generateTestbench los = 
-    (commentBlock ["Testbench for " ++ (getEntityName los)]) ++ 
-    ["library ieee;"] ++
-    ["use ieee.std_logic_1164.all;"] ++
-    ["use ieee.numeric_std.all;"] ++
-    ["use work.VhdSimToolsPkg.all;"] ++ 
-    ["", ""] ++
-    ["entity " ++ (getEntityName los) ++ "_tb is"] ++
-    ["end " ++ (getEntityName los) ++ "_tb;"] ++
-    ["", ""] ++
-    ["architecture behavioral_" ++ (getEntityName los) ++ "_tb of " ++ (getEntityName los) ++ "_tb is"] ++
-    ["",""] ++ 
-    (glueStatements (generateComponentDec los)) ++ 
-    ["",""] ++ 
-    (declareConstants los) ++ 
-    (declareSignals (tail (dropLast (extractDeclaration "port" los)))) ++
-    [""] ++
-    ["constant clk_per : time := 10 ns;"] ++
-    ["signal sim_done : std_logic := '0';"] ++
-    ["signal test_stage : integer := 0;"] ++
-    ["signal s_clock_cycle_count : integer := 0;"] ++ 
-    [""] ++
-    [""] ++
-    ["begin"] ++
-    [""] ++
-    [""] ++
-    (commentBlock ["Boiler Plate"]) ++ 
-    ["CLOCK_PROCESS: process"] ++
-    ["begin"] ++
-    ["    if sim_done = '1' then"] ++
-    ["        wait;"] ++
-    ["    else"] ++ 
-    ["        wait for clk_per/2;"] ++
-    ["        clk <= not clk;"] ++
-    ["    end if;"] ++
-    ["end process;"] ++
-    [""] ++
-    [""] ++
-    (commentBlock ["Count Clock Cycles"]) ++ 
-    ["CLOCK_CYCLE_COUNTER: process(clk)"] ++
-    ["begin"] ++
-    ["    if rising_edge(clk) then "] ++
-    ["        s_clock_cycle_count <= s_clock_cycle_count + 1;"] ++
-    ["    end if;"] ++
-    ["end process;"] ++
-    [""] ++
-    [""] ++
-    (commentBlock ["Stim Process"]) ++ 
-    ["STIM_PROCESS: process"] ++
-    ["begin"] ++
-    (zipTab (resetStimSignals los)) ++ 
-    ["    test_stage <= 0;"] ++ 
-    ["    sync_wait_rising(clk, 10);"] ++
-    -- Invert all resets
-    -- Typically use exactly one in practice. 
-    (map (\oneRst -> "    " ++ (nomen oneRst) ++ " <= not " ++ (nomen oneRst) ++ ";")
-         (extractResets (Rendering.GenerateTestbench.getPorts los))) ++ 
-    ["    sync_wait_rising(clk, 10);"] ++
-    [""] ++
-    [""] ++
-    ["    -- Test ends here:"] ++ 
-    ["    test_stage <= test_stage + 1;"] ++ 
-    ["    sync_wait_rising(clk, 100);"] ++
-    ["    sim_done <= '1';"] ++
-    ["    wait;"] ++
-    ["end process;"] ++
-    [""] ++
-    [""] ++
-    [""] ++
-    [""] ++
-    (commentBlock ["Unit Under Test"]) ++ 
-    (generatePortMap "UUT" los) ++ 
-    [""] ++
-    [""] ++
-    ["end architecture behavioral_" ++ (getEntityName los) ++ "_tb;"] ++ 
-    [""] ++
-    [""] 
+generateTestbench [] = []
+generateTestbench los 
+    | ((getEntityName los) == []) = []
+    | ((generateComponentDec los) == []) = []
+    | ((extractDeclaration "port" los) == []) = []
+    | otherwise = 
+        (commentBlock ["Testbench for " ++ (getEntityName los)]) ++ 
+        ["library ieee;"] ++
+        ["use ieee.std_logic_1164.all;"] ++
+        ["use ieee.numeric_std.all;"] ++
+        ["use work.VhdSimToolsPkg.all;"] ++ 
+        ["", ""] ++
+        ["entity " ++ (getEntityName los) ++ "_tb is"] ++
+        ["end " ++ (getEntityName los) ++ "_tb;"] ++
+        ["", ""] ++
+        ["architecture behavioral_" ++ (getEntityName los) ++ "_tb of " ++ (getEntityName los) ++ "_tb is"] ++
+        ["",""] ++ 
+        (glueStatements (generateComponentDec los)) ++ 
+        ["",""] ++ 
+        (declareConstants los) ++ 
+        (declareSignals (tail (dropLast (extractDeclaration "port" los)))) ++
+        [""] ++
+        ["constant clk_per : time := 10 ns;"] ++
+        ["signal sim_done : std_logic := '0';"] ++
+        ["signal test_stage : integer := 0;"] ++
+        ["signal s_clock_cycle_count : integer := 0;"] ++ 
+        [""] ++
+        [""] ++
+        ["begin"] ++
+        [""] ++
+        [""] ++
+        (commentBlock ["Boiler Plate"]) ++ 
+        ["CLOCK_PROCESS: process"] ++
+        ["begin"] ++
+        ["    if sim_done = '1' then"] ++
+        ["        wait;"] ++
+        ["    else"] ++ 
+        ["        wait for clk_per/2;"] ++
+        ["        clk <= not clk;"] ++
+        ["    end if;"] ++
+        ["end process;"] ++
+        [""] ++
+        [""] ++
+        (commentBlock ["Count Clock Cycles"]) ++ 
+        ["CLOCK_CYCLE_COUNTER: process(clk)"] ++
+        ["begin"] ++
+        ["    if rising_edge(clk) then "] ++
+        ["        s_clock_cycle_count <= s_clock_cycle_count + 1;"] ++
+        ["    end if;"] ++
+        ["end process;"] ++
+        [""] ++
+        [""] ++
+        (commentBlock ["Stim Process"]) ++ 
+        ["STIM_PROCESS: process"] ++
+        ["begin"] ++
+        (zipTab (resetStimSignals los)) ++ 
+        ["    test_stage <= 0;"] ++ 
+        ["    sync_wait_rising(clk, 10);"] ++
+        -- Invert all resets
+        -- Typically use exactly one in practice. 
+        (map (\oneRst -> "    " ++ (nomen oneRst) ++ " <= not " ++ (nomen oneRst) ++ ";")
+             (extractResets (Rendering.GenerateTestbench.getPorts los))) ++ 
+        ["    sync_wait_rising(clk, 10);"] ++
+        [""] ++
+        [""] ++
+        ["    -- Test ends here:"] ++ 
+        ["    test_stage <= test_stage + 1;"] ++ 
+        ["    sync_wait_rising(clk, 100);"] ++
+        ["    sim_done <= '1';"] ++
+        ["    wait;"] ++
+        ["end process;"] ++
+        [""] ++
+        [""] ++
+        [""] ++
+        [""] ++
+        (commentBlock ["Unit Under Test"]) ++ 
+        (generatePortMap "UUT" los) ++ 
+        [""] ++
+        [""] ++
+        ["end architecture behavioral_" ++ (getEntityName los) ++ "_tb;"] ++ 
+        [""] ++
+        [""] 
 
 

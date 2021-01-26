@@ -3,6 +3,7 @@ import Parsing.TokenMatchingTools
 
 
 getEntityName :: [String] -> String
+getEntityName [] = []
 getEntityName los = head (afterKeyword los ["entity"])
 
 

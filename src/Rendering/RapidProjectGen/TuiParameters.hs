@@ -32,7 +32,7 @@ signalsToShow = 20
 --                                             Height of Entity Body Box 
 ------------------------------------------------------------------------------------------------------------------------
 renderedLinesToShow :: Int
-renderedLinesToShow = 20
+renderedLinesToShow = 30
 
 
 ------------------------------------------------------------------------------------------------------------------------
@@ -93,6 +93,6 @@ numSignalsToDisplay = 18
 --                                             Width of Entity Body Box 
 ------------------------------------------------------------------------------------------------------------------------
 renderedCodeWidth :: Int 
-renderedCodeWidth = 75
+renderedCodeWidth = 120
 
 

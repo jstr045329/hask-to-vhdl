@@ -52,16 +52,18 @@ import Rendering.RapidProjectGen.SideColDashes
 import Rendering.RapidProjectGen.PresentEntity
 import Rendering.RapidProjectGen.ExtractParsedNames
 import Data.Sort
+import Rendering.RapidProjectGen.WriteEntityFiles
 
 
 ------------------------------------------------------------------------------------------------------------------------
 --                                              Define TUI Entry Point 
 ------------------------------------------------------------------------------------------------------------------------
-tui :: IO ()
+-- tui :: IO ()
 tui = do
   initialState <- buildInitialState
   endState <- defaultMain tuiApp initialState
   print endState
+  dumpGeneratorStateToFile endState
 
 
 ------------------------------------------------------------------------------------------------------------------------
@@ -100,11 +102,11 @@ drawEntHierarchy ts =
 buildInitialState :: IO TuiState
 buildInitialState = 
     pure TuiState {
-                _entityTree = [ctrString "Entities" sideColumn]
-            ,   _genericList = [ctrString "Generics" sideColumn] ++ (take genericsToShow blankLines)
-            ,   _portList = [ctrString "Ports" sideColumn] ++ (take portsToShow blankLines)
-            ,   _signalList = [ctrString "Signals" sideColumn] ++ (take signalsToShow blankLines)
-            ,   _renderedCode = [ctrString "Rendered VHDL" middleColumn] ++ (take renderedLinesToShow blankLines)
+                _entityTree = take renderedLinesToShow ([ctrString "Entities" sideColumn] ++ blankLines) 
+            ,   _genericList = take genericsToShow ([ctrString "Generics" sideColumn] ++ blankLines)
+            ,   _portList = take portsToShow ([ctrString "Ports" sideColumn] ++ blankLines)
+            ,   _signalList = take signalsToShow ([ctrString "Signals" sideColumn] ++ blankLines)
+            ,   _renderedCode = take renderedLinesToShow ([ctrString "Rendered VHDL" middleColumn] ++ blankLines)
             ,   _commandHistory = take commandHistoryTraceback blankLines
             ,   _newCommand = cmdArrows 
             ,   _userHints = ["\n"]
@@ -148,7 +150,7 @@ drawTui ts = [
     vBox [
         hBox [
                 vBox $ concat [map str (drawEntHierarchy ts)]
-            ,   vBox $ concat [map str (gleanRenderedCode (generatorState ts))]
+            ,   vBox $ concat [map str (take renderedLinesToShow ((gleanRenderedCode (generatorState ts)) ++ blankLines))]
             ,   vBox $ concat [
                             map str (gleanGenerics ts)
                         ,   map str (gleanPorts ts)
@@ -189,7 +191,7 @@ decRendCodeStartLoc gS
 ------------------------------------------------------------------------------------------------------------------------
 --                                                 Handle TUI Events 
 ------------------------------------------------------------------------------------------------------------------------
-handleTuiEvent :: TuiState -> BrickEvent n e -> EventM n (Next TuiState)
+-- handleTuiEvent :: TuiState -> BrickEvent n e -> EventM n (Next TuiState)
 handleTuiEvent s e =
   case e of
     VtyEvent vtye ->
@@ -213,7 +215,7 @@ handleTuiEvent s e =
         EvKey (KChar 'q') [MCtrl] -> halt s
 
 -- TODO: Make Ctrl-R render all VHDL
---        EvKey (KChar 'r') [MCtrl] ->  
+--         EvKey (KChar 'r') [MCtrl] -> dumpGeneratorStateToFile s
 
 -- TODO: Add undo button:
 --        EvKey (KChar 'z') [MCtrl] -> 

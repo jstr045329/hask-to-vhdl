@@ -96,6 +96,7 @@ populateEntityTemplate genericDecs portDecs signalDecs logic settings =
     ["library IEEE;"] ++ 
     ["use IEEE.std_logic_1164.ALL;"] ++ 
     ["use IEEE.numeric_std.ALL;"] ++ 
+    ["use work.VhdSynthToolsPkg.all;"] ++
     [""] ++ 
     [""] ++ 
     (entityHeader [] settings) ++
@@ -119,6 +120,7 @@ populatePackageTemplate nm declarationLines bodyLines =
     ["library IEEE;"] ++ 
     ["use IEEE.std_logic_1164.ALL;"] ++ 
     ["use IEEE.numeric_std.ALL;"] ++ 
+    ["use work.VhdSynthToolsPkg.all;"] ++
     [""] ++ 
     [""] ++ 
     [ "package " ++ nm ++ " is"] ++

@@ -124,18 +124,18 @@ purgeDecBrains infoList =
 
 
 purgeDeclarations :: GeneratorState -> GeneratorState
-purgeDeclarations gS =
-    changePresentEntity 
-        (\x -> x {
-            aggInputs =  purgeDecBrains (aggInputs x)
-        ,   aggOutputs = purgeDecBrains (aggOutputs x) 
-        ,   aggSignals = purgeDecBrains (aggSignals x)
-        ,   aggGenerics = purgeDecBrains (aggGenerics x)
-        ,   parsedInputs = [y | y <- (parsedInputs x), not (elem (nomen y) (map nomen ((generics x) ++ (ports x) ++ (signals x))))]
-        ,   parsedOutputs = [y | y <- (parsedOutputs x), not (elem (nomen y) (map nomen ((generics x) ++ (ports x) ++ (signals x))))]
-        ,   parsedSignals = [y | y <- (parsedSignals x), not (elem (nomen y) (map nomen ((generics x) ++ (ports x) ++ (signals x))))]
-        })
-        gS
+purgeDeclarations gS = gS
+--    changePresentEntity 
+--        (\x -> x {
+--            aggInputs =  purgeDecBrains (aggInputs x)
+--        ,   aggOutputs = purgeDecBrains (aggOutputs x) 
+--        ,   aggSignals = purgeDecBrains (aggSignals x)
+--        ,   aggGenerics = purgeDecBrains (aggGenerics x)
+--        ,   parsedInputs = [y | y <- (parsedInputs x), not (elem (nomen y) (map nomen ((generics x) ++ (ports x) ++ (signals x))))]
+--        ,   parsedOutputs = [y | y <- (parsedOutputs x), not (elem (nomen y) (map nomen ((generics x) ++ (ports x) ++ (signals x))))]
+--        ,   parsedSignals = [y | y <- (parsedSignals x), not (elem (nomen y) (map nomen ((generics x) ++ (ports x) ++ (signals x))))]
+--        })
+--        gS
 
 
 removeDuplicates :: GeneratorState -> GeneratorState
@@ -160,7 +160,7 @@ statusQuoFunctions = [
         updateVhdRendering
     ,   updateProcessOutputs
     ,   putInfoInPresentEntity
-    ,   purgeDeclarations
+--    ,   purgeDeclarations
     ]
 
 
@@ -176,7 +176,10 @@ updateGsBrains gS n
 
 
 updateGs :: GeneratorState -> GeneratorState
-updateGs gS = updateGsBrains gS 10
+updateGs gS = updateGsBrains gS 2
+
+--updateGs :: GeneratorState -> GeneratorState
+--updateGs gS = updateVhdRendering (putInfoInPresentEntity (updateProcessOutputs (updateVhdRendering (updateProcessOutputs (putInfoInPresentEntity (updateVhdRendering (updateProcessOutputs (putInfoInPresentEntity gS))))))))
 
 
 ------------------------------------------------------------------------------------------------------------------------
@@ -248,7 +251,7 @@ slurpCommand s gS
 ------------------------------------------------------------------------------------------------------------------------
 --                           If s Is None of The Above, It Must Be A Concurrent Statement 
 ------------------------------------------------------------------------------------------------------------------------
-    | otherwise = updateGs (putInfoInPresentEntity (appendVhd s gS)) where
+    | otherwise = updateGs (appendVhd s gS) where
         myEntity = head (fetchOneEntity (gPEnt gS) (entTree gS))
 
 
