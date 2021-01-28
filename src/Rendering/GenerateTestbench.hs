@@ -210,7 +210,7 @@ declareSignals :: [String] -> [String]
 declareSignals [] = []
 declareSignals los = declareBatch sigList where
     portList = extractPorts los
-    rawSignals = map port2Sig portList
+    rawSignals = map port2SigNoFancy portList
     clockList = extractClocks rawSignals
     resetList = extractResets rawSignals
     otherSigs = removeClocks (removeResets rawSignals)

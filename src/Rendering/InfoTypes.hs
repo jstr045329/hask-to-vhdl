@@ -819,6 +819,21 @@ port2SigN p n =
             }
 
 
+port2SigNoFancy :: Information -> Information
+port2SigNoFancy p = 
+    VhdSig  {   nomen = nomen p
+            ,   dataType = dataType p
+            ,   width = width p
+            ,   sDefault = sDefault p
+            ,   sReset = sReset p
+            ,   clocked = clocked p
+            ,   comments = (if (direction p == Out)
+                                        then ["Driven by " ++ (nomen p)]
+                                        else ["Drives " ++ (nomen p)]) ++ (comments p)
+            ,   assertionLevel = assertionLevel p
+            }
+
+
 batchPortToSig :: [Information] -> [(Information, Information)]
 batchPortToSig [] = []
 batchPortToSig (x:xs) = [(onePort, oneSignal)] ++ batchPortToSig xs where

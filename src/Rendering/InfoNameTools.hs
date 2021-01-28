@@ -197,7 +197,7 @@ portName2SigName :: String -> Integer -> String
 portName2SigName s n
     | ((take 2 s) == "i_") = "s_" ++ (tail (tail s)) ++ (signalSuffix n)
     | ((take 2 s) == "o_") = "s_" ++ (tail (tail s)) ++ (signalSuffix n)
-    | (elem s namesToLeaveAlone) = s
+    | (elem s namesToLeaveAlone) = s -- TODO: Try moving this branch to top precedence and see if that breaks anything.
     | otherwise = "s_" ++ s ++ (signalSuffix n)
 
 
