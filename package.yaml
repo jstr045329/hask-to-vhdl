@@ -37,6 +37,8 @@ dependencies:
 - cursor >= 0.3 && < 1
 - lens
 - sort
+- stack
+- ghc
 
 library:
   source-dirs: src
@@ -49,6 +51,9 @@ executables:
     - -threaded
     - -rtsopts
     - -with-rtsopts=-N
+    - -prof 
+    - -fprof-auto 
+    - -fprof-cafs
     dependencies:
     - hask-to-vhd
 

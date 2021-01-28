@@ -110,7 +110,6 @@ generatePortMap instName los
     | otherwise = [instName, ": ", modName] ++ genMap ++ portMap 
         where
             modName = getEntityName los
-            --entChunk = skipNTokens (stopAtEnd (afterKeyword los ["entity"])) 4
             entChunk = stopAtEnd (afterKeyword los ["entity"])
             genMap = (if (elem "generic" los)
                         then (genDec2Map entChunk)
@@ -231,12 +230,51 @@ resetStimSignals los = resetBatch stimSigs where
 -- for testbench use.
 
 
+myBadEntity :: [String]
+myBadEntity = [
+        ""
+    ,   ""
+    ,   "library ieee;"
+    ,   "use ieee.std_logic_1164.all;"
+    ,   ""
+    ,   "entity MyBadEntity is"
+    ,   "generic ("
+    ,   "    I_AM_A_GENERIC : integer := 42;"
+    ,   "    ANOTHER_GENERIC : integer := 42"
+    ,   ");"
+    ,   "port ("
+    ,   "   clk : in std_logic;"
+    ,   "   rst : in std_logic;"
+    ,   "   joe : out std_logic"
+    ,   ");"
+    ,   "end MyBadEntity;"
+    ,   ""
+    ,   "architecture behavioral of MyBadEntity is"
+    ,   "   signal x1 : std_logic;"
+    ,   "   signal x2 : std_logic;"
+    ,   "begin"
+    ,   "x1 <= i + j;"
+    ,   ""
+    ,   "process(clk)"
+    ,   "begin"
+    ,   "if rising_edge(clk) then"
+    ,   "    x2 <= '0';"
+    ,   "else"
+    ,   "    x2 <= '1';"
+    ,   "end if;"
+    ,   "end process;"
+    ,   ""
+    ,   "joe <= x1 and x2;"
+    ,   ""
+    ,   "end behavioral;"
+    ,   ""
+    ,   ""
+    ]
+
 generateTestbench :: [String] -> [String]
 generateTestbench [] = []
 generateTestbench los 
     | ((getEntityName los) == []) = []
-    | ((generateComponentDec los) == []) = []
-    | ((extractDeclaration "port" los) == []) = []
     | otherwise = 
         (commentBlock ["Testbench for " ++ (getEntityName los)]) ++ 
         ["library ieee;"] ++
@@ -252,7 +290,7 @@ generateTestbench los
         (glueStatements (generateComponentDec los)) ++ 
         ["",""] ++ 
         (declareConstants los) ++ 
-        (declareSignals (tail (dropLast (extractDeclaration "port" los)))) ++
+        (declareSignals (tail' (dropLast (extractDeclaration "port" los)))) ++
         [""] ++
         ["constant clk_per : time := 10 ns;"] ++
         ["signal sim_done : std_logic := '0';"] ++

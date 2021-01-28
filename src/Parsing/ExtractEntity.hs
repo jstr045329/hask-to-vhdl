@@ -4,7 +4,9 @@ import Parsing.TokenMatchingTools
 
 getEntityName :: [String] -> String
 getEntityName [] = []
-getEntityName los = head (afterKeyword los ["entity"])
+getEntityName los 
+    | (length (afterKeyword los ["entity"]) > 0) = head (afterKeyword los ["entity"])
+    | otherwise = []
 
 
 isolateEntityDec :: [String] -> [String]

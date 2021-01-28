@@ -44,17 +44,26 @@ gleanOneEntity oneEnt = (PopTemp.populateEntityTemplate
                             (PopTemp.vanillaSettings (entNomen oneEnt))) 
 
 
-
-
 ------------------------------------------------------------------------------------------------------------------------
 --                                         Recursively Glean an Entity Tree 
 ------------------------------------------------------------------------------------------------------------------------
-gleanWholeTree :: EntityTree -> [String]
-gleanWholeTree (EntityTree oneEnt []) = gleanOneEntity oneEnt
+gleanWholeTree :: EntityTree -> [[String]]
+gleanWholeTree (EntityTree oneEnt []) = [gleanOneEntity oneEnt]
 gleanWholeTree (EntityTree oneEnt moreTrees) = 
-    (gleanOneEntity oneEnt) ++ (flattenShallow (map gleanWholeTree moreTrees))
-    -- TODO: PICK UP HERE: Call generateTestbench on each entity (after testbenches are de-grossed.)
+    [(gleanOneEntity oneEnt)] ++ (flattenShallow (map gleanWholeTree moreTrees))
 
+
+dumpAllEntities :: EntityTree -> IO [()]
+dumpAllEntities (EntityTree oneEnt []) = 
+    do
+        dump2File ("/home/jim/hask-to-vhdl-results/" ++ (entNomen oneEnt) ++ ".vhd") (gleanOneEntity oneEnt)
+        return []
+dumpAllEntities (EntityTree oneEnt moreTrees) =
+    do
+        dump2File ("/home/jim/hask-to-vhdl-results/" ++ (entNomen oneEnt) ++ ".vhd") (gleanOneEntity oneEnt)
+        (mapM dumpAllEntities moreTrees)
+        return []
+    
 
 ------------------------------------------------------------------------------------------------------------------------
 --                                         Generate Testbench for One Entity 
@@ -62,7 +71,7 @@ gleanWholeTree (EntityTree oneEnt moreTrees) =
 makeOneTestbench :: Entity -> [String]
 makeOneTestbench oneEnt 
     | ((length (gleanOneEntity oneEnt)) < 16) = []
-    | otherwise = generateTestbench (gleanOneEntity oneEnt)
+    | otherwise = generateTestbench (tokenize [intercalate " " (gleanOneEntity oneEnt)])
 
 
 ------------------------------------------------------------------------------------------------------------------------
@@ -77,11 +86,28 @@ makeTestbenches (EntityTree oneEnt moreTrees) =
 ------------------------------------------------------------------------------------------------------------------------
 --                                                     Call This 
 ------------------------------------------------------------------------------------------------------------------------
-dumpGeneratorStateToFile :: TuiState -> IO TuiState
+
+dumpOneTestbench oneEnt =
+    dump2File 
+        ("/home/jim/hask-to-vhdl-results/" ++ (entNomen oneEnt) ++ "_tb.vhd")
+        (makeOneTestbench oneEnt)
+
+dumpAllTestbenches :: EntityTree -> IO [()]
+dumpAllTestbenches (EntityTree oneEnt []) = 
+    do
+        dumpOneTestbench oneEnt
+        return []
+dumpAllTestbenches (EntityTree oneEnt moreTrees) =
+    do
+        (dumpOneTestbench oneEnt)
+        (mapM dumpAllTestbenches moreTrees)
+        return []
+    
+
 dumpGeneratorStateToFile tS =
     do
-        -- dump2File "./myVhdOutput.vhd" ((gleanWholeTree (entTree (generatorState tS))) ++ (makeTestbenches (entTree (generatorState tS))))
-        dump2File "./myVhdOutput.vhd" (gleanWholeTree (entTree (generatorState tS)))
+        dumpAllEntities (entTree (generatorState tS))
+        dumpAllTestbenches (entTree (generatorState tS))
         return tS
 
 
