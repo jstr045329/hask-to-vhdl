@@ -133,6 +133,37 @@ populatePackageTemplate nm declarationLines bodyLines =
     [ "end package body " ++ nm ++ ";"]
 
 
+makeDepList :: String -> [String] -> [String]
+makeDepList path2Project [] = [] 
+makeDepList path2Project entNames = 
+    ["vcom -reportprogress 300 -work work " ++ path2Project ++ "/" ++ (head entNames) ++ ".vhd"] ++ (makeDepList path2Project (tail entNames))
+
+-- localDeps *CAN* include subfolders, but *CANNOT* have ".vhd"
+-- oneEntName is WITHOUT ".vhd"
+populateTclTemplate :: String -> String -> [String] -> String -> [String]
+populateTclTemplate path2ThisRepo path2Project localDeps oneEntName =
+    ["vlib work"] ++
+    ["vcom -reportprogress 300 -work work " ++ path2ThisRepo ++ "/src/VhdLibs/VhdSimToolsPkg.vhd"] ++
+    ["vcom -reportprogress 300 -work work " ++ path2ThisRepo ++ "/src/VhdLibs/VhdSynthToolsPkg.vhd"] ++
+    ["# vcom -reportprogress 300 -work work " ++ path2Project ++ "<FILL_ME_OUT>"] ++
+    -- (map (\x -> "vcom -reportprogress 300 -work work " ++ path2Project ++ "/" ++ x ++ ".vhd") (localDeps ++ [oneEntName]))
+    (makeDepList path2Project (localDeps ++ [oneEntName])) ++
+    ["# vcom -reportprogress 300 -work work " ++ path2Project ++ "/test/" ++ (oneEntName ++ "_tb.vhd")] ++
+    ["vsim work." ++ oneEntName ++ "_tb -t ns"] ++
+    [""] ++
+    ["add wave -position insertpoint \\"] ++
+    ["sim:/" ++ oneEntName ++ "_tb/clk"] ++
+    ["sim:/" ++ oneEntName ++ "_tb/rst"] ++
+    [""] ++
+    ["", ""]
+
+
+--add wave -position insertpoint \
+--sim:/ExternalSet_tb/clk \
+--sim:/ExternalSet_tb/rst \
+
+
+
 -- Appends a colon to a string, but only if the string is not empty. 
 -- Gives user the option to name a process or not. 
 addColon :: String -> String

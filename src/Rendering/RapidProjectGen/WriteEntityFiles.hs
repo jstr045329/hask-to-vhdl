@@ -70,7 +70,7 @@ dumpAllEntities (EntityTree oneEnt moreTrees) =
 ------------------------------------------------------------------------------------------------------------------------
 makeOneTestbench :: Entity -> [String]
 makeOneTestbench oneEnt 
-    | ((length (gleanOneEntity oneEnt)) < 16) = []
+    | ((length (gleanOneEntity oneEnt)) < 16) = [] -- TODO: Delete this branch and see if that breaks anything
     | otherwise = generateTestbench (tokenize [intercalate " " (gleanOneEntity oneEnt)])
 
 
@@ -82,6 +82,29 @@ makeTestbenches (EntityTree oneEnt []) = makeOneTestbench oneEnt
 makeTestbenches (EntityTree oneEnt moreTrees) = 
     (makeOneTestbench oneEnt) ++ (flattenShallow (map makeTestbenches moreTrees))
 
+
+makeOneTcl :: Entity -> [String]
+makeOneTcl oneEnt = PopTemp.populateTclTemplate "/home/jim/hask-to-vhdl/" "<PATH_TO_THIS_PROJECT>" ["<LOCAL_DEPS>"] (entNomen oneEnt)
+
+dumpOneTcl oneEnt = 
+    dump2File 
+        ("/home/jim/hask-to-vhdl-results/" ++ (entNomen oneEnt) ++ "_tb.tcl")
+        (makeOneTcl oneEnt)
+
+
+dumpAllTcls :: EntityTree -> IO [()]
+dumpAllTcls (EntityTree oneEnt []) =
+    do  
+        dumpOneTcl oneEnt
+        return []
+dumpAllTcls (EntityTree oneEnt moreTrees) =
+    do
+        (dumpOneTcl oneEnt)
+        (mapM dumpAllTcls moreTrees)
+        return []
+
+
+    
 
 ------------------------------------------------------------------------------------------------------------------------
 --                                                     Call This 
@@ -108,6 +131,7 @@ dumpGeneratorStateToFile tS =
     do
         dumpAllEntities (entTree (generatorState tS))
         dumpAllTestbenches (entTree (generatorState tS))
+        dumpAllTcls (entTree (generatorState tS))
         return tS
 
 
