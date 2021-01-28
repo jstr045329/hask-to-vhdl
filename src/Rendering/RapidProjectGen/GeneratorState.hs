@@ -35,6 +35,8 @@ data GeneratorState = GeneratorState {
     ,   processUnderConstruction :: [Process]
     ,   renderedCodeStartLoc :: Int
     ,   userMessages :: [(String, Int)]
+    ,   renderDefaultClk :: Bool
+    ,   renderDefaultRst :: Bool
     } deriving (Eq, Show)
 
 
@@ -55,14 +57,16 @@ defaultGeneratorState = GeneratorState {
     ,   entTree = EntityTree (defaultEntity { entNomen = "Top" }) []
     ,   defaultClk = easyClk
     ,   defaultRst = easyRst
-    ,   defaultDataType = StdLogicVector
-    ,   defaultWidth = Hard 32
+    ,   defaultDataType = StdLogic
+    ,   defaultWidth = Hard 1
     ,   viewVhd = True
     ,   viewHs = False
     ,   drinkProcess = False
     ,   processUnderConstruction = [defaultProcess]
     ,   renderedCodeStartLoc = 0
     ,   userMessages = []
+    ,   renderDefaultClk = True
+    ,   renderDefaultRst = True
     }
 
 

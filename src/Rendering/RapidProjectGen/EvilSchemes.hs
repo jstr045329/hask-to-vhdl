@@ -9,19 +9,6 @@ module Rendering.RapidProjectGen.EvilSchemes where
 
 
 
--- TODO: PICK UP HERE: 
---      Render entire GeneratorState to Vhd:
---          * Generate a testbench for every entity, 
---          * Generate a TCL for every entity.
---          * Generate a package holding all component declarations
---          * For each entity, generate a package w/ component declaration for that package and its children. 
---      Render entire GeneratorState to Hs.
---      Give this thing the ability to execute scripts.
-
-
--- TODO: Write a command called delayParsing, which simply enters lines into GeneratorState.
--- TODO: Write a command called parseNow, which runs the N^2 stuff. 
--- The idea is run the program in N^2 time, instead of turning it into N^3 by running N^2 after every command.
 
 
 
@@ -30,42 +17,6 @@ module Rendering.RapidProjectGen.EvilSchemes where
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
--- TODO: Rehearse event logger.
 
 
 -- TODO: Rehearse the exact demo. Make everything perfect.
@@ -143,13 +94,27 @@ module Rendering.RapidProjectGen.EvilSchemes where
 
 
 
+-- TODO: Signals should be added to entity as whatever the defaults were at the time. 
+
+
+-- TODO:
+--     * Generate a package holding all component declarations
+--     * For each entity, generate a package w/ component declaration for that package and its children. 
+--     * Render entire GeneratorState to Hs.
+--     * Give this thing the ability to execute scripts.
+
+
+-- TODO: Write a command called delayParsing, which simply enters lines into GeneratorState.
+-- TODO: Write a command called parseNow, which runs the N^2 stuff. 
+-- The idea is run the program in N^2 time, instead of turning it into N^3 by running N^2 after every command.
 
 
 
 
-
-
-
+-- TODO: Add the "inst" command, which instantiates some already-declared entity.
+-- After typing the command, TUI shows user every port one at a time. 
+-- User types in a name that each pin should map to.
+-- If user enters a blank string, that creates a signal with the same name as component I/O pin.
 
 
 
@@ -425,5 +390,17 @@ module Rendering.RapidProjectGen.EvilSchemes where
 
 -- TODO: No need to do this immediately, but once scripting is supported, recursive Generator State
 -- would allow each script to have its own state. 
+
+-- TODO: Extend VHDL to include the uEntity. 
+
+-- TODO: Extend VHDL to allow passing in of architectures. 
+-- From the top of my hierarchy, I should be able to pass in any architecture that conforms to whatever entity, 
+-- and pass that architecture down through several layers until it is instantiated. 
+-- (Might be transpiled to a configuration in the output VHDL, but what's important is that user can easily modify
+-- program from the top.)
+
+-- TODO: Allow architectures to be output signals. Hs should be able to analyze anything & everything in GeneratorState
+-- in order to design an architecture that can be passed to some other module. 
+
 
 

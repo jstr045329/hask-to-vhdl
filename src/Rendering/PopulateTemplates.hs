@@ -146,7 +146,6 @@ populateTclTemplate path2ThisRepo path2Project localDeps oneEntName =
     ["vcom -reportprogress 300 -work work " ++ path2ThisRepo ++ "/src/VhdLibs/VhdSimToolsPkg.vhd"] ++
     ["vcom -reportprogress 300 -work work " ++ path2ThisRepo ++ "/src/VhdLibs/VhdSynthToolsPkg.vhd"] ++
     ["# vcom -reportprogress 300 -work work " ++ path2Project ++ "<FILL_ME_OUT>"] ++
-    -- (map (\x -> "vcom -reportprogress 300 -work work " ++ path2Project ++ "/" ++ x ++ ".vhd") (localDeps ++ [oneEntName]))
     (makeDepList path2Project (localDeps ++ [oneEntName])) ++
     ["# vcom -reportprogress 300 -work work " ++ path2Project ++ "/test/" ++ (oneEntName ++ "_tb.vhd")] ++
     ["vsim work." ++ oneEntName ++ "_tb -t ns"] ++
@@ -156,11 +155,6 @@ populateTclTemplate path2ThisRepo path2Project localDeps oneEntName =
     ["sim:/" ++ oneEntName ++ "_tb/rst"] ++
     [""] ++
     ["", ""]
-
-
---add wave -position insertpoint \
---sim:/ExternalSet_tb/clk \
---sim:/ExternalSet_tb/rst \
 
 
 

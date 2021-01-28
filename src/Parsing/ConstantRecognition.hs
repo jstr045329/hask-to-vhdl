@@ -36,7 +36,7 @@ constantBrains s
 isConstant :: String -> Bool
 isConstant s
     | (s == "") = False
-    | (elem (head s) "0123456789") = False
+    | (elem (head s) "0123456789'") = False -- Single quote is included to filter out '1', '0', etc. 
     | otherwise = constantBrains s
 
 

@@ -20,6 +20,7 @@ import Data.List
 import Rendering.RapidProjectGen.UpdateVhdRendering
 import Rendering.RapidProjectGen.ExtractParsedNames
 import Rendering.FilterUnique
+import Rendering.RapidProjectGen.PresentEntity
 
 
 ------------------------------------------------------------------------------------------------------------------------
@@ -60,7 +61,7 @@ decodeGenericDefault los
 ------------------------------------------------------------------------------------------------------------------------
 makeOneNewGeneric :: String -> GeneratorState -> Information
 makeOneNewGeneric oneStr generatorState =
-    let tokList = words oneStr
+    let tokList = words oneStr -- TODO: Change words to guaranteeWhiteSpace and see if that breaks anything
     in Generic {
             nomen = tokList !! 0
         ,   dataType = decodeGenericType tokList
@@ -149,6 +150,38 @@ removeDuplicates gS =
         })
         gS
 
+
+addDefaultClk :: GeneratorState -> GeneratorState
+addDefaultClk gS
+    | (elem (defaultClk gS) myInputList) = gS
+    | otherwise = 
+        changePresentEntity 
+            (\x -> x {
+                aggInputs = (aggInputs x) ++ [defaultClk gS]
+            })
+        gS where
+            myInputList = (getInputPorts (aggInputs (getPresentEntity gS)))
+
+addDefaultRst :: GeneratorState -> GeneratorState
+addDefaultRst gS 
+    | (elem (defaultRst gS) myInputList) = gS
+    | otherwise = 
+        changePresentEntity 
+            (\x -> x {
+                aggInputs = (aggInputs x) ++ [defaultRst gS]
+            })
+        gS where
+            myInputList = (getInputPorts (aggInputs (getPresentEntity gS)))
+
+
+addClkAndReset :: GeneratorState -> GeneratorState
+addClkAndReset gS 
+    | ((renderDefaultClk gS) && (renderDefaultRst gS)) = addDefaultRst (addDefaultClk gS)
+    | (renderDefaultClk gS) = addDefaultClk gS
+    | (renderDefaultRst gS) = addDefaultRst gS
+    | otherwise = gS
+        
+
 ------------------------------------------------------------------------------------------------------------------------
 --                                   Wrap Up Everything That Happens Every Command 
 --
@@ -160,6 +193,7 @@ statusQuoFunctions = [
         updateVhdRendering
     ,   updateProcessOutputs
     ,   putInfoInPresentEntity
+    ,   addClkAndReset
 --    ,   purgeDeclarations
     ]
 
@@ -178,8 +212,35 @@ updateGsBrains gS n
 updateGs :: GeneratorState -> GeneratorState
 updateGs gS = updateGsBrains gS 2
 
---updateGs :: GeneratorState -> GeneratorState
---updateGs gS = updateVhdRendering (putInfoInPresentEntity (updateProcessOutputs (updateVhdRendering (updateProcessOutputs (putInfoInPresentEntity (updateVhdRendering (updateProcessOutputs (putInfoInPresentEntity gS))))))))
+
+setDefaultDataType :: String -> DataType
+setDefaultDataType "sl" = StdLogic
+setDefaultDataType "slv" = StdLogicVector
+setDefaultDataType "sul" = StdULogic
+setDefaultDataType "sulv" = StdULogicVector
+setDefaultDataType "signed" = Signed
+setDefaultDataType "unsigned" = Unsigned
+setDefaultDataType "sgn" = Signed
+setDefaultDataType "uns" = Unsigned
+setDefaultDataType "unsgn" = Unsigned
+setDefaultDataType "int" = UnconstrainedInt
+setDefaultDataType _ = StdLogicVector
+
+
+-- Note: If you don't want an empty string to return True, call this from a wrapper that 
+-- returns False if you pass in an empty string. 
+stringIsInt :: String -> Bool
+stringIsInt "" = True
+stringIsInt s
+    | (elem (head s) "0123456789") = stringIsInt (tail s)
+    | otherwise = False
+
+
+setDefaultWidth :: String -> Width
+setDefaultWidth s
+    | (s == "") = Hard 32
+    | (stringIsInt s) = Hard (read s :: Integer)
+    | otherwise = Soft s
 
 
 ------------------------------------------------------------------------------------------------------------------------
@@ -229,6 +290,13 @@ slurpCommand s gS
 
     | (startsWith s "out ") = updateGs (gS { entTree = changeOneEntity (gPEnt gS) (entTree gS) (\x -> x { ports = (ports x) ++ [makeOneNewPort (skipN s 4) gS False]})})
 
+
+    | (startsWith s "type=") = gS { defaultDataType = setDefaultDataType (skipN s 5)}
+    | (startsWith s "type =") = gS { defaultDataType = setDefaultDataType (skipN s 6)}
+
+    | (startsWith s "width=") = gS { defaultWidth = setDefaultWidth (skipN s 6)}
+    | (startsWith s "width =") = gS { defaultWidth = setDefaultWidth (skipN s 7)}
+
     -- Start Fast Process Imbiber:
     | (startsWith s "<proc>") = (updateGs gS) { 
             drinkProcess = True
@@ -240,6 +308,13 @@ slurpCommand s gS
     -- u and up move up 1 layer in hierarchy:
     | (s == "u") = gS { pathToPresent = dropLast (pathToPresent gS)}
     | (s == "up") = gS { pathToPresent = dropLast (pathToPresent gS)}
+
+    | (s == "noclk") = gS { renderDefaultClk = False}
+    | (s == "norst") = gS { renderDefaultRst = False}
+    | (s == "yesclk") = gS { renderDefaultClk = True}
+    | (s == "yesrst") = gS { renderDefaultRst = True}
+
+
 
     -- dn <child_entity_name> moves down to the child entity:
     | (startsWith s "dn ") = 
