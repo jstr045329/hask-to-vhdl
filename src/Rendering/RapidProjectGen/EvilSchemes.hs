@@ -402,5 +402,7 @@ module Rendering.RapidProjectGen.EvilSchemes where
 -- TODO: Allow architectures to be output signals. Hs should be able to analyze anything & everything in GeneratorState
 -- in order to design an architecture that can be passed to some other module. 
 
+-- TODO: Think about a subset of the C language I can embed in this project. 
+-- The difference between this and normal HLS stuff is that mine will have separate loop types.
 
 

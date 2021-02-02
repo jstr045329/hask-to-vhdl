@@ -10,13 +10,14 @@ import Rendering.Entity
 import Rendering.EntityTree
 import Rendering.Process
 import Rendering.InfoTypes
+import Data.HashSet
 
 
 testGeneratorState001 = defaultGeneratorState {
     processUnderConstruction = [
         defaultProcess {
             procPlainLines = ["bob <= frederick nand roseanne;"]
-        ,   procOutputSignals = [
+        ,   procOutputSignals = fromList [
                     easySig "frederick" StdLogic (Hard 1) []
                 ]
             }

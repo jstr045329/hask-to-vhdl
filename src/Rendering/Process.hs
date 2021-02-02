@@ -10,11 +10,11 @@ module Rendering.Process where
 import Rendering.Assignment
 import Rendering.Condition
 import Rendering.InfoTypes
-import Rendering.FilterUnique
 import Rendering.Statement
 import Rendering.ProjectParameters
 import Tools.WhiteSpaceTools
 import Data.List
+import Data.HashSet
 
 
 ------------------------------------------------------------------------------------------------------------------------
@@ -24,15 +24,15 @@ data Process = Process {
           procNomen :: String
         , pClk :: Information
         , pRst :: Information
-        , sensitivityList :: [Information]
-        , procInputs :: [Information]
-        , variables :: [Information]
+        , sensitivityList :: HashSet Information
+        , procInputs :: HashSet Information
+        , variables :: HashSet Information
         
         -- The internalState list should ONLY contain informations that are ALREADY both in the procInputs and procOutputSignals lists.
         -- Note that variables have memory, so internalState is normally only for signals. 
         -- If VHDL is pre-2008, then anything in internalState must be a signal, since outputs cannot be read.
-        , internalState :: [Information] 
-        , procOutputSignals :: [Information]
+        , internalState :: HashSet Information 
+        , procOutputSignals :: HashSet Information
         , isClocked :: Bool
         , sequentialCode :: [SequentialStatement]
         , procPlainLines :: [String]
@@ -50,11 +50,11 @@ defaultProcess = Process {
         procNomen = ""
     ,   pClk = easyClk
     ,   pRst = easyRst
-    ,   sensitivityList = [easyClk]
-    ,   procInputs = []
-    ,   variables = []
-    ,   internalState = []
-    ,   procOutputSignals = []
+    ,   sensitivityList = fromList [easyClk]
+    ,   procInputs = empty
+    ,   variables = empty
+    ,   internalState = empty
+    ,   procOutputSignals = empty
     ,   isClocked = True
     ,   sequentialCode = []
     ,   procPlainLines = []
@@ -83,10 +83,7 @@ sensitivityLOS :: Process -> ProjectParameters -> [String]
 sensitivityLOS oneProc projParams =
     if (isClocked oneProc)
         then ([(nomen (pClk oneProc))] ++ (syncRst2Str oneProc projParams))
-        else 
-            map
-                nomen 
-                (filterUnique ([pRst oneProc] ++ (sensitivityList oneProc) ++ (procInputs oneProc)))
+        else toList (Data.HashSet.map nomen (Data.HashSet.union (procInputs oneProc) (Data.HashSet.union (fromList ([pRst oneProc])) (sensitivityList oneProc))))
 
 
 renderSensitivity :: Process -> ProjectParameters -> String
@@ -114,7 +111,7 @@ renderProcessFirstLine oneProc projParams = (renderProcessHeader oneProc) ++ (re
 --                                       Render Clock and Reset If Statements 
 ------------------------------------------------------------------------------------------------------------------------
 resetEverything :: Process -> [String]
-resetEverything oneProc = (resetBatch (filterUnique (procOutputSignals oneProc)))
+resetEverything oneProc = (resetBatch (toList (procOutputSignals oneProc)))
 
 
 renderClockAndResetIfStatements :: Process -> ProjectParameters -> [String]

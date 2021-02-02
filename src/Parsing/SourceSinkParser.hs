@@ -182,18 +182,19 @@ parseVhd los pastKeywords
     | (elem (head los) (HashSet.fromList (twoCharTokens ++ oneCharTokens))) = parseVhd (tail los) pastKeywords
     | otherwise = 
         uniteInfoPacks
+            (parseVhd (tail los) pastKeywords)
             InfoPack {
                 -- NOTE: Everything in sigNames should have a name similar to a signal name, but sigNames does not
                 -- by itself tell you what all your signal names should be. Additional algos are required to decide
                 -- which names in sigNames should be declared directly as a signal, if any; which names need both 
                 -- a signal variant and an output variant; and whether sigNames should be /= internalState.
-                sigNames = HashSet.intersection myInputs myOutputs
+                sigNames = HashSet.intersection myOutputs myInputs 
             ,   inputNames = myInputs
             ,   outputNames = myOutputs
-            ,   internalState = HashSet.intersection myInputs myOutputs
+            ,   internalState = HashSet.intersection myOutputs myInputs 
             ,   constantNames = HashSet.fromList []
             ,   varNames = HashSet.fromList []
-            } (parseVhd (tail los) pastKeywords) where
+            } where
                 myInputs = HashSet.fromList (scrapeFormulaInputs los)
                 myOutputs = HashSet.fromList (scrapeFormulaOutputs los)
 

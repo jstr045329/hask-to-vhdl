@@ -19,8 +19,8 @@ import Parsing.InputParsingKeywords
 import Data.List
 import Rendering.RapidProjectGen.UpdateVhdRendering
 import Rendering.RapidProjectGen.ExtractParsedNames
-import Rendering.FilterUnique
 import Rendering.RapidProjectGen.PresentEntity
+import qualified Data.HashSet as HashSet
 
 
 ------------------------------------------------------------------------------------------------------------------------
@@ -139,39 +139,29 @@ purgeDeclarations gS = gS
 --        gS
 
 
-removeDuplicates :: GeneratorState -> GeneratorState
-removeDuplicates gS = 
-    changePresentEntity
-        (\x -> x {
-            aggInputs =  filterUnique (aggInputs x)
-        ,   aggOutputs = filterUnique (aggOutputs x) 
-        ,   aggSignals = filterUnique (aggSignals x)
-        ,   aggGenerics = filterUnique (aggGenerics x)
-        })
-        gS
-
-
 addDefaultClk :: GeneratorState -> GeneratorState
 addDefaultClk gS
-    | (elem (defaultClk gS) myInputList) = gS
+    | (elem (defaultClk gS) myInputSet) = gS
     | otherwise = 
         changePresentEntity 
             (\x -> x {
-                aggInputs = (aggInputs x) ++ [defaultClk gS]
+                aggInputs = HashSet.union (HashSet.fromList [defaultClk gS]) (aggInputs x)
             })
         gS where
-            myInputList = (getInputPorts (aggInputs (getPresentEntity gS)))
+            myInputSet = (aggInputs (getPresentEntity gS))
+            -- myInputList = (getInputPorts (aggInputs (getPresentEntity gS)))
 
 addDefaultRst :: GeneratorState -> GeneratorState
 addDefaultRst gS 
-    | (elem (defaultRst gS) myInputList) = gS
+    | (elem (defaultRst gS) myInputSet) = gS
     | otherwise = 
         changePresentEntity 
             (\x -> x {
-                aggInputs = (aggInputs x) ++ [defaultRst gS]
+                aggInputs = HashSet.union (HashSet.fromList [defaultRst gS]) (aggInputs x)
             })
         gS where
-            myInputList = (getInputPorts (aggInputs (getPresentEntity gS)))
+            myInputSet = (aggInputs (getPresentEntity gS))
+            -- myInputList = (getInputPorts (aggInputs (getPresentEntity gS)))
 
 
 addClkAndReset :: GeneratorState -> GeneratorState

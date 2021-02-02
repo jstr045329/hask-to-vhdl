@@ -22,7 +22,6 @@ import Data.Sort
 import Data.List
 import Parsing.ConstantRecognition
 import Parsing.GuaranteeWhitespace
-import Rendering.FilterUnique
 import qualified Rendering.PopulateTemplates as PopTemp
 import Rendering.ProcessFile
 import Rendering.RapidProjectGen.ExtractParsedNames
@@ -37,9 +36,9 @@ import Rendering.GenerateTestbench
 ------------------------------------------------------------------------------------------------------------------------
 gleanOneEntity :: Entity -> [String]
 gleanOneEntity oneEnt = (PopTemp.populateEntityTemplate
-                            (declareBatch (aggGenerics oneEnt))
-                            (declareBatch ((aggInputs oneEnt) ++ (aggOutputs oneEnt)))
-                            (declareBatch (aggSignals oneEnt))
+                            (declareBatch (HashSet.toList (aggGenerics oneEnt)))
+                            (declareBatch (HashSet.toList (HashSet.union (aggOutputs oneEnt) (aggInputs oneEnt))))
+                            (declareBatch (HashSet.toList (aggSignals oneEnt)))
                             ((addToVhdBody oneEnt) ++ (allProcessLines oneEnt))
                             (PopTemp.vanillaSettings (entNomen oneEnt))) 
 

@@ -8,6 +8,7 @@ import Rendering.InterspersedCode
 import Tools.WhiteSpaceTools
 import Tools.ListTools
 import Parsing.SourceSinkParser
+import Data.HashSet
 
 
 data Entity = Entity {
@@ -19,8 +20,8 @@ data Entity = Entity {
         ,   signals :: [Information]
         ,   functions :: [Function]
         ,   procedures :: [Procedure]
-        ,   routeInfinitelyUp :: [Information]
-        ,   routeInfinitelyDown :: [Information]
+        ,   routeInfinitelyUp :: HashSet Information
+        ,   routeInfinitelyDown :: HashSet Information
         ,   nestedEntities :: [Entity]
         ,   childInstances :: [PortMap]
         ,   processes :: [Process]
@@ -37,18 +38,18 @@ data Entity = Entity {
         ,   parsedNames :: InfoPack 
 
         -- These lists contain default Information's for every name in parsedNames:
-        ,   parsedInputs :: [Information]
-        ,   parsedOutputs :: [Information]
-        ,   parsedSignals :: [Information]
-        ,   parsedGenerics :: [Information]
+        ,   parsedInputs :: HashSet Information
+        ,   parsedOutputs :: HashSet Information
+        ,   parsedSignals :: HashSet Information
+        ,   parsedGenerics :: HashSet Information
 
         -- These are the finalized lists of Information's:
         -- Anything the user has declared takes precedence. 
         -- Anything in parsedNames that has not been declared also goes to the appropriate list:
-        ,   aggInputs :: [Information]
-        ,   aggOutputs :: [Information]
-        ,   aggSignals :: [Information]
-        ,   aggGenerics :: [Information]
+        ,   aggInputs :: HashSet Information
+        ,   aggOutputs :: HashSet Information
+        ,   aggSignals :: HashSet Information
+        ,   aggGenerics :: HashSet Information
     } | TopLevelEntity 
         deriving (Eq, Show)
 
@@ -61,8 +62,8 @@ defaultEntity = Entity {
     ,   signals = []
     ,   functions = []
     ,   procedures = []
-    ,   routeInfinitelyUp = []
-    ,   routeInfinitelyDown = []
+    ,   routeInfinitelyUp = empty
+    ,   routeInfinitelyDown = empty
     ,   nestedEntities = []
     ,   childInstances = []
     ,   processes = []
@@ -73,19 +74,19 @@ defaultEntity = Entity {
     ,   interspersedCode = []
     ,   addToVhdBody = []
     ,   parsedNames = blankInfoPack
-    ,   parsedInputs = []
-    ,   parsedOutputs = []
-    ,   parsedSignals = []
-    ,   parsedGenerics = []
-    ,   aggInputs = []
-    ,   aggOutputs = []
-    ,   aggSignals = []
-    ,   aggGenerics = []
+    ,   parsedInputs = empty
+    ,   parsedOutputs = empty
+    ,   parsedSignals = empty
+    ,   parsedGenerics = empty
+    ,   aggInputs = empty
+    ,   aggOutputs = empty
+    ,   aggSignals = empty
+    ,   aggGenerics = empty
     }
 
 
-showEntityHierarchy :: Entity -> Int -> [String]
-showEntityHierarchy e n
-    | (length (nestedEntities e) == 0) = [(tab n) ++ (entNomen e)]
-    | otherwise = [(tab n) ++ (entNomen e)] ++ (flattenShallow (map (\x -> showEntityHierarchy x (n+1)) (nestedEntities e)))
+-- showEntityHierarchy :: Entity -> Int -> [String]
+-- showEntityHierarchy e n
+--     | (length (nestedEntities e) == 0) = [(tab n) ++ (entNomen e)]
+--    | otherwise = [(tab n) ++ (entNomen e)] ++ (flattenShallow (map (\x -> showEntityHierarchy x (n+1)) (nestedEntities e)))
 

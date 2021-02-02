@@ -20,7 +20,6 @@ import Data.Sort
 import Data.List
 import Parsing.ConstantRecognition
 import Parsing.GuaranteeWhitespace
-import Rendering.FilterUnique
 import qualified Rendering.PopulateTemplates as PopTemp
 
 
@@ -43,18 +42,18 @@ applyInformationDefaults gS myInfo = myInfo {
 -- From GeneratorState
 --
 ------------------------------------------------------------------------------------------------------------------------
-extractParsedInputs' :: GeneratorState -> [Information]
-extractParsedInputs' gS = map (\oneInfoName -> applyInformationDefaults gS (easyInSl oneInfoName [])) (HashSet.toList (inputNames (finalizePorts (parsedNames (head myEntList))))) where
+extractParsedInputs' :: GeneratorState -> HashSet.HashSet Information
+extractParsedInputs' gS = HashSet.map (\oneInfoName -> applyInformationDefaults gS (easyInSl oneInfoName [])) (inputNames (finalizePorts (parsedNames (head myEntList)))) where
     myEntList = fetchOneEntity (gPEnt gS) (entTree gS) 
 
 
-extractParsedOutputs' :: GeneratorState -> [Information]
-extractParsedOutputs' gS = map (\oneInfoName -> applyInformationDefaults gS (easyOutSl oneInfoName [])) (HashSet.toList (outputNames (finalizePorts (parsedNames (head myEntList))))) where
+extractParsedOutputs' :: GeneratorState -> HashSet.HashSet Information
+extractParsedOutputs' gS = HashSet.map (\oneInfoName -> applyInformationDefaults gS (easyOutSl oneInfoName [])) (outputNames (finalizePorts (parsedNames (head myEntList)))) where
     myEntList = fetchOneEntity (gPEnt gS) (entTree gS) 
 
 
-extractParsedSignals' :: GeneratorState -> [Information]
-extractParsedSignals' gS = map (\oneInfoName -> applyInformationDefaults gS (easySig oneInfoName StdLogicVector (Hard 32) [])) (HashSet.toList (sigNames (finalizePorts (parsedNames (head myEntList))))) where
+extractParsedSignals' :: GeneratorState -> HashSet.HashSet Information
+extractParsedSignals' gS = HashSet.map (\oneInfoName -> applyInformationDefaults gS (easySig oneInfoName StdLogicVector (Hard 32) [])) (sigNames (finalizePorts (parsedNames (head myEntList)))) where
     myEntList = fetchOneEntity (gPEnt gS) (entTree gS) 
 
 
@@ -72,31 +71,9 @@ extractGenericNames :: [String] -> [String]
 extractGenericNames los = [x | x <- los, Parsing.ConstantRecognition.isGeneric x]
 
 
-extractParsedGenerics' :: GeneratorState -> [Information]
-extractParsedGenerics' gS = map makeOneGeneric (extractGenericNames (tokenize [intercalate " " ((addToVhdBody myEnt) ++ (procPlainLines (head (processUnderConstruction gS))))])) where
+extractParsedGenerics' :: GeneratorState -> HashSet.HashSet Information
+extractParsedGenerics' gS = HashSet.fromList (map makeOneGeneric (extractGenericNames (tokenize [intercalate " " ((addToVhdBody myEnt) ++ (procPlainLines (head (processUnderConstruction gS))))]))) where
     myEnt = head (fetchOneEntity (gPEnt gS) (entTree gS))
-
-
-------------------------------------------------------------------------------------------------------------------------
---                                               Extract Parsed Names 
--- 
--- From TuiState
---
-------------------------------------------------------------------------------------------------------------------------
-extractParsedInputs :: TuiState -> [Information]
-extractParsedInputs ts = extractParsedInputs' (generatorState ts)
-
-
-extractParsedOutputs :: TuiState -> [Information]
-extractParsedOutputs ts = extractParsedOutputs' (generatorState ts)
-
-
-extractParsedSignals :: TuiState -> [Information]
-extractParsedSignals ts = extractParsedSignals' (generatorState ts)
-
-
-extractParsedGenerics :: TuiState -> [Information]
-extractParsedGenerics ts = extractParsedGenerics' (generatorState ts)
 
 
 ------------------------------------------------------------------------------------------------------------------------
@@ -107,7 +84,7 @@ gleanGenerics ts =
     take numGenericsToDisplay
         ([ctrString "Generics" sideColumn, sideColDashes] ++  
         (if (length (getNodesWithName (pEnt ts) (entTree (generatorState ts))) > 0)
-            then map showOneInfo (aggGenerics (head (getNodesWithName (pEnt ts) (entTree (generatorState ts)))))
+            then HashSet.toList (HashSet.map showOneInfo (aggGenerics (head (getNodesWithName (pEnt ts) (entTree (generatorState ts))))))
             else []) ++
         blankLines)
 
@@ -120,12 +97,12 @@ gleanPorts ts =
     take numPortsToDisplay
         ([ctrString "Ports" sideColumn, sideColDashes] ++
         (if (length (getNodesWithName (pEnt ts) (entTree (generatorState ts))) > 0)
-            then (map showOneInfo myInformations) 
+            then HashSet.toList (HashSet.map showOneInfo myInformations) 
             else []) ++
         blankLines) where
             myEnt = getPresentEntity (generatorState ts)
-            myInformations = [x | x <- filterUnique ((aggInputs myEnt) ++ (aggOutputs myEnt)), not (elem (nomen x) (map nomen (signals myEnt)))]
-
+            myInformations = HashSet.difference (HashSet.union (aggInputs myEnt) (aggOutputs myEnt)) (HashSet.fromList (signals myEnt))
+            
 
 ------------------------------------------------------------------------------------------------------------------------
 --                                            Glean Signals from TuiState 
@@ -139,7 +116,7 @@ gleanSignals ts =
             else []) ++
         blankLines) where
             myEnt = getPresentEntity (generatorState ts)
-            myInformations = [x | x <- filterUnique (aggSignals myEnt), not (elem (nomen x) (map nomen (ports myEnt)))]
+            myInformations = HashSet.toList (HashSet.difference (aggSignals myEnt) (HashSet.fromList (ports myEnt)))
 
 
 ------------------------------------------------------------------------------------------------------------------------
@@ -159,10 +136,12 @@ gleanRenderedCode gS = [titleLine] ++ take renderedLinesToShow (skipN perfectLin
     myNewProcessLines = if ((head (processUnderConstruction gS)) == defaultProcess)
                             then []
                             else renderProcess (head (processUnderConstruction gS)) (projectParameters gS)
+
+    -- NOTE: If TUI is still slow, check if gleanRenderedCode (and other gleaning/rendering functions) get fed back into parseVhd.
     rawLines = (PopTemp.populateEntityTemplate
-                (declareBatch (aggGenerics oneEnt))
-                (declareBatch ((aggInputs oneEnt) ++ (aggOutputs oneEnt)))
-                (declareBatch (aggSignals oneEnt))
+                (declareBatch (HashSet.toList (aggGenerics oneEnt)))
+                (declareBatch (HashSet.toList (HashSet.union (aggInputs oneEnt) (aggOutputs oneEnt))))
+                (declareBatch (HashSet.toList (aggSignals oneEnt)))
                 ((addToVhdBody oneEnt) ++ (allProcessLines oneEnt) ++ myNewProcessLines)
                 (PopTemp.vanillaSettings (entNomen oneEnt))) ++
                 blankLines
@@ -188,16 +167,17 @@ populateEntityDefaults gS myEnt = myEnt {
     } 
 
 
-addTheMoreImportantThing :: [Information] -> [Information] -> [Information] -> [Information]
-addTheMoreImportantThing superior inferior bigList = superior ++ [x | x <- inferior, not (elem (nomen x) [nomen y | y <- superior])]
+addTheMoreImportantThing :: [Information] -> [Information] -> [Information]
+addTheMoreImportantThing superior inferior = superior ++ [x | x <- inferior, not (elem (nomen x) [nomen y | y <- superior])]
 
 
+-- NOTE: This function is probably inefficient. Revisit if updating is still slow. 
 putInfoInEntity :: GeneratorState -> Entity -> Entity
 putInfoInEntity gS myEnt = (populateEntityDefaults gS myEnt) {
-        aggInputs = addTheMoreImportantThing (getInputPorts (ports myEnt)) (parsedInputs myEnt) bigList
-    ,   aggOutputs = addTheMoreImportantThing (getOutputPorts (ports myEnt)) (parsedOutputs myEnt) bigList
-    ,   aggSignals = addTheMoreImportantThing (signals myEnt) (parsedSignals myEnt) bigList
-    ,   aggGenerics = addTheMoreImportantThing (generics myEnt) (parsedGenerics myEnt) bigList
+        aggInputs = HashSet.fromList (addTheMoreImportantThing (getInputPorts (ports myEnt)) (HashSet.toList (parsedInputs myEnt)))
+    ,   aggOutputs = HashSet.fromList (addTheMoreImportantThing (getOutputPorts (ports myEnt)) (HashSet.toList (parsedOutputs myEnt)))
+    ,   aggSignals = HashSet.fromList (addTheMoreImportantThing (signals myEnt) (HashSet.toList (parsedSignals myEnt)))
+    ,   aggGenerics = HashSet.fromList (addTheMoreImportantThing (generics myEnt) (HashSet.toList (parsedGenerics myEnt)))
     } where
         newEnt = (populateEntityDefaults gS myEnt)
         bigList = (ports myEnt) ++ (signals myEnt) ++ (generics myEnt)

@@ -70,12 +70,13 @@ makeDefaultSigBatch gS = map (\x -> makeDefaultSig x gS) parsedOutputNames where
 --      3) Appends all the gleaned signals that are not already in the list.
 --
 ------------------------------------------------------------------------------------------------------------------------
-fetchProcessOutputs :: GeneratorState -> [Information]
+fetchProcessOutputs :: GeneratorState -> HashSet.HashSet Information
 fetchProcessOutputs gS = bestAvailableSigList where
     myEntity = getPresentEntity gS
     declaredSignals = (signals myEntity)
+    -- NOTE: This function may still be slow. Revisit/refactor if TUI is still slow.
     parsedSignals = [x | x <- (makeDefaultSigBatch gS), not (elem (nomen x) (map nomen declaredSignals))]
-    bestAvailableSigList = declaredSignals ++ parsedSignals
+    bestAvailableSigList = HashSet.union (HashSet.fromList declaredSignals) (HashSet.fromList parsedSignals)
 
 
 ------------------------------------------------------------------------------------------------------------------------
