@@ -304,8 +304,6 @@ slurpCommand s gS
     | (s == "yesclk") = gS { renderDefaultClk = True}
     | (s == "yesrst") = gS { renderDefaultRst = True}
 
-
-
     -- dn <child_entity_name> moves down to the child entity:
     | (startsWith s "dn ") = 
         if ((length (words s)) < 2)

@@ -1,5 +1,6 @@
 module Rendering.RapidProjectGen.WriteEntityFiles (
-    dumpGeneratorStateToFile
+        dumpGeneratorStateToFile
+    ,   dumpGeneratorStateToFile'
     ) where
 import Rendering.RapidProjectGen.RapidTuiState
 import Rendering.RapidProjectGen.GeneratorState
@@ -124,11 +125,25 @@ dumpAllTestbenches (EntityTree oneEnt moreTrees) =
         return []
     
 
+------------------------------------------------------------------------------------------------------------------------
+--                                          Take TuiState and Dump To File 
+------------------------------------------------------------------------------------------------------------------------
 dumpGeneratorStateToFile tS =
     do
         dumpAllEntities (entTree (generatorState tS))
         dumpAllTestbenches (entTree (generatorState tS))
         dumpAllTcls (entTree (generatorState tS))
         return tS
+
+
+------------------------------------------------------------------------------------------------------------------------
+--                                       Take GeneratorState and Dump To File 
+------------------------------------------------------------------------------------------------------------------------
+dumpGeneratorStateToFile' gS =
+    do
+        dumpAllEntities (entTree gS)
+        dumpAllTestbenches (entTree gS)
+        dumpAllTcls (entTree gS)
+        return gS
 
 

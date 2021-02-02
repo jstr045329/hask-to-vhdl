@@ -23,8 +23,10 @@ import Rendering.RapidProjectGen.CommandDecoder
 --      * Select VHDL or Hs view.
 --
 ------------------------------------------------------------------------------------------------------------------------
+
+-- TODO: Delete this function
 decodeOneStr :: String -> GeneratorState -> GeneratorState
-decodeOneStr oneStr gS
+decodeOneStr oneStr gS 
     | (startsWith oneStr "<ent>") =
         gS {
             formingEntity = True

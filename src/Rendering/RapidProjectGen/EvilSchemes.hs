@@ -6,8 +6,7 @@ module Rendering.RapidProjectGen.EvilSchemes where
 
 
 
-
-
+-- TODO: PICK UP HERE: Add scripting capability. Scripting will help make demo nice & automate testing.
 
 
 
@@ -90,6 +89,8 @@ module Rendering.RapidProjectGen.EvilSchemes where
 
 
 
+-- TODO: Add commands: delay parsing, start parsing, parse now
+-- TODO: Replace String with Text
 
 
 
